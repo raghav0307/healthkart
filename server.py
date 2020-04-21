@@ -40,8 +40,36 @@ def getschedule():
 		slots = connection.execute("select * from doctor_availability_chart where DoctorID = '%s'" %did)
 		
 	print(slots)
-
 	return render_template("bookschedule.html", dept = dept, doctor = doctor, dID = did)
+# def getschedule():
+# 	appointment_details = request.form['submit_button']
+# 	appointment_details = appointment_details.split(' ')
+# 	dept=appointment_details[0]
+# 	doctor=appointment_details[1]
+# 	available_slots = []
+# 	import datetime
+# 	cur_date = datetime.date.today()
+# 	cur_day = cur_date.weekday()
+# 	iter_date = cur_date
+# 	iter_day = cur_day
+# 	one_day = datetime.timedelta(days=1)
+# 	count = cur_day
+# 	days = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"]
+# 	while count <= 13:
+# 		button = []
+# 		button.append(str(iter_date)+" "+days[iter_day])
+# 		start_date = 0	#start and end dates get from sql
+# 		end_date = 0
+# 		slots = 4		#calculate from start and end dates
+# 		appointments = []	#find from database
+# 		for i in range(slots):
+# 			if i not in appointments:
+# 				button.append("start_time + 20*(i + 1)");
+# 		available_slots.append(button)
+# 		iter_date += one_day
+# 		iter_day = iter_date.weekday()
+# 		count += 1					
+# 	return render_template("bookschedule.html", dept = dept, doctor = doctor, available_slots = available_slots)
 
 
 if __name__ == "__main__":
