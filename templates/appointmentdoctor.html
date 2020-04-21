@@ -22,7 +22,7 @@
 		<div class = "deptnames">
 			{% for doctor in doctors %}
 				<form action="/patients/appointments/getschedule" method="post">
-					<button class = "btn" type = "submit" name="submit_button" value="{{dept}} {{doctor}}">{{doctor}}</button>
+					<button class = "btn" type = "submit" name="submit_button" value="{{dept}} {{doctor}} {{dID}}">{{doctor}}</button>
 				</form>
 			{%endfor%}
 		</div>
