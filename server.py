@@ -1,16 +1,27 @@
 from flask import Flask, render_template, request
+from mysqlLib import MySQL_Conn
 app = Flask(__name__)
+
+connection = MySQL_Conn.getInstance('healthkart', 'root')
 
 @app.route("/patients/appointments/selectdept")
 def selectdept():
-	depts = ['dep1', 'dep2', 'dept3', 'dept4', 'dept5']		# make the list from swql table
-	return render_template("appointmentdept.html", depts = depts)
+	all_depts = []
+	if connection.connect():
+		depts = connection.execute("select DepartmentName from Departments")
+		for i in depts:
+			all_depts.append(i[0])
+	return render_template("appointmentdept.html", depts = all_depts)
 
 
 @app.route("/patients/appointments/selectdoctor", methods = ['GET', 'POST'])
 def selectdoctor():
 	dept = request.form['submit_button']
-	doctors = ["d1", "d2", "d3"]	#fill according to dept
+	doctors = []
+	if connection.connect():
+		docs = connection.execute("select DoctorName from Doctors where DepartmentName = '%s'" %dept)
+		for i in docs:
+			doctors.append(i[0])
 	return render_template("appointmentdoctor.html", doctors = doctors, dept = dept)
 
 
