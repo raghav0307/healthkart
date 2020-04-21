@@ -4,13 +4,18 @@
 }
 
 header{
-  background-image: linear-gradient(rgba(0,0,0,0.6),rgba(0,0,0,0.6)), url(../Photos/Depts.jpg);
   /*https://webcdn.leica-microsystems.com/fileadmin/_processed_/e/8/csm_Ophthalmology-medical_3_2_c613c645b6.jpg*/ 
-  height: 100vh;
+  height: 20vh;
   background-size: cover;
   background-position: center;
 }
+body{
+  background-image: linear-gradient(rgba(0,0,0,0.6),rgba(0,0,0,0.6)), url(../Photos/Depts.jpg);
+  height: 100vh;
+  background-size: cover;
+  background-position: center;
 
+}
 .navigation{
   float: right;
   list-style-type: none;
@@ -45,17 +50,60 @@ header{
   font-size: 50px;
 }
 
-.deptnames{
+.container{
+  /*position: absolute;*/
+  top: 10%;
+  /*float: left;*/
+  /*left: 50%;*/
+  /*transform: translate(-50%, -50%);*/
+}
+
+.btn-group button {
+  background-color: #6495ED; /* Green background */
+  border: 1px solid black; /* Green border */
+  color: white; /* White text */
+  padding: 10px 24px; /* Some padding */
+  cursor: pointer; /* Pointer/hand icon */
+  float: left; /* Float the buttons side by side */
+  width: 200px
+}
+
+.btn-group button:not(:last-child) {
+  border-right: none; /* Prevent double borders */
+}
+
+/* Clear floats (clearfix hack) */
+.btn-group:after {
+  content: "";
+  clear: both;
+  display: table;
+}
+
+/* Add a background color on hover */
+.btn-group button:hover {
+  background-color: #B0C4DE;
+}
+
+.date{
+  border: 1px solid black; /* Green border */
+  color: white; /* White text */
+  padding: 9px 20px;  /*Some padding*/ 
+  float: left; /* Float the buttons side by side */
+  width: 95px
+}
+
+/*.deptnames{
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
 }
-
+*/
+/*
 .btn{
   border: 1px solid #fff;
   padding: 10px 30px;
-  /*color: #fff;*/
+  color: #fff;
   text-decoration: none;
 
   color: #000;
@@ -70,19 +118,19 @@ header{
 
   font: 200 20px/1.5 Helvetica, Verdana, sans-serif;
   border-bottom: 1px solid #ccc;
-}
+}*/
 
 /*https://designshack.net/articles/css/5-simple-and-practical-css-list-styles-you-can-copy-and-paste/*/
 
 
-.deptnames ul li {
+/*.deptnames ul li {
   font: 200 20px/1.5 Helvetica, Verdana, sans-serif;
   border-bottom: 1px solid #ccc;
 }
  
 .deptnames ul li:last-child {
   border: none;
-}
+}*/
  
 /*.deptnames ul li a {
   text-decoration: none;
@@ -96,13 +144,13 @@ header{
   -ms-transition: font-size 0.3s ease, background-color 0.3s ease;
   transition: font-size 0.3s ease, background-color 0.3s ease;
 }*/
- 
+ /*
 .btn:hover {
   font-size: 30px;
   background: #f6f6f6;
   color: #000;
 }
-
+*/
 /*.container {
   width: 100%;
   margin: 0 auto;
