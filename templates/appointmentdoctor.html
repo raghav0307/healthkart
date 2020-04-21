@@ -20,7 +20,7 @@
 			<h1>Select doctor for appoinment</h1>
 		</div>
 		<div class = "deptnames">
-			{% for doctor in doctors %}
+			{% for doctor, dID in doctors %}
 				<form action="/patients/appointments/getschedule" method="post">
 					<button class = "btn" type = "submit" name="submit_button" value="{{dept}} {{doctor}} {{dID}}">{{doctor}}</button>
 				</form>

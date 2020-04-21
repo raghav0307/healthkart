@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request
 from mysqlLib import MySQL_Conn
+
 app = Flask(__name__)
 
 connection = MySQL_Conn.getInstance('healthkart', 'root')
@@ -18,13 +19,13 @@ def selectdept():
 def selectdoctor():
 	dept = request.form['submit_button']
 	doctors = []
-	doctor_id = []
 	if connection.connect():
 		docs = connection.execute("select DoctorID, DoctorName from doctors where DepartmentName = '%s'" %dept)
 		for i in docs:
-			doctors.append("Dr. " + i[1])
-			doctor_id.append(i[0])
-	return render_template("appointmentdoctor.html", doctors = doctors, dept = dept, dID = doctor_id)
+			doctors.append(("Dr. " + i[1], i[0]))
+
+	# print(doctors)
+	return render_template("appointmentdoctor.html", doctors = doctors, dept = dept)
 
 
 @app.route("/patients/appointments/getschedule", methods = ['GET', 'POST'])
@@ -34,6 +35,12 @@ def getschedule():
 	dept = appointment_details[0]
 	doctor = " ".join(appointment_details[1:-1])
 	did = appointment_details[-1]
+	# print(appointment_details)
+	if connection.connect():
+		slots = connection.execute("select * from doctor_availability_chart where DoctorID = '%s'" %did)
+		
+	print(slots)
+
 	return render_template("bookschedule.html", dept = dept, doctor = doctor, dID = did)
 
 
