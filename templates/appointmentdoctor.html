@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>appointment_dept</title>
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/deptstyle.css') }}">
+</head>
+<body>
+	<header>
+		<div class = "main">
+			<ul class="navigation">
+				<li>
+					<a href="#">CANCEL</a>
+				</li>
+			</ul>
+		</div>
+
+	</header>
+	<div class="container">
+		<div class = "title">
+			<h1>Select doctor for appoinment</h1>
+		</div>
+		<div class = "deptnames">
+			{% for doctor in doctors %}
+				<form action="/patients/appointments/getschedule" method="post">
+					<button class = "btn" type = "submit" name="submit_button" value="{{dept}} {{doctor}}">{{doctor}}</button>
+				</form>
+			{%endfor%}
+		</div>
+	</div>
+	
+</body>
+</html>
