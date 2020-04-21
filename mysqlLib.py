@@ -63,13 +63,18 @@ class MySQL_Conn():
 
 if __name__ == "__main__":
 	from pprint import pprint
-	conn = MySQL_Conn.getInstance('healthkart', 'root')
+	connection = MySQL_Conn.getInstance('healthkart', 'root')
 
-	if conn.connect():
-		rec = conn.execute("select * from Patients")
-		pprint(rec)
-		rec = conn.execute("insert into Patients values ('P0021', 'Nam', 'A-50', '', '', 'Delhi', 'Central Delhi', '110001', '9765456789', 'O-', '1988-07-09', 'M', 'B')", -1)
-		pprint(rec)
-		rec = conn.execute("select * from Patients")
-		pprint(rec)
-		conn.close()
+	if connection.connect():
+		appointments = connection.execute("select SlotNumber from appointments \
+					where DoctorID = '%s' and VisitDate = '%s'" %("E0016", "2020-01-07"))
+
+		appointments = [i[0] for i in appointments]
+		for i in appointments:
+			print(i)
+		pprint(appointments)
+		# rec = conn.execute("insert into Patients values ('P0021', 'Nam', 'A-50', '', '', 'Delhi', 'Central Delhi', '110001', '9765456789', 'O-', '1988-07-09', 'M', 'B')", -1)
+		# pprint(rec)
+		# rec = conn.execute("select * from Patients")
+		# pprint(rec)
+		connection.close()
