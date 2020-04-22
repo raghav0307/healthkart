@@ -62,7 +62,6 @@ def getschedule():
 	if connection.connect():
 		slots = connection.execute("select * from doctor_availability_chart where DoctorID = '%s'" %did)
 		
-
 	for i in slots:
 		startT = (i[2].seconds)//60
 		endT = (i[3].seconds)//60
@@ -104,6 +103,8 @@ def getschedule():
 						if sttimeh>12:
 							sttimeh -= 12
 							amPm = "PM"
+            if sttimeh == 12:
+              amPm = "PM"
 						button.append(str(sttimeh) + ":" + sttimem + " " + amPm);
 				available_slots.append(button)
 		iter_date += one_day
@@ -115,6 +116,7 @@ def getschedule():
 
 	return render_template("bookschedule.html", dept = dept, doctor = doctor, 
 							dID = did, available_slots = available_slots)
+
 
 # @app.route("/patients/bookedappointments/", methods = ['GET', 'POST'])
 # def showAppointments():
