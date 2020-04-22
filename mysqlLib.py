@@ -57,6 +57,8 @@ class MySQL_Conn():
 
 		elif rec == 1:
 			return self.cursor.fetchone()
+		else:
+			self.connection.commit()
 
 
 

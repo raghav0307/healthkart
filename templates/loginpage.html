@@ -1,30 +1,13 @@
 <!DOCTYPE html>
-<html>
-<head>
-	<link rel="stylesheet" type="text/css" href="loginpage.css">
-	<title>Login</title>
-</head>
-<body>
+{%extends "layout.html" %}
+{%block content%}
+  
+  <div class="content-section">
+    <form action="/loginCheck" method="POST">
+      <input type="username" name="username" placeholder="Username">
+      <input type="password" name="password" placeholder="Password">
+      <input type="submit" value="Log in">
+    </form>
+  </div>
 
-    <!-- &#123;% bloc --><!-- k body %&#125;
-  &#123;% if session['logged_in'] %&#125;
-
-  You're logged in already!
-
-  &#123;% else %&#125;
-  <form action="/login" method="POST">
-    <input type="username" name="username" placeholder="Username">
-  <input type="password" name="password" placeholder="Password">
-  <input type="submit" value="Log in">
-  </form>
-  &#123;% endif %&#125;
-  &#123;% endblock %&#125;
-  &#123;% endraw %&#125; -->
-	<form action="/loginCheck" method="POST">
-    <input type="username" name="username" placeholder="Username">
-  <input type="password" name="password" placeholder="Password">
-  <input type="submit" value="Log in">
-  </form>
-
-</body>
-</html>
+{%endblock content%}
