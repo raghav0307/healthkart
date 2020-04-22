@@ -15,7 +15,25 @@ def home2():
 	if not session.get('logged_in'):
 		return render_template('loginpage.html')
 	else:
-		return "Hello Boss!" + str(user.getName())
+		uname = user.getName()
+
+		if uname[0] == "P":
+			# return render_template("path to patient dashboard")
+			return "Path to Patient Dashboard" + str(user.getName())
+
+		elif uname[0] == "E":
+			if connection.connect():
+				occp = connection.execute("select Occupation from employees \
+					where EmployeeID = '%s'" %uname);
+
+				print(occp, occp[0][0])
+
+				if occp[0][0] == "D":
+					# return render_template("path to patient dashboard")
+					return "Proceed to doctor login " + str(user.getName())
+
+				else:
+					return "Dashboard not Ready!"
 
 @app.route("/")
 def homePage():
