@@ -106,7 +106,8 @@ def getschedule():
 							amPm = "PM"
 			            if sttimeh == 12:
 			              amPm = "PM"
-						button.append(str(sttimeh) + ":" + sttimem + " " + amPm);
+						button.append(str(sttimeh) + ":" + sttimem + " " + amPm)
+						
 				available_slots.append(button)
 		iter_date += one_day
 		iter_day = iter_date.weekday()
