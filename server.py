@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, session, flash
+from flask import Flask, render_template, redirect, url_for, request, session, flash
 from mysqlLib import MySQL_Conn
 from pprint import pprint
 from helperLib import convertDay, User
@@ -29,7 +29,7 @@ def home2():
 				print(occp, occp[0][0])
 
 				if occp[0][0] == "D":
-					# return render_template("path to patient dashboard")
+					# return render_template("path to doctor dashboard")
 					return "Proceed to doctor login " + str(user.getName())
 
 				else:
@@ -38,6 +38,61 @@ def home2():
 @app.route("/")
 def homePage():
 	return render_template("homepage.html")
+
+@app.route("/signup", methods = ['GET', 'POST'])
+def signup():
+	return render_template("signup_page.html")
+
+@app.route("/signupEntry", methods=['GET', 'POST'])
+def signupCheck():
+	import datetime
+
+	name = request.form['name']
+	gender = request.form['gender']
+	dob = request.form['DOB']
+	house = request.form['HouseNo']
+	street = request.form['Street']
+	city = request.form['city']
+	district = request.form['District']
+	state = request.form['State']
+	pincode = request.form['Pincode']
+	contactNo = request.form['contactNo']
+	BloodGroup = request.form['BloodGroup']
+	ptype = request.form['type']
+
+	if datetime.datetime.strptime(dob, '%Y-%m-%d').date() > datetime.date.today():
+		flash(f'Invalid DOB')
+		return redirect(url_for('signup'))
+
+	if len(pincode)!=6 or not pincode.isdigit():
+		flash(f'Invalid Pincode')
+		return redirect(url_for('signup'))
+
+	if len(contactNo)!=10 or not contactNo.isdigit():
+		flash(f'Invalid Phone Number')
+		return redirect(url_for('signup'))
+
+	if BloodGroup not in ['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-']:
+		flash(f'Inavlid Blood Group')
+		return redirect(url_for('signup'))
+
+	if connection.connect():
+		idCount = connection.execute("select count(1) from patients");
+		idCount = idCount[0][0]
+
+	id_int = str(idCount+1)
+	pid = "P" + "0"*(4-len(id_int)) + id_int
+
+	if connection.connect(): 
+		query = "insert into patients values('%s', '%s', '%s', '%s', '%s', '%s', '%s', \
+		'%s', '%s', '%s', '%s', '%s', '%s')" %(pid, name, house, street, city, state, \
+			district, pincode, contactNo, BloodGroup, dob, gender, ptype)
+		connection.execute(query, -1)
+		flash(f'Signed up successfully! Patient ID is {pid}. Login to Continue', 'success')
+		return redirect(url_for('home2'))
+
+	return redirect(url_for('homepage'))
+
 
 @app.route("/loginCheck", methods=['GET', 'POST'])
 def login():
@@ -54,7 +109,7 @@ def login():
 		print(user.getName())
 		session['logged_in'] = True
 	else:
-		flash('Invalid UserID or Password')
+		flash(f'Invalid UserID or Password')
 	return home2()
 
 @app.route("/patients/appointments/selectdept")
