@@ -7,6 +7,14 @@ app = Flask(__name__)
 
 connection = MySQL_Conn.getInstance('healthkart', 'root')
 
+@app.route("/")
+def homePage():
+	return render_template("homepage.html")
+
+@app.route("/login")
+def login():
+	return render_template("loginpage.html")
+
 @app.route("/patients/appointments/selectdept")
 def selectdept():
 	all_depts = []
@@ -108,6 +116,15 @@ def getschedule():
 	return render_template("bookschedule.html", dept = dept, doctor = doctor, 
 							dID = did, available_slots = available_slots)
 
+# @app.route("/patients/bookedappointments/", methods = ['GET', 'POST'])
+# def showAppointments():
+# 	patientID = "P0001" #need to get from other page
+# 	if (connection.connect()):
+# 		rec = connection.execute("select DoctorID, VisitDate, VisitDay, SlotNumber ")
+# 	return render_template("bookedAppointments.html", dept = dept, doctor = doctor, 
+# 							dID = did, available_slots = available_slots)
 
 if __name__ == "__main__":
     app.run(debug=True)
+
+# PatientID | DoctorID | VisitDate  | VisitDay | SlotNumber
