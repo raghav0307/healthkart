@@ -1,19 +1,43 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, session, flash
 from mysqlLib import MySQL_Conn
 from pprint import pprint
-from helperLib import convertDay
+from helperLib import convertDay, User
+import os
+
 
 app = Flask(__name__)
 
 connection = MySQL_Conn.getInstance('healthkart', 'root')
+user = User()
+
+@app.route('/login')
+def home2():
+	if not session.get('logged_in'):
+		return render_template('loginpage.html')
+	else:
+		return "Hello Boss!" + str(user.getName())
 
 @app.route("/")
 def homePage():
 	return render_template("homepage.html")
 
-@app.route("/login")
+@app.route("/loginCheck", methods=['GET', 'POST'])
 def login():
-	return render_template("loginpage.html")
+
+	username = request.form['username']
+	password = request.form['password']
+	# print(username, password)
+	if connection.connect():
+		rec = connection.execute("select count(1) from Logins\
+		 where UserID = '%s' and Password = SHA2(\""'%s'"\", 256)" %(username, password))
+
+	if rec[0][0] == 1:
+		user.update(username)
+		print(user.getName())
+		session['logged_in'] = True
+	else:
+		flash('Invalid UserID or Password')
+	return home2()
 
 @app.route("/patients/appointments/selectdept")
 def selectdept():
@@ -104,8 +128,8 @@ def getschedule():
 						if sttimeh>12:
 							sttimeh -= 12
 							amPm = "PM"
-			            if sttimeh == 12:
-			              amPm = "PM"
+						if sttimeh == 12:
+							amPm = "PM"
 						button.append(str(sttimeh) + ":" + sttimem + " " + amPm)
 						
 				available_slots.append(button)
@@ -128,6 +152,7 @@ def getschedule():
 # 							dID = did, available_slots = available_slots)
 
 if __name__ == "__main__":
-    app.run(debug=True)
+	app.secret_key = os.urandom(12)
+	app.run(debug=True)
 
 # PatientID | DoctorID | VisitDate  | VisitDay | SlotNumber
