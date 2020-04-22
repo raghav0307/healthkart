@@ -7,11 +7,11 @@ import os
 
 app = Flask(__name__)
 
-connection = MySQL_Conn.getInstance('healthkart', 'root')
+connection = MySQL_Conn.getInstance('healthkart', 'root', "2110")
 user = User()
 
 @app.route('/login')
-def home2():
+def home2():	#add
 	if not session.get('logged_in'):
 		return render_template('loginpage.html')
 	else:
@@ -19,7 +19,12 @@ def home2():
 
 		if uname[0] == "P":
 			# return render_template("path to patient dashboard")
+<<<<<<< HEAD
+			return patient_home()
+			
+=======
 			return "Path to Patient Dashboard" + str(user.getName())
+>>>>>>> d7e5d8f9f7459501e6bec589b1882b7536634ff0
 
 		elif uname[0] == "E":
 			if connection.connect():
@@ -29,7 +34,11 @@ def home2():
 				print(occp, occp[0][0])
 
 				if occp[0][0] == "D":
+<<<<<<< HEAD
+					# return render_template("path to patient dashboard")
+=======
 					# return render_template("path to doctor dashboard")
+>>>>>>> d7e5d8f9f7459501e6bec589b1882b7536634ff0
 					return "Proceed to doctor login " + str(user.getName())
 
 				else:
@@ -94,6 +103,10 @@ def signupCheck():
 	return redirect(url_for('homepage'))
 
 
+<<<<<<< HEAD
+
+=======
+>>>>>>> d7e5d8f9f7459501e6bec589b1882b7536634ff0
 @app.route("/loginCheck", methods=['GET', 'POST'])
 def login():
 
@@ -112,6 +125,50 @@ def login():
 		flash(f'Invalid UserID or Password')
 	return home2()
 
+
+
+@app.route("/patient", methods=['GET', 'POST'])
+def patient_home():
+	patientID = user.getName()
+	#Medical history - date, doc dep, doc name, rerks, tests, medicines
+	history = [["date", "doc", "dep", "rerks", "meds", "tests"], ["date", "doc", "dep", "rerks", "meds", "tests"]]
+	return render_template("patient_home.html", patientID = patientID, history = history)
+
+@app.route("/patient/medicine_info", methods=['GET', 'POST'])
+def patient_med_info():
+	patientID = user.getName()
+	meds = [['med name','salts','200'], ['med name','salts','200']] #name of med, salts, cost
+	return render_template("medicine_info.html", patientID = patientID, medicines = meds)
+
+@app.route("/patient/test_info", methods=['GET', 'POST'])
+def patient_test_info():
+	patientID = user.getName()
+	tests = [['test name','desc','200'], ['test name','desc','200']] #name, desc, cost
+	return render_template("test_info.html", patientID = patientID, tests = tests)
+
+@app.route("/patient/test_reports")
+def patient_test_reports():
+	#Medical history - date, doc dep, doc name, rerks, tests, medicines
+	#date, test_name, results, normal_result, normal/abnormal
+	patientID = user.getName()
+	test_reports = [['date', 'test_name', '1.3', '0.7-2.2', 'normal'], ['date', 'test_name', '1.3', '0.7-2.2', 'normal']]
+	return render_template("test_reports.html", patientID = patientID, test_reports = test_reports)
+
+
+@app.route("/patient/edit_profile", methods=['GET', 'POST'])
+def patient_edit_profile():
+	return render_template("index.html", patientID = patientID, patient_name = patient_name)
+
+@app.route("/patient/book_appointment", methods=['GET', 'POST'])
+def patient_book_appointment():
+	patientID = user.getName()
+	depts = ['dep1', 'dep2', 'dep3']
+	return render_template("book_appointment.html", patientID = patientID, depts = depts)
+
+
+
+#Change html for appointments
+#check booked appoints - booked appointment list with cancel
 @app.route("/patients/appointments/selectdept")
 def selectdept():
 	all_depts = []
@@ -215,6 +272,62 @@ def getschedule():
 
 	return render_template("bookschedule.html", dept = dept, doctor = doctor, 
 							dID = did, available_slots = available_slots)
+
+
+#later = indented medicine tab
+
+
+@app.route("/doctors")
+def doctor_home():
+	return 0
+	# view today's schedule
+
+@app.route("/doctors/week_schedule")
+def doctor_schedule():
+	return 0
+	# week
+
+@app.route("/doctors/medicine_info")
+def doc_med_info():
+	return 0
+
+@app.route("/doctors/test_info")
+def doc_test_info():
+	return 0
+
+@app.route("/doctor/check_patient_record")
+def doc_check_record():
+	"""
+	patient name
+	date
+	doc name
+	doc dept
+	doc remarks
+	"""
+	table = [['a','b','c'], ['d','e','f']]
+	return 0
+
+@app.route("/doctors/patient_diagnose")
+def doc_patient_diagnose():
+	#form to fill in patient diagnose
+	"""
+	FLASK FORM Expiry date everyting etc etc
+	patient id
+	remarks
+	meds
+	tests
+	"""
+	return 0
+
+@app.route("/doctors/edit_profile")
+def edit_profile():
+	"""
+	update address
+	contact number
+	change password
+	"""
+	return 0
+
 
 # @app.route("/patients/bookedappointments/", methods = ['GET', 'POST'])
 # def showAppointments():
