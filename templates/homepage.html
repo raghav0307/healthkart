@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/homepage.css') }}">
+  <link href="https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,500;1,400&display=swap" rel="stylesheet">
+  <title>Healthkart</title>
+</head>
+<body>
+
+  <div id = "panel">
+    <img id = "logo" src="images.jpg">
+    <h1>HealthKart</h1>
+    <h2>THE MEDICINE DISPENSARY</h2>
+  </div>
+
+  <div>
+    <form action = "/login">
+      <button id= "login" class = "buttons">LOGIN</button>
+    </form>
+    <form action = "/signup">
+      <button id = "signup" class = "buttons">SIGN UP</button>
+    </form>
+    <button id = "Tests" class = "buttons">View Tests Available</button>
+    <button id = "ListDoctors" class = "buttons">View Doctors</button>  
+  </div>
+  
+
+</body>
+</html>
