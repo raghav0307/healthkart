@@ -1,0 +1,90 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+  <title>Welcome {{patientID}}</title>
+  <meta name="description" content="website description" />
+  <meta name="keywords" content="website keywords, website keywords" />
+  <meta http-equiv="content-type" content="text/html; charset=windows-1252" />
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/style.css') }}">
+</head>
+
+<body>
+  <div id="main">
+    <div id="header">
+      <div id="logo">
+        <div id="logo_text">
+          <!-- class="logo_colour", allows you to change the colour of the text -->
+          <h1><a href="/patient">Welcome<span class="logo_colour">{{patientID}}</span></a></h1>
+          <h2>Patient ID {{patientID}}</h2>
+        </div>
+      </div>
+      <div id="menubar">
+        <ul id="menu">
+          <!-- put class="selected" in the li tag for the selected page - to highlight which page you're on -->
+          <li><a href="/patient">Home</a></li>
+          <li><a href="/patient/medicine_info">Medicine Info</a></li>
+          <li><a href="/patient/test_info">Test Info</a></li>
+          <li><a href="/patient/test_reports">My Test Reports</a></li>
+          <li class="selected"><a href="/patient/book_appointment">Book Appointment</a></li>
+          <li><a href="/patient/edit_profile">Edit Profile</a></li>
+      </div>
+    </div>
+    <div id="site_content">
+      <!-- <div id="sidebar_container">
+        <div class="sidebar">
+          <div class="sidebar_top"></div>
+          <div class="sidebar_item">
+            <h3>Latest News</h3>
+            <h4>New Website Launched</h4>
+            <h5>January 1st, 2010</h5>
+            <p>2010 sees the redesign of our website.....&nbsp;<a href="#">read more</a></p>
+          </div>
+          <div class="sidebar_base"></div>
+        </div>
+        <div class="sidebar">
+          <div class="sidebar_top"></div>
+          <div class="sidebar_item">
+            <h3>Useful Links</h3>
+            <ul>
+              <li><a href="#">link 1</a></li>
+              <li><a href="#">link 2</a></li>
+              <li><a href="#">link 3</a></li>
+              <li><a href="#">link 4</a></li>
+            </ul>
+          </div>
+          <div class="sidebar_base"></div>
+        </div>
+        <div class="sidebar">
+          <div class="sidebar_top"></div>
+          <div class="sidebar_item">
+            <h3>Search</h3>
+            <form method="post" action="#" id="search_form">
+              <p>
+                <input class="search" type="text" name="search_field" value="Enter keywords....." />
+                <input name="search" type="image" style="border: 0; margin: 0 0 -9px 5px;" src="style/search.png" alt="Search" title="Search" />
+              </p>
+            </form>
+          </div>
+          <div class="sidebar_base"></div>
+        </div>
+      </div> -->
+      <div id="content">
+        <form action="/patient/book_appointment_doctor" method="post">
+          <div class="form_settings">
+            <p><span>Select Department</span><select id="id" name="Department">
+              {% for dept in depts%}
+              <option value="{{dept}}">{{dept}}</option>
+              {% endfor %}
+              </select></p>
+            <p style="padding-top: 15px"><span>&nbsp;</span><input class="submit" type="submit" name="submit_button" value="Submit" /></p>
+          </div>
+      </div>
+    </div>
+    <div id="footer">
+      <p>Copyright &copy; simplestyle_3</p>
+    </div>
+    <p>&nbsp;</p>
+  </div>
+</body>
+</html>

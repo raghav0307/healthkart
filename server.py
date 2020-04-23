@@ -7,7 +7,7 @@ import os
 
 app = Flask(__name__)
 
-connection = MySQL_Conn.getInstance('healthkart', 'root', "2110")
+connection = MySQL_Conn.getInstance('healthkart', 'root')
 user = User()
 
 @app.route('/login')
@@ -18,13 +18,8 @@ def home2():	#add
 		uname = user.getName()
 
 		if uname[0] == "P":
-			# return render_template("path to patient dashboard")
-<<<<<<< HEAD
-			return patient_home()
+			return redirect(url_for('patient_home'))
 			
-=======
-			return "Path to Patient Dashboard" + str(user.getName())
->>>>>>> d7e5d8f9f7459501e6bec589b1882b7536634ff0
 
 		elif uname[0] == "E":
 			if connection.connect():
@@ -34,11 +29,7 @@ def home2():	#add
 				print(occp, occp[0][0])
 
 				if occp[0][0] == "D":
-<<<<<<< HEAD
 					# return render_template("path to patient dashboard")
-=======
-					# return render_template("path to doctor dashboard")
->>>>>>> d7e5d8f9f7459501e6bec589b1882b7536634ff0
 					return "Proceed to doctor login " + str(user.getName())
 
 				else:
@@ -97,16 +88,14 @@ def signupCheck():
 		'%s', '%s', '%s', '%s', '%s', '%s')" %(pid, name, house, street, city, state, \
 			district, pincode, contactNo, BloodGroup, dob, gender, ptype)
 		connection.execute(query, -1)
+		connection.execute("insert into Logins value('%s', SHA2('%s', 256))" %(pid, "pass" + id_int), -1)
 		flash(f'Signed up successfully! Patient ID is {pid}. Login to Continue', 'success')
 		return redirect(url_for('home2'))
 
 	return redirect(url_for('homepage'))
 
 
-<<<<<<< HEAD
 
-=======
->>>>>>> d7e5d8f9f7459501e6bec589b1882b7536634ff0
 @app.route("/loginCheck", methods=['GET', 'POST'])
 def login():
 
@@ -119,7 +108,7 @@ def login():
 
 	if rec[0][0] == 1:
 		user.update(username)
-		print(user.getName())
+		# print(user.getName())
 		session['logged_in'] = True
 	else:
 		flash(f'Invalid UserID or Password')
@@ -127,23 +116,39 @@ def login():
 
 
 
-@app.route("/patient", methods=['GET', 'POST'])
+@app.route("/patient")
 def patient_home():
+	import datetime
 	patientID = user.getName()
-	#Medical history - date, doc dep, doc name, rerks, tests, medicines
-	history = [["date", "doc", "dep", "rerks", "meds", "tests"], ["date", "doc", "dep", "rerks", "meds", "tests"]]
+
+	if connection.connect():
+		rec = connection.execute("select visits.VisitDate, doctors.DoctorName, doctors.DepartmentName, \
+			visits.DoctorRemarks, medrecommended.MedicineName, testsrecommended.Testname from visits \
+			join medrecommended on visits.visitID = medrecommended.visitID join testsrecommended on \
+			visits.visitID = testsrecommended.visitID join doctors on visits.DoctorID = doctors.DoctorID \
+			where PatientID = '%s' order by (VisitDate)" %(user.getName()))
+
+	# TODO: Multiple medicines/tests list -- correct
+	history = rec
 	return render_template("patient_home.html", patientID = patientID, history = history)
 
-@app.route("/patient/medicine_info", methods=['GET', 'POST'])
+@app.route("/patient/medicine_info")
 def patient_med_info():
 	patientID = user.getName()
-	meds = [['med name','salts','200'], ['med name','salts','200']] #name of med, salts, cost
+	if connection.connect():
+		meds = connection.execute("select MedicineName, SaltName, Cost from medicines join contains \
+			on medicines.MedicineID = contains.MedicineID join salts on contains.SaltID = salts.SaltID\
+			 group by MedicineName")
+
+	# meds = [['med name','salts','200'], ['med name','salts','200']] #name of med, salts, cost
 	return render_template("medicine_info.html", patientID = patientID, medicines = meds)
 
-@app.route("/patient/test_info", methods=['GET', 'POST'])
+@app.route("/patient/test_info")
 def patient_test_info():
 	patientID = user.getName()
-	tests = [['test name','desc','200'], ['test name','desc','200']] #name, desc, cost
+	if connection.connect():
+		tests = connection.execute("select TestName, TestDescription, TestCost from labtests")
+	# tests = [['test name','desc','200'], ['test name','desc','200']] #name, desc, cost
 	return render_template("test_info.html", patientID = patientID, tests = tests)
 
 @app.route("/patient/test_reports")
@@ -151,7 +156,35 @@ def patient_test_reports():
 	#Medical history - date, doc dep, doc name, rerks, tests, medicines
 	#date, test_name, results, normal_result, normal/abnormal
 	patientID = user.getName()
-	test_reports = [['date', 'test_name', '1.3', '0.7-2.2', 'normal'], ['date', 'test_name', '1.3', '0.7-2.2', 'normal']]
+	if connection.connect():
+		test_rep = connection.execute("select visits.VisitDate, test_reports.TestName, test_reports.TestResult, \
+			testnormalresults.RangeLow,testnormalresults.RangeHigh from test_reports join visits on\
+			test_reports.VisitID = visits.VisitID join testnormalresults\
+			on test_reports.TestName = testnormalresults.TestName where\
+			visits.PatientID = '%s' and \
+			testnormalresults.AgeLow <= (select(FLOOR(DATEDIFF(NOW(), DOB)/365))\
+			from patients where patients.PatientID = '%s') and\
+			testnormalresults.AgeHigh >= (select(FLOOR(DATEDIFF(NOW(), DOB)/365))\
+			from patients where patients.PatientID = '%s') and (testnormalresults.Gender = (select Gender\
+			from patients where patients.PatientID = '%s') or testnormalresults.Gender = 'B')\
+			ORDER BY (visits.VisitDate);" %(patientID, patientID, patientID, patientID))
+		# print("quey")
+
+	# print("hello!!")
+	test_reports = []
+	for i in range(len(test_rep)):
+		temp = []
+		for j in test_rep[i]:
+			temp.append(j)
+		test_reports.append(temp)
+		if test_rep[i][-3]<=test_rep[i][-1] and test_rep[i][-3]>=test_rep[i][-2]:
+			res = "Normal"
+		else:
+			res = "Abnormal"
+
+		test_reports[i][-2] = str(test_rep[i][-2]) + "-" + str(test_rep[i][-1])
+		test_reports[i][-1] = res
+		
 	return render_template("test_reports.html", patientID = patientID, test_reports = test_reports)
 
 
@@ -162,43 +195,38 @@ def patient_edit_profile():
 @app.route("/patient/book_appointment", methods=['GET', 'POST'])
 def patient_book_appointment():
 	patientID = user.getName()
-	depts = ['dep1', 'dep2', 'dep3']
-	return render_template("book_appointment.html", patientID = patientID, depts = depts)
-
-
-
-#Change html for appointments
-#check booked appoints - booked appointment list with cancel
-@app.route("/patients/appointments/selectdept")
-def selectdept():
 	all_depts = []
 	if connection.connect():
 		depts = connection.execute("select DepartmentName from departments")
 		for i in depts:
 			all_depts.append(i[0])
-	return render_template("appointmentdept.html", depts = all_depts)
+	return render_template("book_appointment.html", patientID = patientID, depts = all_depts)
 
-
-@app.route("/patients/appointments/selectdoctor", methods = ['GET', 'POST'])
-def selectdoctor():
-	dept = request.form['submit_button']
+@app.route("/patient/book_appointment_doctor", methods = ['GET', 'POST'])
+def choosedoctor():
+	if request.method != 'POST':
+		return patient_book_appointment()
+	dept = request.form['Department']
 	doctors = []
 	if connection.connect():
 		docs = connection.execute("select DoctorID, DoctorName from doctors where DepartmentName = '%s'" %dept)
 		for i in docs:
 			doctors.append(("Dr. " + i[1], i[0]))
-
-	# print(doctors)
-	return render_template("appointmentdoctor.html", doctors = doctors, dept = dept)
+	return render_template("book_appointment_doctor.html", patientID = user.getName(), doctors = doctors, dept = dept)
 
 
-@app.route("/patients/appointments/getschedule", methods = ['GET', 'POST'])
-def getschedule():
+@app.route("/patient/book_appointment_slot", methods = ['GET', 'POST'])
+def book_slot():
+	if request.method != 'POST':
+		return patient_book_appointment()
+
 	import datetime
-	appointment_details = request.form['submit_button']
-	appointment_details = appointment_details.split(' ')
-	dept = appointment_details[0]
-	doctor = " ".join(appointment_details[1:-1])
+
+	appointment_details = request.form['Doctor']
+	# print(appointment_details)
+	appointment_details = appointment_details.split(';')
+	dept = appointment_details[1]
+	doctor = appointment_details[0]
 	did = appointment_details[-1]
 
 	cur_date = datetime.date.today()
@@ -216,7 +244,7 @@ def getschedule():
 	if connection.connect():
 		slots = connection.execute("select * from doctor_availability_chart where DoctorID = '%s'" %did)
 
-
+	# print(slots)
 	for i in slots:
 		startT = (i[2].seconds)//60
 		endT = (i[3].seconds)//60
@@ -225,9 +253,6 @@ def getschedule():
 
 		else:
 			slot_dict[i[1]] = [tuple((startT, endT))]
-
-
-	# pprint(slot_dict)
 
 	while count <= 13:
 		day_conv = convertDay(days[iter_day])
@@ -245,10 +270,13 @@ def getschedule():
 				appointments = connection.execute("select SlotNumber from appointments \
 					where DoctorID = '%s' and VisitDate = '%s'" %(did, iter_date))
 				appointments = [i[0] for i in appointments]
-				
+
+				# print(appointments)
+
+				sttime = start_time
 				for i in range(slots):
-					if i not in appointments:
-						sttime = start_time + 20*(i + 1)
+					# print(i+1, appointments, (i+1) not in appointments)
+					if (i+1) not in appointments:
 						sttimeh = sttime//60
 						sttimem = sttime%60
 						amPm = "AM"
@@ -261,18 +289,71 @@ def getschedule():
 						if sttimeh == 12:
 							amPm = "PM"
 						button.append(str(sttimeh) + ":" + sttimem + " " + amPm)
-						
+					sttime = start_time + 20*(i + 1)
+
 				available_slots.append(button)
+
 		iter_date += one_day
 		iter_day = iter_date.weekday()
 		count += 1
 
-	# print("SLOTS")
-	# pprint(available_slots)
+	return render_template("book_appointment_slot.html", dept = dept, doctor = doctor, 
+							dID = did, available_slots = available_slots, patientID = user.getName())
 
-	return render_template("bookschedule.html", dept = dept, doctor = doctor, 
-							dID = did, available_slots = available_slots)
 
+
+@app.route("/patient/slot_booked", methods = ['GET', 'POST'])
+def slot_booked():
+	import datetime
+
+	if request.method != 'POST':
+		return patient_book_appointment()
+	doc_day_slot = (request.form["slot_booked"]).split(';')
+	dID = doc_day_slot[0]
+	doctor = doc_day_slot[1]
+	day = doc_day_slot[2].split(" ")
+	date = day[0]
+	day = day[-1]
+	convDay = convertDay(day)
+	slot = doc_day_slot[3]
+
+	if connection.connect():
+		start_time = connection.execute("select StartTime from doctor_availability_chart where\
+		 DoctorID = '%s' and Day = '%s'" %(dID, convDay))
+		start_time = start_time[0][0].seconds
+
+		start_time_m = start_time//60
+		temp_time = slot.split(" ")
+		temp_time_t = temp_time[0].split(":")
+		time_h = int(temp_time_t[0])
+		time_min = int(temp_time_t[1])
+
+		total = time_h*60 + time_min
+
+		# print(start_time_m, total)
+		if temp_time[-1] == "PM" and time_h != 12:
+			total += 720
+
+		slot_num = (total-start_time_m)//20 + 1
+
+		cnt = connection.execute("select count(1) from appointments")
+		cnt = cnt[0][0]
+		cnt+=1
+		cnt = str(cnt)
+
+		connection.execute("insert into appointments values ('%s', '%s', '%s', '%s', '%s', %d)" \
+			%(cnt, user.getName(), dID, date, convDay, slot_num), -1)
+
+
+	return render_template("slot_booked.html", doctor = doctor, day = doc_day_slot[2],\
+	 slot = slot, patientID = user.getName())
+
+
+
+
+
+#Change html for appointments
+#check booked appoints - booked appointment list with cancel
 
 #later = indented medicine tab
 
@@ -328,14 +409,6 @@ def edit_profile():
 	"""
 	return 0
 
-
-# @app.route("/patients/bookedappointments/", methods = ['GET', 'POST'])
-# def showAppointments():
-# 	patientID = "P0001" #need to get from other page
-# 	if (connection.connect()):
-# 		rec = connection.execute("select DoctorID, VisitDate, VisitDay, SlotNumber ")
-# 	return render_template("bookedAppointments.html", dept = dept, doctor = doctor, 
-# 							dID = did, available_slots = available_slots)
 
 if __name__ == "__main__":
 	app.secret_key = os.urandom(12)
