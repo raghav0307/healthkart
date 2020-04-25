@@ -36,14 +36,12 @@
     </div>
     <div id="site_content">
       <div id="content">
-        <h1>Your schedule</h1>
+        <h1>Today's Schedule</h1>
         {% for record in schedule %}
           <div>
             <h2> Patient: {{record[1]}}</h2>
-            <h3><strong>Appointment ID</strong>: {{record[0]}};
-              <strong>Visit Date</strong>: {{record[2]}};
-              <strong>Visit Day</strong>: {{record[3]}};
-              <strong>Slot Number</strong>: {{record[4]}}; </h3>
+            <h3><strong>Patient ID</strong>: {{record[0]}}<br>
+              <strong>Slot Number</strong>: {{record[2]}} </h3>
           </div>
         {% endfor %}
       </div>

@@ -38,16 +38,24 @@
       <div id="content">
         <h2>Enter Medicine Name to get info</h2>
         <form action="/doctors/showMed" method="POST">
+          <select id="id" name="MedicineName1">
+              {% for mid, mname in med%}
+              <option value="{{mid}};{{mname}}">{{mname}}</option>
+              {% endfor %}
+          </select>
+          <input type="submit" name = "submit" value="Search"><br><br>
           <input type="text" name="MedicineName" placeholder="MedicineName">
-          <input type="submit" value="Search">
+          <input type="submit" name = "submit" value="Search Similar">
+          <h2>Enter Salt Name to get info</h2>
+          <select id="id" name="Salt1">
+              {% for sid, sname in salts%}
+              <option value="{{sid}};{{sname}}">{{sname}}</option>
+              {% endfor %}
+          </select>
+          <input type="submit" name = "submit" value="Search Salt"><br><br>
+          <input type="text" name="SaltName" placeholder="SaltName">
+          <input type="submit" name = "submit" value="Search Similar Salts">
         </form>
-        <!-- <h2>Medicines Available in Dispensary Information</h2>
-        <table style="width:100%; border-spacing:0;">
-          <tr><th>Medicine Name</th><th>Drug</th><th>Cost</th></tr>
-          {%for medicine in medicines%}
-            <tr><td>{{medicine[0]}}</td><td>{{medicine[1]}}</td><td>{{medicine[2]}}</td></tr>
-          {%endfor%}
-        </table> -->
       </div>
     </div>
     <div id="footer">

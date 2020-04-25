@@ -36,18 +36,10 @@
     </div>
     <div id="site_content">
       <div id="content">
-        <h2>Enter Patient Name to get past reports</h2>
+        <h2>Enter Patient ID or Patient Name to get past reports</h2>
         <form action="/doctors/show_patient" method="POST">
-          <input type="text" name="PatientName" placeholder="Patient Name">
-          <input type="submit" value="Search">
-        </form>
-        <!-- <h2>Medicines Available in Dispensary Information</h2>
-        <table style="width:100%; border-spacing:0;">
-          <tr><th>Medicine Name</th><th>Drug</th><th>Cost</th></tr>
-          {%for medicine in medicines%}
-            <tr><td>{{medicine[0]}}</td><td>{{medicine[1]}}</td><td>{{medicine[2]}}</td></tr>
-          {%endfor%}
-        </table> -->
+          <input type="text" name="PatientID" placeholder="Patient ID">
+          <input type="submit" name = "Submit" value="Search ID">
       </div>
     </div>
     <div id="footer">

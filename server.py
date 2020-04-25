@@ -7,7 +7,7 @@ import os
 
 app = Flask(__name__)
 
-connection = MySQL_Conn.getInstance('healthkart', 'root', '2110')
+connection = MySQL_Conn.getInstance('healthkart', 'root')
 user = User()
 
 @app.route('/login')
@@ -361,42 +361,113 @@ def slot_booked():
 
 @app.route("/doctors")
 def doctor_home():
+	import datetime
+
 	doctorID = user.getName()
-	schedule = connection.execute("""select * from appointments where DoctorID = '""" + doctorID + """';""")
-	for l in schedule:
-		l = list(l)
-		del l[2]
+
+	cur_date = datetime.date.today()
+	cur_date = "2020-01-31"
+
+	if connection.connect():
+
+		schedule = connection.execute("select patients.PatientID, PatientName, SlotNumber from \
+			appointments join patients on appointments.PatientID = patients.PatientID where VisitDate \
+			= '%s' and DoctorID = '%s';" %(cur_date, doctorID)) 
+
+	schedule.sort(key = lambda x: x[2])
+
 	return render_template("doctor_home.html", doctorID = doctorID, schedule = schedule)
 
 @app.route("/doctors/week_schedule")
 def doctor_schedule():
+	import datetime
+
 	doctorID = user.getName()
-	schedule = connection.execute("""select * from appointments where DoctorID = '""" + doctorID + """';""")
-	for l in schedule:
-		l = list(l)
-		del l[2]
+
+	cur_date = datetime.date.today()
+	cur_date = "2020-01-31"
+
+	if connection.connect():
+
+		schedule = connection.execute("select VisitDate, patients.PatientID, PatientName, SlotNumber from \
+			appointments join patients on appointments.PatientID = patients.PatientID where VisitDate \
+			>= '%s' and DoctorID = '%s';" %(cur_date, doctorID)) 
+	
+	schedule.sort(key = lambda x: (x[0], x[3]))
+
 	return render_template("doctor_schedule.html", doctorID = doctorID, schedule = schedule)
 	# week
 
 @app.route("/doctors/medicine_info")
 def doc_med_info():
 	doctorID = user.getName()
-	return render_template("doctor_med_info.html", doctorID = doctorID)
+
+	if connection.connect():
+		medicines = connection.execute("select MedicineID, MedicineName from medicines")
+		salts = connection.execute("select SaltID, SaltName from salts")
+
+	medicines.sort(key = lambda x: x[1])
+
+	medicines = [(0, "None")] + medicines
+
+	salts = [(0, "None")] + salts
+
+	return render_template("doctor_med_info.html", doctorID = doctorID, med = medicines, salts = salts)
 
 @app.route("/doctors/showMed", methods = ['GET', 'POST'])
 def doc_show_med():
 	doctorID = user.getName()
-	medicineName = request.form['MedicineName']
-	meds = connection.execute("select * from medicines where medicinename = '" + medicineName + "';")
-	for l in meds:
-		l = [l[1], l[2], l[3], l[4]] #Name, Quantity Available, Expiry Date, Cost
+
+	submitVal = request.form['submit']
+
+	if submitVal == "Search":
+		meds = request.form['MedicineName1']
+		meds = meds.split(";")
+		mid = meds[0]
+		mname = meds[1]
+
+		if connection.connect():
+			meds = connection.execute("select MedicineName, SaltName, QuantityAvailable, ExpiryDate, Cost, \
+				Composition  from medicines join contains on medicines.MedicineID = contains.MedicineID \
+				join salts on salts.SaltID = contains.SaltID where medicines.MedicineID = '%s'" %(mid))
+
+	elif submitVal == "Search Similar":
+		medicineName = request.form['MedicineName']
+
+		if (connection.connect()):
+			meds = connection.execute("select MedicineName, SaltName, QuantityAvailable, ExpiryDate, Cost, \
+				Composition  from medicines join contains on medicines.MedicineID = contains.MedicineID \
+				join salts on salts.SaltID = contains.SaltID where medicines.MedicineName like ('%%%s%%')" %(medicineName))
+
+	elif submitVal == "Search Salt":
+		salts = request.form['Salt1'].split(";")
+
+		sid = salts[0]
+		sname = salts[1]
+
+		if (connection.connect()):
+			meds = connection.execute("select MedicineName, SaltName, QuantityAvailable, ExpiryDate, Cost, \
+				Composition  from medicines join contains on medicines.MedicineID = contains.MedicineID \
+				join salts on salts.SaltID = contains.SaltID where salts.SaltID = '%s'" %(sid))
+
+
+
+	elif submitVal == "Search Similar Salts":
+		sname = request.form['SaltName']
+
+		meds = connection.execute("select MedicineName, SaltName, QuantityAvailable, ExpiryDate, Cost, \
+				Composition  from medicines join contains on medicines.MedicineID = contains.MedicineID \
+				join salts on salts.SaltID = contains.SaltID where salts.SaltName like ('%%%s%%')" %(sname))
+
+	meds.sort()
+
 	return render_template("doctor_show_med.html", doctorID = doctorID, medicines = meds)
 
 
 @app.route("/doctors/test_info")
 def doc_test_info():
 	doctorID = user.getName()
-	tests = connection.execute("select * from labtests;")
+	tests = connection.execute("select * from labtests")
 	for test in tests:
 		test = list(test)
 	return render_template("doctors_test_info.html", doctorID = doctorID, tests = tests)
@@ -409,18 +480,20 @@ def doc_check_record():
 
 @app.route("/doctors/show_patient", methods = ['GET', 'POST'])
 def doc_show_record():
-	"""
-	patient name
-	date
-	doc name
-	doc dept
-	doc remarks
-	"""
+
 	doctorID = user.getName()
-	patientName = request.form['PatientName']
-	reports = connection.execute("select visits.visitid, visits.patientid,  visits.doctorid, visits.visitdate, visits.doctorremarks, medrecommended.medicinename, medrecommended.quantity  from visits inner join medrecommended on visits.visitid = medrecommended.visitid where visits.patientid = '" + patientName + "';")
-	for report in reports:
-		report = list(report)
+
+	submitVal = request.form['Submit']
+
+	if (connection.connect()):
+		patientName = request.form['PatientID']
+		reports = connection.execute("select doctors.DoctorName, doctors.DepartmentName, \
+		 visits.visitdate, visits.doctorremarks, medrecommended.medicinename,\
+		 medrecommended.quantity  from visits inner join medrecommended on \
+		 visits.visitid = medrecommended.visitid  join doctors on \
+		 visits.doctorID = doctors.doctorID where visits.patientid = '" + patientName + "' order by (visits.visitdate)")
+
+
 	return render_template("doctor_show_patient.html", doctorID = doctorID, reports = reports)
 
 @app.route("/doctors/patient_diagnose")
@@ -469,5 +542,3 @@ def submit_edit_profile():
 if __name__ == "__main__":
 	app.secret_key = os.urandom(12)
 	app.run(debug=True)
-
-# PatientID | DoctorID | VisitDate  | VisitDay | SlotNumber
