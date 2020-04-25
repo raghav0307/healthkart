@@ -7,7 +7,7 @@ import os
 
 app = Flask(__name__)
 
-connection = MySQL_Conn.getInstance('healthkart', 'root')
+connection = MySQL_Conn.getInstance('healthkart', 'raghav', 'some_pass')
 user = User()
 
 @app.route('/login')
@@ -493,7 +493,6 @@ def doc_show_record():
 		 visits.visitid = medrecommended.visitid  join doctors on \
 		 visits.doctorID = doctors.doctorID where visits.patientid = '" + patientName + "' order by (visits.visitdate)")
 
-
 	return render_template("doctor_show_patient.html", doctorID = doctorID, reports = reports)
 
 @app.route("/doctors/patient_diagnose")
@@ -538,6 +537,10 @@ def submit_edit_profile():
 	print(entry)
 	return edit_profile()
 
+@app.route("/signout")
+def signout():
+	session['logged_in'] = False
+	return redirect(url_for('homePage'))
 
 if __name__ == "__main__":
 	app.secret_key = os.urandom(12)
