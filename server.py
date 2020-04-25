@@ -7,7 +7,7 @@ import os
 
 app = Flask(__name__)
 
-connection = MySQL_Conn.getInstance('healthkart', 'root')
+connection = MySQL_Conn.getInstance('healthkart', 'root', '2110')
 user = User()
 
 @app.route('/login')
@@ -29,8 +29,9 @@ def home2():	#add
 				print(occp, occp[0][0])
 
 				if occp[0][0] == "D":
+					return doctor_home()
 					# return render_template("path to patient dashboard")
-					return "Proceed to doctor login " + str(user.getName())
+					# return "Proceed to doctor login " + str(user.getName())
 
 				else:
 					return "Dashboard not Ready!"
@@ -360,24 +361,54 @@ def slot_booked():
 
 @app.route("/doctors")
 def doctor_home():
-	return 0
-	# view today's schedule
+	doctorID = user.getName()
+	schedule = connection.execute("""select * from appointments where DoctorID = '""" + doctorID + """';""")
+	for l in schedule:
+		l = list(l)
+		del l[2]
+	return render_template("doctor_home.html", doctorID = doctorID, schedule = schedule)
 
 @app.route("/doctors/week_schedule")
 def doctor_schedule():
-	return 0
+	doctorID = user.getName()
+	schedule = connection.execute("""select * from appointments where DoctorID = '""" + doctorID + """';""")
+	for l in schedule:
+		l = list(l)
+		del l[2]
+	return render_template("doctor_schedule.html", doctorID = doctorID, schedule = schedule)
 	# week
 
 @app.route("/doctors/medicine_info")
 def doc_med_info():
-	return 0
+	doctorID = user.getName()
+	return render_template("doctor_med_info.html", doctorID = doctorID)
+
+@app.route("/doctors/showMed", methods = ['GET', 'POST'])
+def doc_show_med():
+	doctorID = user.getName()
+	medicineName = request.form['MedicineName']
+	meds = connection.execute("select * from medicines where medicinename = '" + medicineName + "';")
+	for l in meds:
+		l = [l[1], l[2], l[3], l[4]] #Name, Quantity Available, Expiry Date, Cost
+	return render_template("doctor_show_med.html", doctorID = doctorID, medicines = meds)
+
 
 @app.route("/doctors/test_info")
 def doc_test_info():
-	return 0
+	doctorID = user.getName()
+	tests = connection.execute("select * from labtests;")
+	for test in tests:
+		test = list(test)
+	return render_template("doctors_test_info.html", doctorID = doctorID, tests = tests)
 
-@app.route("/doctor/check_patient_record")
+
+@app.route("/doctors/check_patient_record")
 def doc_check_record():
+	doctorID = user.getName()
+	return render_template("doctor_check_record.html", doctorID = doctorID)
+
+@app.route("/doctors/show_patient", methods = ['GET', 'POST'])
+def doc_show_record():
 	"""
 	patient name
 	date
@@ -385,11 +416,21 @@ def doc_check_record():
 	doc dept
 	doc remarks
 	"""
-	table = [['a','b','c'], ['d','e','f']]
-	return 0
+	doctorID = user.getName()
+	patientName = request.form['PatientName']
+	reports = connection.execute("select visits.visitid, visits.patientid,  visits.doctorid, visits.visitdate, visits.doctorremarks, medrecommended.medicinename, medrecommended.quantity  from visits inner join medrecommended on visits.visitid = medrecommended.visitid where visits.patientid = '" + patientName + "';")
+	for report in reports:
+		report = list(report)
+	return render_template("doctor_show_patient.html", doctorID = doctorID, reports = reports)
 
 @app.route("/doctors/patient_diagnose")
 def doc_patient_diagnose():
+	#form to fill in patient diagnose
+	doctorID = user.getName()
+	return render_template("doctor_diagnose.html", doctorID = doctorID)
+
+@app.route("/doctors/patient_diagnose/submit", methods = ['GET', 'POST'])
+def doc_submit_patient_diagnose():
 	#form to fill in patient diagnose
 	"""
 	FLASK FORM Expiry date everyting etc etc
@@ -398,7 +439,10 @@ def doc_patient_diagnose():
 	meds
 	tests
 	"""
-	return 0
+	entry = [request.form['Patient Name'], request.form['Remarks'], request.form['Medicine'], request.form['Test']]
+	print(entry)
+	#Store the entry in db
+	return doc_patient_diagnose()
 
 @app.route("/doctors/edit_profile")
 def edit_profile():
@@ -407,7 +451,19 @@ def edit_profile():
 	contact number
 	change password
 	"""
-	return 0
+	doctorID = user.getName()
+	return render_template("doctor_edit.html", doctorID = doctorID)
+
+@app.route("/doctors/edit_profile/submit", methods = ['GET', 'POST'])
+def submit_edit_profile():
+	"""
+	update address
+	contact number
+	change password
+	"""
+	entry = [request.form['Address'], request.form['PhoneNumber'], request.form['Password']]
+	print(entry)
+	return edit_profile()
 
 
 if __name__ == "__main__":

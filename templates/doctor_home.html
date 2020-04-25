@@ -1,0 +1,57 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+  <title>Welcome</title>
+  <meta name="description" content="website description" />
+  <meta name="keywords" content="website keywords, website keywords" />
+  <meta http-equiv="content-type" content="text/html; charset=windows-1252" />
+  <!-- <link rel="stylesheet" type="text/css" href="style/style.css" /> -->
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/style.css') }}">
+
+</head>
+
+<body>
+  <div id="main">
+    <div id="header">
+      <div id="logo">
+        <div id="logo_text">
+          <!-- class="logo_colour", allows you to change the colour of the text -->
+          <h1><a href="/doctors">Welcome<span class="logo_colour">{{doctorID}}</span></a></h1>
+          <h2>Doctor ID {{doctorID}}</h2>
+        </div>
+      </div>
+      <div id="menubar">
+        <ul id="menu">
+          <!-- put class="selected" in the li tag for the selected page - to highlight which page you're on -->
+          <li class="selected"><a href="/doctors">Home</a></li>
+          <li><a href="/doctors/week_schedule">Week Schedule</a></li>
+          <li><a href="/doctors/medicine_info">Medicine Info</a></li>
+          <li><a href="/doctors/test_info">Test Info</a></li>
+          <li><a href="/doctors/check_patient_record">Patient Record</a></li>
+          <li><a href="/doctors/patient_diagnose">Diagnose Patient</a></li>
+          <li><a href="/doctors/edit_profile">Edit Profile</a></li>
+        </ul>
+      </div>
+    </div>
+    <div id="site_content">
+      <div id="content">
+        <h1>Your schedule</h1>
+        {% for record in schedule %}
+          <div>
+            <h2> Patient: {{record[1]}}</h2>
+            <h3><strong>Appointment ID</strong>: {{record[0]}};
+              <strong>Visit Date</strong>: {{record[2]}};
+              <strong>Visit Day</strong>: {{record[3]}};
+              <strong>Slot Number</strong>: {{record[4]}}; </h3>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+    <div id="footer">
+      <p>Copyright &copy; simplestyle_3</p>
+    </div>
+    <p>&nbsp;</p>
+  </div>
+</body>
+</html>
