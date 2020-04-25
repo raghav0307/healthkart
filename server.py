@@ -583,11 +583,13 @@ def submit_edit_profile():
 	if session['logged_in'] == False:
 		return redirect(url_for('home2'))
 
-	employeeId = request.form['Employee ID']
-	name = request.form['Name']
-	gender = request.form['Gender']
+	doctorid = user.getName()
+
+	# employeeId = request.form['Employee ID']
+	# name = request.form['Name']
+	# gender = request.form['Gender']
 	occupation = request.form['Occupation']
-	jdate = request.form['Joining Date']
+	# jdate = request.form['Joining Date']
 	houseno = request.form['House No']
 	street = request.form['Street']
 	city = request.form['City']
@@ -595,9 +597,30 @@ def submit_edit_profile():
 	district = request.form['District']
 	pincode = request.form['Pin Code']
 	contactno = request.form['Contact Number']
-	salary = request.form['Salary']
+	# salary = request.form['Salary']
 
-	## PRAGYA: UPDATE SQL Query kaise likhni haii??
+	print("UPDATE employees \
+			SET occupation = '" + occupation + "', \
+				houseno = '" + houseno + "', \
+				street = '" + street + "', \
+				city = '" + city + "', \
+				state = '" + state + "', \
+				district = '" + district + "', \
+				pincode = '" + pincode + "', \
+				contactnumber = '" + contactno + "' \
+			WHERE employeeid = '" + doctorid + "' ;")
+
+	if connection.connect():
+		connection.execute("UPDATE employees \
+			SET occupation = '" + occupation + "', \
+				houseno = '" + houseno + "', \
+				street = '" + street + "', \
+				city = '" + city + "', \
+				state = '" + state + "', \
+				district = '" + district + "', \
+				pincode = '" + pincode + "', \
+				contactnumber = '" + contactno + "' \
+			WHERE employeeid = '" + doctorid + "' ;", -1)
 
 	return edit_profile()
 
