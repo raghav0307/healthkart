@@ -38,9 +38,14 @@
       <div id="content">
         <h2>Medicines Available in Dispensary Information</h2>
         <table style="width:100%; border-spacing:0;">
-          <tr><th>Medicine Name</th><th>Quantity Available</th><th>Expiry Date</th> <th>Cost</th></tr>
+          <tr><th>Medicine Name</th><th>Salts</th><th>Composition</th><th>Quantity Available</th><th>Expiry Date</th> <th>Cost</th></tr>
           {%for medicine in medicines%}
-            <tr><td>{{medicine[1]}}</td><td>{{medicine[2]}}</td><td>{{medicine[3]}}</td><td>{{medicine[4]}}</td></tr>
+            <tr><td>{{medicine[0]}}</td>
+              <td>{{medicine[1]}}</td>
+              <td>{{medicine[5]}}</td>
+              <td>{{medicine[2]}}</td>
+              <td>{{medicine[3]}}</td>
+              <td>{{medicine[4]}}</td></tr>
           {%endfor%}
         </table>
       </div>

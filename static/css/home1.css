@@ -1,0 +1,145 @@
+
+h1{
+	font-family: 'Raleway', sans-serif;
+	font-size: 5rem;
+	font-weight: 500px;
+	margin-right: 3%;
+	text-align-last: right;
+	/*color: #558935;*/
+	color: #92d65d;
+	margin-bottom: 5px;
+	margin-top: 3%;
+	opacity: 1;
+
+}
+
+h2{
+	font-family: 'Raleway', sans-serif;
+	font-size: 0.7rem;
+	font-weight: 400px;
+	text-align-last: right;
+	margin-right: 3%;
+	letter-spacing: 0.5rem;
+	color: #000000;
+	opacity: 1;
+}
+
+/*#logo{
+	
+	margin-left: 3%;
+	align-content: left;
+	float: left;
+}*/
+
+/*#panel{
+	background-color: #999999;
+	padding: 30px 0;
+	height:200px;
+	max-width: 100;
+}*/
+
+	/*display: inline-block;
+}*/
+
+
+/*body {
+background-image: linear-gradient(white, grey);
+background-repeat: no-repeat;
+
+}*/
+
+.buttons{
+	font-family: 'Raleway', sans-serif;
+	font-size: 1.5rem;
+	font-weight: 500px;
+  	/*color: #000000;*/
+  	background-color: transparent;
+  	padding: 15px 32px;
+  	border: none;
+  	text-align: center;
+  	vertical-align: middle;
+  	text-decoration: none;
+  	width: 20%;
+  	min-width: 150px;
+  	cursor: pointer;
+  	border-radius: 12px;
+  	margin-left: 2.5%;
+	margin-right: 2.5%;
+	margin-bottom: 300px;
+	margin-top: 200px; 
+	float: left;
+	align-items: center; 
+	box-shadow: 5px 5px 5px #0e0435;
+	
+ }
+
+/*.buttons:hover{
+	background-color: #000000;
+  	color: white;
+  	box-shadow: 2px 2px 2px #ffffff;
+}*/
+
+
+#login{
+	margin-bottom: 300px;
+	margin-top: 70px;
+	color: #92d65d;
+	/*background-color: #caff70;*/
+}
+
+#login:hover{
+	background-color: #000000;
+  	color: white;
+  	box-shadow: 2px 2px 2px #ffffff;
+
+}
+
+#signup{
+	margin-bottom: 300px;
+	margin-top: 300px;
+	color: #ffffff;
+	/*background-color: #ffda3b;*/
+}
+
+#signup:hover{
+	background-color: #000000;
+  	color: white;
+  	box-shadow: 2px 2px 2px #ffffff;
+}
+
+#Tests{
+	margin-bottom: 300px;
+	margin-top: 70px;
+	color: #ffffff;
+	/*background-color: #c1ffc1;*/
+}
+
+#Tests:hover{
+	background-color: #000000;
+  	color: white;
+  	box-shadow: 2px 2px 2px #ffffff;
+}
+
+#ListDoctors{
+	margin-bottom: 300px;
+	margin-top: 300px;
+	color: #92d65d;
+	/*background-color: #fa0f4f;*/
+}
+
+#ListDoctors:hover{
+	background-color: #000000;
+  	color: white;
+  	box-shadow: 2px 2px 2px #ffffff;
+}
+
+html, body {
+	height: 100%;
+	  background: url(bg6.jpg) no-repeat center center fixed;
+	  -webkit-background-size: cover;
+	  -moz-background-size: cover;
+	  -o-background-size: cover;
+	  background-size: cover;
+}
+
+

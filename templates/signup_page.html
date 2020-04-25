@@ -1,75 +1,103 @@
-{%extends "layout.html" %}
-{%block content%}
+<!DOCTYPE html>
+<html>
+<head>
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/signup_page.css') }}">
+	<link href="https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,500;1,400&display=swap" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Bangers&family=Comic+Neue:ital@1&display=swap" rel="stylesheet">
+	<title>Sign Up</title>
+</head>
+<body>
 	
-	<div class="content-section">
-		<form action="/signupEntry" method="POST">
-		  	<div class="form-group-signup">
-		  		<ul class = "form-control-signup">
-		  			<li>MEMBER SIGN UP</li>
-		  			<li>
-		  				<label for = "InputName">NAME: </label>
-		  				<input type="text" name="name" id="InputName" placeholder="Enter Your Name">
-		  			</li>
-		  			<li>
-		  				<label for="Gender">GENDER: </label>
-			  			<input type="radio" id="male" name="gender" value="M">
-		  				<label for="male">MALE</label>
-		  				<input type="radio" id="female" name="gender" value="F">
-		  				<label for="female">FEMALE</label>
-		  				<input type="radio" id="other" name="gender" value="O">
-		  				<label for="other">OTHER</label>
-	  				</li>
-		  			<li>
-		  				<label for = "InputDOB">DOB: </label>
-		  				<input type="date" id="InputDOB" name = "DOB" placeholder="dd-mm-yyyy">
-		  			</li>
+	<div id = "panel">
+		<h1>HealthKart</h1>
+		<h2>THE MEDICINE DISPENSARY</h2>
+		</div>
+  	<div class="form-group-signup">
+      <form action="/signupEntry" method="POST">
+        <div>
+          {% with messages = get_flashed_messages(with_categories=true)%}
+              {% if messages %}
+                {% for category, message in messages %}
+                  <div class="alert alert-{{ category }}">
+                    {{ message }}
+                  </div>
+                {% endfor %}
+              {% endif %}
+            {% endwith %}
+        </div>
+    		<ul class = "form-control-signup">
+    			<li id = "signuptext">PATIENT SIGN UP</li>
+    			<li>
+    				<label for = "InputName">NAME: </label>
+    				<input type="text" name="name" id="InputName" placeholder="Enter Your Name">
+    			</li>
+    			<li>
+    				<label class = "break">GENDER: </label>
+    				
+  	  			<input type="radio" id="male" name="gender" value="M">
+  	  			<label for="male">MALE</label>
+    				
+    				<input type="radio" id="female" name="gender" value="F">
+    				<label for="female">FEMALE</label>
+    				
+    				<input type="radio" id="other" name="gender" value="O">
+    				<label for="other">OTHER</label>
+    				
+  				</li>
+    			<li>
+    				<label for = "InputDOB">DOB: </label>
+    				<input type="date" id="InputDOB" name = "DOB" placeholder="dd-mm-yyyy">
+    			</li>
 
-		  			<li>
-		  				<label for = "InputHouse">HOUSE No: </label>
-		  				<input type = "text" id="InputHouse" name = "HouseNo" placeholder="House Number">
-		  			</li>
-		  			<li>
-		  				<label for = "InputStreet">STREET: </label>
-		  				<input type="text" id="InputStreet" name = "Street" placeholder="Street">
-		  			</li>
-		  			<li>
-		  				<label for = "InputCity">CITY: </label>
-		  				<input type="text" name="city" id="InputCity" placeholder="City">
-		  			</li>
-		  			<li>
-		  				<label for = "InputDistrict">DISTRICT: </label>
-		  				<input type="text" id="InputDistrict" name = "District" placeholder="District">
-		  			</li>
-		  			<li>
-		  				<label for = "InputState">STATE: </label>
-		  				<input type="text" id="InputState" name = "State" placeholder="State">
-		  			</li>
-		  			<li>
-		  				<label for = "InputPincode">PINCODE: </label>
-		  				<input type = "text" id="InputPincode" name = "Pincode" placeholder="Pincode">
-		  			</li>
-		  			<li>
-		  				<label for = "InputContact">CONTACT No: </label>
-		  				<input type="text" id="InputContact" name = "contactNo" placeholder="Contact Number">
-		  			</li>
-		  			<li>
-		  				<label for = "InputBloodGroup">BLOOD GROUP: </label>
-		  				<input type="text" id="InputBLOODGroup" name = "BloodGroup" placeholder="Blood Group">
-		  			</li>
-		  			<li>
-		  				<label>TYPE: </label>
-			  			<input type="radio" id="Beneficiary" name="type" value="B">
-		  				<label for="Beneficiary">BENEFICIARY</label>
-		  				<input type="radio" id="Visiting" name="type" value="V">
-		  				<label for="Visiting">VISITING</label>
-	  				</li>
+    			<li>
+    				<label for = "InputHouse">HOUSE No: </label>
+    				<input type="text" id="InputHouse" name = "HouseNo"placeholder="House Number">
+    			</li>
+    			<li>
+    				<label for = "InputStreet">STREET: </label>
+    				<input type="text" id="InputStreet" name = "Street" placeholder="Street">
+    			</li>
+          <li>
+            <label for = "InputCity">CITY: </label>
+            <input type="text" id="InputCity" name = "city" placeholder="City">
+          </li>
+    			<li>
+    				<label for = "InputDistrict">DISTRICT: </label>
+    				<input type="text" id="InputDistrict" name = "District" placeholder="District">
+    			</li>
+          <li>
+              <label for = "InputState">STATE: </label>
+              <input type="text" id="InputState" name = "State" placeholder="State">
+          </li>
+    			<li>
+    				<label for = "InputPincode">PINCODE: </label>
+    				<input type="text" id="InputPincode" name = "Pincode" placeholder="Pincode">
+    			</li>
+    			<li>
+    				<label for = "InputContact">CONTACT No: </label>
+    				<input type="text" id="InputContact" name = "contactNo" placeholder="Contact Number">
+    			</li>
+    			<li>
+    				<label for = "InputBloodGroup">BLOOD GROUP: </label>
+    				<input type="text" id="InputBLOODGroup" name = "BloodGroup" placeholder="Blood Group">
+    			</li>
+    			<li>
+    				<label class = "break">TYPE: </label>
+    				
+  	  			<input type="radio" id="Beneficiary" name="type" value="B">
+  	  			<label for="Beneficiary">BENEFICIARY</label>
+  	  			
+    				<input type="radio" id="Visiting" name="type" value="V">
+    				<label for="Visiting">VISITING</label>
+  			</li>
+  			<div class = "buttons">
+    			<li><button type="reset" value = "Reset">RESET</button></li>
+    			<li><button type="submit" value = "Submit">SUBMIT</button></li>
+    			</div>
+    		</ul>
+      </form>
+  	</div>	  	
 
-		  			<li><button type="reset" value = "Reset">RESET</button></li>
-		  			<li><button type="submit" value = "Submit">SUBMIT</button></li>
-		  		</ul>
-		  	</div>	  	
-		</form>
-		
-	</div>
 
-{%endblock content%}
+</body>
+</html>

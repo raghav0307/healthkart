@@ -1,0 +1,123 @@
+html, body {
+	height: 100%;
+	  background: url(bg4.jpg) no-repeat center center fixed;
+	  -webkit-background-size: cover;
+	  -moz-background-size: cover;
+	  -o-background-size: cover;
+	  background-size: cover;
+}
+
+.user_image{
+	background: url(user.png) no-repeat;
+	height: 100px;
+	width: 100px;
+	background-size: 100%;
+	position: absolute;
+	top: -50px;
+	left: 200px;
+	/*margin-left: 30%;*/
+}
+
+h1{
+	font-family: 'Raleway', sans-serif;
+	font-size: 5rem;
+	font-weight: 500px;
+	margin-right: 5%;
+	text-align-last: left;
+	color: #ffffff;
+	margin-bottom: 5px;
+	margin-top: 3%;
+	margin-left: 3%; 
+	opacity: 1;
+}
+
+h2{
+	font-family: 'Raleway', sans-serif;
+	font-size: 0.7rem;
+	font-weight: 400px;
+	text-align-last: left;
+	margin-right: 5%;
+	letter-spacing: 0.5rem;
+	color: #ffffff;
+	margin-left: 3.5%;
+	opacity: 1;
+}
+
+
+#logintext{
+	font-family: 'Bangers', cursive;
+	font-size: 2rem;
+	font-weight: 500px;
+	text-align-last: center;
+	color: #000000;
+	opacity: 1;
+}
+
+.form-group{
+
+	min-width: 480px;
+	max-width: 480px;
+	min-height:330px;
+	max-height: 330px;
+	margin-top: 7%;
+	margin-left: 12%;
+	align-content: center;
+	padding: 10px 10px;
+	box-shadow: 0 10px 10px 0 #000000; 
+	border-radius: 10px;
+	background-color: #f98d57;
+	border-radius: 10px;
+	position: relative;
+
+}
+
+
+.form-control{
+	list-style-type: none;
+	text-align: center;
+	align-content: center;
+	align-items: center;
+	background-color: #f98d57;
+
+
+}
+
+ul.form-control li{
+	min-width:400px;
+	max-width: 400px;
+	padding: 10px 0;
+
+}
+
+ul.form-control li input{
+	min-width:350px;
+	max-width: 350px;
+	margin-bottom: 20px;
+	text-align: center; 
+	border-radius: 5px;
+	align-items: center;
+	font-family: 'Raleway', sans-serif;
+	font-size: 1.2rem;
+	font-weight: 400px;
+
+}
+
+button{
+	background-color: #1f6df2 ;
+	color: #000000;
+	width: 100px;
+	height: 30px;
+	text-align: center; 
+	border-radius: 5px;
+	font-family: 'Raleway', sans-serif;
+	font-size: 1.2rem;
+	font-weight: 400px;
+}
+
+button:hover{
+	background-color: green;
+  	color: black;
+  	box-shadow: 2px 2px 2px #000000;
+}
+
+
