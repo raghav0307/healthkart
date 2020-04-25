@@ -301,14 +301,14 @@ def book_slot():
 				sttime = start_time
 				for i in range(slots):
 					# print(i+1, appointments, (i+1) not in appointments)
-					if (i+1) not in appointments:
+					if ( i + 1 ) not in appointments:
 						sttimeh = sttime//60
 						sttimem = sttime%60
 						amPm = "AM"
 						sttimem = str(sttimem)
-						if len(sttimem)<2:
+						if len(sttimem) < 2:
 							sttimem += "0"
-						if sttimeh>12:
+						if sttimeh > 12:
 							sttimeh -= 12
 							amPm = "PM"
 						if sttimeh == 12:
@@ -366,7 +366,7 @@ def slot_booked():
 
 		cnt = connection.execute("select count(1) from appointments")
 		cnt = cnt[0][0]
-		cnt+=1
+		cnt += 1
 		cnt = str(cnt)
 
 		connection.execute("insert into appointments values ('%s', '%s', '%s', '%s', '%s', %d)" \
@@ -573,27 +573,32 @@ def doc_submit_patient_diagnose():
 def edit_profile():
 	if session['logged_in'] == False:
 		return redirect(url_for('home2'))
-	
-	"""
-	update address
-	contact number
-	change password
-	"""
 	doctorID = user.getName()
-	return render_template("doctor_edit.html", doctorID = doctorID)
+	profile_info = connection.execute("select * from employees where employeeid = '" + doctorID + "';")
+	profile_info = profile_info[0]
+	return render_template("doctor_edit.html", doctorID = doctorID, profile_info = profile_info)
 
 @app.route("/doctors/edit_profile/submit", methods = ['GET', 'POST'])
 def submit_edit_profile():
 	if session['logged_in'] == False:
 		return redirect(url_for('home2'))
-	
-	"""
-	update address
-	contact number
-	change password
-	"""
-	entry = [request.form['Address'], request.form['PhoneNumber'], request.form['Password']]
-	print(entry)
+
+	employeeId = request.form['Employee ID']
+	name = request.form['Name']
+	gender = request.form['Gender']
+	occupation = request.form['Occupation']
+	jdate = request.form['Joining Date']
+	houseno = request.form['House No']
+	street = request.form['Street']
+	city = request.form['City']
+	state = request.form['State']
+	district = request.form['District']
+	pincode = request.form['Pin Code']
+	contactno = request.form['Contact Number']
+	salary = request.form['Salary']
+
+	## PRAGYA: UPDATE SQL Query kaise likhni haii??
+
 	return edit_profile()
 
 @app.route("/signout")
