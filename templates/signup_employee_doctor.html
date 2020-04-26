@@ -1,0 +1,85 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+  <title>Welcome {{patientID}}</title>
+  <meta name="description" content="website description" />
+  <meta name="keywords" content="website keywords, website keywords" />
+  <meta http-equiv="content-type" content="text/html; charset=windows-1252" />
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/style.css') }}">
+</head>
+
+<body>
+  <div id="main">
+    <div id="header">
+      <div id="logo">
+        <div id="logo_text">
+          <!-- class="logo_colour", allows you to change the colour of the text -->
+          <h1><a href="/admin">Welcome<span class="logo_colour">{{name}}</span></a></h1>
+          <h2>Admin ID {{adminID}}</h2>
+        </div>
+      </div>
+      <div id="menubar">
+        <ul id="menu">
+          <li><a href="/admin">Home</a></li>
+          <li class = "selected"><a href="/admin/add_employee">Add Employee</a></li>
+          <li><a href="/admin/change_beneficiary_status">Change Patient Status</a></li>
+          <li><a href="/signout">Sign Out</a></li>
+      </div>
+    </div>
+    <div id="site_content">
+      <div id="content">
+        <div id = "panel">
+    <h1>HealthKart</h1>
+    <h2>THE MEDICINE DISPENSARY</h2>
+    </div>
+    <div class="form-group-signup">
+      <form action="/admin/signup_employee_doctor" method="POST">
+        <div>
+          {% with messages = get_flashed_messages(with_categories=true)%}
+              {% if messages %}
+                {% for category, message in messages %}
+                  <div class="alert alert-{{ category }}">
+                    {{ message }}
+                  </div>
+                {% endfor %}
+              {% endif %}
+            {% endwith %}
+        </div>
+        <ul class = "form-control-signup">
+          <li id = "signuptext">DOCTOR SIGN UP</li>
+          <li>
+            <label for = "name">NAME: </label>
+            <input type="text" name="name" id="name" value = {{name}} placeholder="{{name}}" readonly>
+          </li>
+          <li>
+            <label for = "eid">ID: </label>
+            <input type="text" name="eid" id="eid" value = {{eid}} placeholder="{{eid}}" readonly>
+          </li>
+          <li>
+            <label class = "break">Department </label>
+            {%for dept in depts%}
+            <input type="radio" id="Department" name="Department" value="{{dept}}">
+            <label for="Department">{{dept}}</label>
+            {%endfor%}
+          </li>
+          <li>
+            <label for = "room_no">ROOM NO: </label>
+            <input type="text" id="room_no" name = "room_no" placeholder="1">
+          </li>
+        <div class = "buttons">
+          <li><button type="reset" value = "Reset">RESET</button></li>
+          <li><button type="submit" value = "Submit">SUBMIT</button></li>
+          </div>
+        </ul>
+      </form>
+    </div>      
+      </div>
+    </div>
+    <div id="footer">
+      <p>Copyright &copy; simplestyle_3</p>
+    </div>
+    <p>&nbsp;</p>
+  </div>
+</body>
+</html>

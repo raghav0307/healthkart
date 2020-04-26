@@ -720,6 +720,108 @@ def signout():
 	session['logged_in'] = False
 	return redirect(url_for('homePage'))
 
+
+@app.route("/admin")
+def admin_home(): #dispensary analysis
+	#Medicine recommended quantity wise bar chart
+	#Most recommended test bar chart
+	#appointments made with different doctors bar chart
+	#datawise window
+	return render_template("admin_home.html")
+
+@app.route("/admin/add_employee", methods = ['GET', 'POST'])
+def signup_employee(message = None):
+	if message != None:
+		flash(f"Signed up successfully!")
+	return render_template("signup_employee.html")
+
+@app.route("/admin/add_employee_check", methods=['GET', 'POST'])
+def signupCheck_employee():
+	import datetime
+
+	name = request.form['name']
+	gender = request.form['gender']
+	occupation = request.form['occupation']
+	joiningdate = request.form['Joining_date']
+	house = request.form['HouseNo']
+	street = request.form['Street']
+	city = request.form['city']
+	district = request.form['District']
+	state = request.form['State']
+	pincode = request.form['Pincode']
+	contactNo = request.form['contactNo']
+	salary = request.form['Salary']
+
+	if datetime.datetime.strptime(joiningdate, '%Y-%m-%d').date() > datetime.date.today():
+		flash(f'Invalid DOB')
+		return redirect(url_for('signup'))
+
+	if len(pincode)!=6 or not pincode.isdigit():
+		flash(f'Invalid Pincode')
+		return redirect(url_for('signup'))
+
+	if len(contactNo)!=10 or not contactNo.isdigit():
+		flash(f'Invalid Phone Number')
+		return redirect(url_for('signup'))
+
+	if connection.connect():
+		idCount = connection.execute("select entries from metadata where TableName ='employees' ");
+		idCount = idCount[0][0]
+
+	id_int = str(idCount+1)
+	pid = "E" + "0"*(4-len(id_int)) + id_int
+	print(id_int)
+
+	if connection.connect():
+		query = "update metadata set entries = '%d' where TableName = '%s' " %(idCount + 1, 'employees')
+		connection.execute(query, -1) 
+		query = "insert into employees values('%s', '%s', '%s', '%s', '%s', '%s', '%s', \
+		'%s', '%s', '%s', '%s', '%s', '%s')" %(pid, name, gender, occupation, joiningdate, house, street, city, state, \
+			district, pincode, contactNo, salary)
+		connection.execute(query, -1)
+		connection.execute("insert into Logins value('%s', SHA2('%s', 256))" %(pid, "pass" + id_int), -1)
+		flash(f'Signed up successfully! Employee ID is {pid}. Login to Continue', 'success')
+		# if occupation == 'N':
+		# 	all_depts = []
+		# 	if connection.connect():
+		# 		depts = connection.execute("select DepartmentName from departments")
+		# 		for i in depts:
+		# 			all_depts.append(i[0])
+		# 	return render_template("signup_employee_doctor.html", eid = pid, name = name, depts = depts)
+		if occupation == 'D':
+			all_depts = []
+			if connection.connect():
+				depts = connection.execute("select DepartmentName from departments")
+				for i in depts:
+					all_depts.append(i[0])
+			return render_template("signup_employee_doctor.html", eid = pid, name = name, depts = all_depts)
+
+		return redirect(url_for('home2'))
+
+	return redirect(url_for('homepage'))
+
+@app.route("/admin/signup_employee_doctor", methods = ['GET', 'POST'])
+def signup_employee_doctor():
+	eid = request.form['eid']
+	print("Eid is ", eid)
+	name = request.form['name']
+	dept_name = request.form['Department']
+	room_no = int(request.form['room_no'])
+	if connection.connect():
+		query = "insert into doctors values('%s', '%s', '%s', '%d')" %(eid, name, dept_name, room_no)
+		connection.execute(query, -1)
+	return signup_employee("Doctor signed up successfully")
+
+@app.route("/admin/signup_employee_nurse", methods = ['GET', 'POST'])
+def signup_employee_nurse():
+	eid = request.form['eid']
+	name = request.form['name']
+	dept_name = request.form['dept_name']
+	if connection.connect():
+		query = "insert into nurses values('%s', '%s', '%s')" %(eid, name, dept_name)
+		connection.execute(query, -1)
+	return redirect(url_for('homepage'))
+
 if __name__ == "__main__":
 	app.secret_key = os.urandom(12)
 	app.run(debug=True)
