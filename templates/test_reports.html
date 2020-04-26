@@ -17,7 +17,7 @@
       <div id="logo">
         <div id="logo_text">
           <!-- class="logo_colour", allows you to change the colour of the text -->
-          <h1><a href="/patient">Welcome<span class="logo_colour">{{patient_ID}}</span></a></h1>
+          <h1><a href="/patient">Welcome<span class="logo_colour">{{name}}</span></a></h1>
           <h2>Patient ID {{patientID}}</h2>
         </div>
       </div>
@@ -29,6 +29,7 @@
           <li><a href="/patient/test_info">Test Info</a></li>
           <li class="selected"><a href="/patient/test_reports">My Test Reports</a></li>
           <li><a href="/patient/book_appointment">Book Appointment</a></li>
+          <li><a href="/patient/confirmed_appointment">Confirmed Appointments</a></li>
           <li><a href="/patient/edit_profile">Edit Profile</a></li>
           <li><a href="/signout">Sign Out</a></li>
         </ul>
@@ -37,6 +38,12 @@
     <div id="site_content">
       <div id="content">
         <!-- insert the page content here -->
+        <!-- Add icon library -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+        <!-- Auto width -->
+        <button class="downloadbtn" onclick="window.print();return false;"><i class="fa fa-download"></i> Download Reports</button>
+
         <h2>Your Test Reports</h2>
         <table style="width:100%; border-spacing:0;">
           <tr><th>Date</th><th>Test</th><th>Result</th><th>Normal Range</th><th>Remark</th></tr>
