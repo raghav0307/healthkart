@@ -1,13 +1,13 @@
--- MySQL dump 10.17  Distrib 10.3.20-MariaDB, for debian-linux-gnu (x86_64)
+-- MySQL dump 10.13  Distrib 8.0.19, for Win64 (x86_64)
 --
 -- Host: localhost    Database: healthkart
 -- ------------------------------------------------------
--- Server version	10.3.20-MariaDB-1
+-- Server version	8.0.19
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8mb4 */;
+/*!50503 SET NAMES utf8 */;
 /*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
 /*!40103 SET TIME_ZONE='+00:00' */;
 /*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
@@ -16,42 +16,19 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `Logins`
---
-
-DROP TABLE IF EXISTS `Logins`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `Logins` (
-  `UserID` char(5) DEFAULT NULL,
-  `Password` varchar(150) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `Logins`
---
-
-LOCK TABLES `Logins` WRITE;
-/*!40000 ALTER TABLE `Logins` DISABLE KEYS */;
-INSERT INTO `Logins` VALUES ('P0001','e6c3da5b206634d7f3f3586d747ffdb36b5c675757b380c6a5fe5c570c714349'),('P0002','1ba3d16e9881959f8c9a9762854f72c6e6321cdd44358a10a4e939033117eab9'),('P0003','3acb59306ef6e660cf832d1d34c4fba3d88d616f0bb5c2a9e0f82d18ef6fc167'),('P0004','a417b5dc3d06d15d91c6687e27fc1705ebc56b3b2d813abe03066e5643fe4e74'),('P0005','0eeac8171768d0cdef3a20fee6db4362d019c91e10662a6b55186336e1a42778'),('P0006','5c4950c94a3461441c356afa783f76b83b38fd65f730f291403efbcc798acc1f'),('P0007','1526f5e0e31d42fe1c3664ce923ac22ac1333417a90b32043797ac454cd03112'),('P0008','c8fea5b0b76dc690feaf5544749f99b40e78e2a37c0e867a086696509416302a'),('P0009','2d4589473fb3f4581d7452cd25182159d68d2a50056a0cce35a529b010e32f2b'),('P0010','b35892cb8b089e03e4420b94df688122a2b76d4ad0f8b94ad20808bb029e48a5'),('P0011','8057f787ebd8b4f9d40f53d7fbbfcbdde7067c1a074435b68f525b3de0e2ac2b'),('P0012','fdac810d0c09f25c5ddcee9976ab1f1ae1973dba7c65152d95b0937bc2a6c883'),('P0013','1e53de2a2b4ab888cc24002ef8832d433b21956ab83ddeef989c8224b5c8f9f2'),('P0014','b78f24953963ac5ed773d6ec83120e3b1a65510201dc09ed2ed9e9781ba88870'),('P0015','b5a4ec869015095060b1171791334513f741177c4011e2c5c36e3e37a5ff8e5f'),('P0016','f0c28ba3fd9e0dcdcd0470acfcb98cc5a58d7d93422dbbefb930455ef714c87d'),('P0017','4a6b7fa040bcfc734a113fee84d3789c0a626d70d029afad0d1c3e7b6c562e14'),('P0018','b99ddd77e59c96b13b64b3abe1902db4c0a76dabf8622aa6c71f8f5670be6625'),('P0019','871431053023291d24b403f1f9d761c6f01b3050a0a83cd9d9759a970f8d4d92'),('P0020','51d11024031a8951b4722671adfc8587538f5e5417206e7862e60752758a5c35'),('E0001','e6c3da5b206634d7f3f3586d747ffdb36b5c675757b380c6a5fe5c570c714349'),('E0002','1ba3d16e9881959f8c9a9762854f72c6e6321cdd44358a10a4e939033117eab9'),('E0003','3acb59306ef6e660cf832d1d34c4fba3d88d616f0bb5c2a9e0f82d18ef6fc167'),('E0004','a417b5dc3d06d15d91c6687e27fc1705ebc56b3b2d813abe03066e5643fe4e74'),('E0005','0eeac8171768d0cdef3a20fee6db4362d019c91e10662a6b55186336e1a42778'),('E0006','5c4950c94a3461441c356afa783f76b83b38fd65f730f291403efbcc798acc1f'),('E0007','1526f5e0e31d42fe1c3664ce923ac22ac1333417a90b32043797ac454cd03112'),('E0008','c8fea5b0b76dc690feaf5544749f99b40e78e2a37c0e867a086696509416302a'),('E0009','2d4589473fb3f4581d7452cd25182159d68d2a50056a0cce35a529b010e32f2b'),('E0010','b35892cb8b089e03e4420b94df688122a2b76d4ad0f8b94ad20808bb029e48a5'),('E0011','8057f787ebd8b4f9d40f53d7fbbfcbdde7067c1a074435b68f525b3de0e2ac2b'),('E0012','fdac810d0c09f25c5ddcee9976ab1f1ae1973dba7c65152d95b0937bc2a6c883'),('E0013','1e53de2a2b4ab888cc24002ef8832d433b21956ab83ddeef989c8224b5c8f9f2'),('E0014','b78f24953963ac5ed773d6ec83120e3b1a65510201dc09ed2ed9e9781ba88870'),('E0015','b5a4ec869015095060b1171791334513f741177c4011e2c5c36e3e37a5ff8e5f'),('E0016','f0c28ba3fd9e0dcdcd0470acfcb98cc5a58d7d93422dbbefb930455ef714c87d'),('E0017','4a6b7fa040bcfc734a113fee84d3789c0a626d70d029afad0d1c3e7b6c562e14'),('E0018','b99ddd77e59c96b13b64b3abe1902db4c0a76dabf8622aa6c71f8f5670be6625'),('E0019','871431053023291d24b403f1f9d761c6f01b3050a0a83cd9d9759a970f8d4d92'),('E0020','51d11024031a8951b4722671adfc8587538f5e5417206e7862e60752758a5c35'),('E0021','2d6b3bb57cb9e22fa36516172ef096b30ae00d08eedc1499c599b6269975521d'),('E0022','d0f82756c4d40d20e1fdbc90cf4da4adff02fe23b355687525880514642f764e'),('E0023','8893186d24cce07e1c82f2e020d41177e699318b4be9535483fdf55edf58cd50'),('P0021','2d6b3bb57cb9e22fa36516172ef096b30ae00d08eedc1499c599b6269975521d'),('P0022','d0f82756c4d40d20e1fdbc90cf4da4adff02fe23b355687525880514642f764e'),('P0023','8893186d24cce07e1c82f2e020d41177e699318b4be9535483fdf55edf58cd50'),('P0024','cafdc894eacc597ad76db1a750ccb876d4ed69c73b7d3d23f5e3a9e3b5c9fc2e'),('P0025','0028e1c0d2c60966390545414567d33bca9f0165fece6d0109c59a3f29b5fdd0');
-/*!40000 ALTER TABLE `Logins` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `appointments`
 --
 
 DROP TABLE IF EXISTS `appointments`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `appointments` (
   `AppointmentID` char(7) NOT NULL,
   `PatientID` char(5) DEFAULT NULL,
   `DoctorID` char(5) DEFAULT NULL,
   `VisitDate` date NOT NULL,
   `VisitDay` varchar(2) DEFAULT NULL,
-  `SlotNumber` int(11) DEFAULT NULL,
+  `SlotNumber` int DEFAULT NULL,
   PRIMARY KEY (`AppointmentID`),
   KEY `PatientID` (`PatientID`),
   KEY `DoctorID` (`DoctorID`),
@@ -76,11 +53,11 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `auto_indents`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `auto_indents` (
   `PatientID` char(5) NOT NULL,
   `MedicineID` char(10) NOT NULL,
-  `Quantity` int(11) DEFAULT NULL,
+  `Quantity` int DEFAULT NULL,
   `DateofDispersal` date DEFAULT NULL,
   PRIMARY KEY (`PatientID`,`MedicineID`),
   KEY `MedicineID` (`MedicineID`),
@@ -105,7 +82,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `contains`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `contains` (
   `MedicineID` char(10) NOT NULL,
   `SaltID` char(5) NOT NULL,
@@ -114,7 +91,7 @@ CREATE TABLE `contains` (
   KEY `SaltID` (`SaltID`),
   CONSTRAINT `Contains_ibfk_1` FOREIGN KEY (`MedicineID`) REFERENCES `medicines` (`MedicineID`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `Contains_ibfk_2` FOREIGN KEY (`SaltID`) REFERENCES `salts` (`SaltID`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `CONSTRAINT_1` CHECK (`Composition` >= 0)
+  CONSTRAINT `CONSTRAINT_1` CHECK ((`Composition` >= 0))
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -134,7 +111,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `departments`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `departments` (
   `DepartmentName` varchar(50) NOT NULL,
   `Dept_Head` char(5) DEFAULT NULL,
@@ -160,7 +137,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `doctor_availability_chart`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `doctor_availability_chart` (
   `DoctorID` char(5) NOT NULL,
   `Day` varchar(2) NOT NULL,
@@ -187,12 +164,12 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `doctors`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `doctors` (
   `DoctorID` char(5) NOT NULL,
   `DoctorName` varchar(25) DEFAULT NULL,
   `DepartmentName` varchar(50) NOT NULL,
-  `RoomNumber` int(11) DEFAULT NULL,
+  `RoomNumber` int DEFAULT NULL,
   PRIMARY KEY (`DoctorID`),
   KEY `DepartmentName` (`DepartmentName`),
   CONSTRAINT `Doctors_ibfk_1` FOREIGN KEY (`DoctorID`) REFERENCES `employees` (`EmployeeID`) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -216,12 +193,12 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `employees`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `employees` (
   `EmployeeID` char(5) NOT NULL,
   `Name` varchar(25) NOT NULL,
   `Gender` enum('M','F','O') DEFAULT NULL,
-  `Occupation` enum('D','N','L','F','P', 'R') DEFAULT NULL,
+  `Occupation` enum('D','N','L','F','P','R') DEFAULT NULL,
   `JoiningDate` date DEFAULT NULL,
   `HouseNo` varchar(10) DEFAULT NULL,
   `Street` varchar(50) DEFAULT NULL,
@@ -251,7 +228,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `labtests`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `labtests` (
   `TestName` varchar(50) NOT NULL,
   `TestDescription` varchar(800) DEFAULT NULL,
@@ -275,16 +252,39 @@ INSERT INTO `labtests` VALUES ('Anti Hepatitis B Core Antigen (AHBC)','The VITRO
 UNLOCK TABLES;
 
 --
+-- Table structure for table `logins`
+--
+
+DROP TABLE IF EXISTS `logins`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `logins` (
+  `UserID` char(5) DEFAULT NULL,
+  `Password` varchar(150) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `logins`
+--
+
+LOCK TABLES `logins` WRITE;
+/*!40000 ALTER TABLE `logins` DISABLE KEYS */;
+INSERT INTO `logins` VALUES ('P0001','e6c3da5b206634d7f3f3586d747ffdb36b5c675757b380c6a5fe5c570c714349'),('P0002','1ba3d16e9881959f8c9a9762854f72c6e6321cdd44358a10a4e939033117eab9'),('P0003','3acb59306ef6e660cf832d1d34c4fba3d88d616f0bb5c2a9e0f82d18ef6fc167'),('P0004','a417b5dc3d06d15d91c6687e27fc1705ebc56b3b2d813abe03066e5643fe4e74'),('P0005','0eeac8171768d0cdef3a20fee6db4362d019c91e10662a6b55186336e1a42778'),('P0006','5c4950c94a3461441c356afa783f76b83b38fd65f730f291403efbcc798acc1f'),('P0007','1526f5e0e31d42fe1c3664ce923ac22ac1333417a90b32043797ac454cd03112'),('P0008','c8fea5b0b76dc690feaf5544749f99b40e78e2a37c0e867a086696509416302a'),('P0009','2d4589473fb3f4581d7452cd25182159d68d2a50056a0cce35a529b010e32f2b'),('P0010','b35892cb8b089e03e4420b94df688122a2b76d4ad0f8b94ad20808bb029e48a5'),('P0011','8057f787ebd8b4f9d40f53d7fbbfcbdde7067c1a074435b68f525b3de0e2ac2b'),('P0012','fdac810d0c09f25c5ddcee9976ab1f1ae1973dba7c65152d95b0937bc2a6c883'),('P0013','1e53de2a2b4ab888cc24002ef8832d433b21956ab83ddeef989c8224b5c8f9f2'),('P0014','b78f24953963ac5ed773d6ec83120e3b1a65510201dc09ed2ed9e9781ba88870'),('P0015','b5a4ec869015095060b1171791334513f741177c4011e2c5c36e3e37a5ff8e5f'),('P0016','f0c28ba3fd9e0dcdcd0470acfcb98cc5a58d7d93422dbbefb930455ef714c87d'),('P0017','4a6b7fa040bcfc734a113fee84d3789c0a626d70d029afad0d1c3e7b6c562e14'),('P0018','b99ddd77e59c96b13b64b3abe1902db4c0a76dabf8622aa6c71f8f5670be6625'),('P0019','871431053023291d24b403f1f9d761c6f01b3050a0a83cd9d9759a970f8d4d92'),('P0020','51d11024031a8951b4722671adfc8587538f5e5417206e7862e60752758a5c35'),('E0001','e6c3da5b206634d7f3f3586d747ffdb36b5c675757b380c6a5fe5c570c714349'),('E0002','1ba3d16e9881959f8c9a9762854f72c6e6321cdd44358a10a4e939033117eab9'),('E0003','3acb59306ef6e660cf832d1d34c4fba3d88d616f0bb5c2a9e0f82d18ef6fc167'),('E0004','a417b5dc3d06d15d91c6687e27fc1705ebc56b3b2d813abe03066e5643fe4e74'),('E0005','0eeac8171768d0cdef3a20fee6db4362d019c91e10662a6b55186336e1a42778'),('E0006','5c4950c94a3461441c356afa783f76b83b38fd65f730f291403efbcc798acc1f'),('E0007','1526f5e0e31d42fe1c3664ce923ac22ac1333417a90b32043797ac454cd03112'),('E0008','c8fea5b0b76dc690feaf5544749f99b40e78e2a37c0e867a086696509416302a'),('E0009','2d4589473fb3f4581d7452cd25182159d68d2a50056a0cce35a529b010e32f2b'),('E0010','b35892cb8b089e03e4420b94df688122a2b76d4ad0f8b94ad20808bb029e48a5'),('E0011','8057f787ebd8b4f9d40f53d7fbbfcbdde7067c1a074435b68f525b3de0e2ac2b'),('E0012','fdac810d0c09f25c5ddcee9976ab1f1ae1973dba7c65152d95b0937bc2a6c883'),('E0013','1e53de2a2b4ab888cc24002ef8832d433b21956ab83ddeef989c8224b5c8f9f2'),('E0014','b78f24953963ac5ed773d6ec83120e3b1a65510201dc09ed2ed9e9781ba88870'),('E0015','b5a4ec869015095060b1171791334513f741177c4011e2c5c36e3e37a5ff8e5f'),('E0016','f0c28ba3fd9e0dcdcd0470acfcb98cc5a58d7d93422dbbefb930455ef714c87d'),('E0017','4a6b7fa040bcfc734a113fee84d3789c0a626d70d029afad0d1c3e7b6c562e14'),('E0018','b99ddd77e59c96b13b64b3abe1902db4c0a76dabf8622aa6c71f8f5670be6625'),('E0019','871431053023291d24b403f1f9d761c6f01b3050a0a83cd9d9759a970f8d4d92'),('E0020','51d11024031a8951b4722671adfc8587538f5e5417206e7862e60752758a5c35'),('E0021','2d6b3bb57cb9e22fa36516172ef096b30ae00d08eedc1499c599b6269975521d'),('E0022','d0f82756c4d40d20e1fdbc90cf4da4adff02fe23b355687525880514642f764e'),('E0023','8893186d24cce07e1c82f2e020d41177e699318b4be9535483fdf55edf58cd50'),('P0021','2d6b3bb57cb9e22fa36516172ef096b30ae00d08eedc1499c599b6269975521d'),('P0022','d0f82756c4d40d20e1fdbc90cf4da4adff02fe23b355687525880514642f764e'),('P0023','8893186d24cce07e1c82f2e020d41177e699318b4be9535483fdf55edf58cd50'),('P0024','cafdc894eacc597ad76db1a750ccb876d4ed69c73b7d3d23f5e3a9e3b5c9fc2e'),('P0025','0028e1c0d2c60966390545414567d33bca9f0165fece6d0109c59a3f29b5fdd0'),('E0024','cafdc894eacc597ad76db1a750ccb876d4ed69c73b7d3d23f5e3a9e3b5c9fc2e'),('E0025','0028e1c0d2c60966390545414567d33bca9f0165fece6d0109c59a3f29b5fdd0'),('E0026','45e17065ddc6fb3a682f7732df5804652952dbe1f5ca5377a661515a8fcf66be'),('E0027','43b3ec9ea3961a319d37b4cc775d3f43f68709b62a93db10dd6c598137f28732'),('E0028','034a0cdf079dfa3ca924e07e3c509bbf50768d1949b021c0ea0030cff80ba4d1'),('E0029','53f6f072e26d36b9e55d5dc828872856d5286f18ce3818d367f9e4473e464a66'),('E0030','85fcbe6bf830f23209ea6a932921e8da31a653a24a20cb84e75c4997e505690b'),('E0031','3b3ad733c8571384c133694595c33d96c638b36f08a484bd0ad38bf312fdb294'),('E0032','451a8149ebd58dbd064e3337c6de5d4f4bb08cd70bbbd48d62a205bd706b6bb0'),('E0033','0756810289814362efbea8bb826fea0a7bc4318a7f22a4b27b48290cd39951a3'),('E0034','94cd5db06baf087fd56c0042adc1deb162d271acfb8b3eb0277069517998d489'),('E0035','5a66c7ba1398dd71c92a77cc7647c4183e6bf97b227e441bb2674a319b184e63'),('E0036','133f8a05107e5442771c85da3dec70050ae5f3273849326b4a4e2ceaab2ef058');
+/*!40000 ALTER TABLE `logins` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `medicines`
 --
 
 DROP TABLE IF EXISTS `medicines`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `medicines` (
   `MedicineID` char(10) NOT NULL,
   `MedicineName` varchar(50) DEFAULT NULL,
-  `QuantityAvailable` int(11) DEFAULT NULL,
+  `QuantityAvailable` int DEFAULT NULL,
   `ExpiryDate` date DEFAULT NULL,
   `Cost` float DEFAULT NULL,
   `CompanyProviding` char(5) DEFAULT NULL,
@@ -310,12 +310,12 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `medrecommended`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `medrecommended` (
   `VisitID` char(5) NOT NULL,
   `MedicineID` char(10) NOT NULL,
   `MedicineName` varchar(50) DEFAULT NULL,
-  `Quantity` int(11) NOT NULL,
+  `Quantity` int NOT NULL,
   PRIMARY KEY (`VisitID`,`MedicineID`),
   KEY `MedicineID` (`MedicineID`),
   CONSTRAINT `MedRecommended_ibfk_1` FOREIGN KEY (`VisitID`) REFERENCES `visits` (`VisitID`) ON UPDATE CASCADE,
@@ -334,12 +334,36 @@ INSERT INTO `medrecommended` VALUES ('V0001','M000000126','Amrix',20),('V0001','
 UNLOCK TABLES;
 
 --
+-- Table structure for table `metadata`
+--
+
+DROP TABLE IF EXISTS `metadata`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `metadata` (
+  `TableName` varchar(25) NOT NULL,
+  `Entries` int NOT NULL,
+  PRIMARY KEY (`TableName`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `metadata`
+--
+
+LOCK TABLES `metadata` WRITE;
+/*!40000 ALTER TABLE `metadata` DISABLE KEYS */;
+INSERT INTO `metadata` VALUES ('appointments',250),('doctors',10),('employees',23),('labtests',20),('medicines',142),('patients',25),('test_reports',118),('visits',200);
+/*!40000 ALTER TABLE `metadata` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `nurses`
 --
 
 DROP TABLE IF EXISTS `nurses`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `nurses` (
   `NurseID` char(5) NOT NULL,
   `NurseName` varchar(25) NOT NULL,
@@ -367,7 +391,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `patients`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `patients` (
   `PatientID` char(5) NOT NULL,
   `PatientName` varchar(25) NOT NULL,
@@ -402,7 +426,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `pharmaceutical_companies`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `pharmaceutical_companies` (
   `CompanyID` char(5) NOT NULL,
   `Name` varchar(25) NOT NULL,
@@ -427,7 +451,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `salts`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `salts` (
   `SaltID` char(5) NOT NULL,
   `SaltName` varchar(50) NOT NULL,
@@ -451,7 +475,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `test_reports`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `test_reports` (
   `VisitID` char(5) NOT NULL,
   `TestName` varchar(25) NOT NULL,
@@ -479,14 +503,14 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `testnormalresults`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `testnormalresults` (
   `TestName` varchar(50) NOT NULL,
   `Gender` enum('M','F','B') NOT NULL,
-  `AgeLow` int(11) NOT NULL,
-  `AgeHigh` int(11) NOT NULL,
-  `RangeLow` int(11) NOT NULL,
-  `RangeHigh` int(11) NOT NULL,
+  `AgeLow` int NOT NULL,
+  `AgeHigh` int NOT NULL,
+  `RangeLow` int NOT NULL,
+  `RangeHigh` int NOT NULL,
   PRIMARY KEY (`TestName`,`Gender`,`AgeLow`),
   CONSTRAINT `TestNormalResults_ibfk_1` FOREIGN KEY (`TestName`) REFERENCES `labtests` (`TestName`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -508,7 +532,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `testsrecommended`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `testsrecommended` (
   `VisitID` char(5) NOT NULL,
   `Testname` varchar(50) NOT NULL,
@@ -525,7 +549,7 @@ CREATE TABLE `testsrecommended` (
 
 LOCK TABLES `testsrecommended` WRITE;
 /*!40000 ALTER TABLE `testsrecommended` DISABLE KEYS */;
-INSERT INTO `testsrecommended` VALUES ('V0001','TSH'),('V0002','Liver Function'),('V0003','Diabetic Profile'),('V0004','Luteinizing Hormone (LH)'),('V0005','Calcium/Serum'),('V0006','Cortisol'),('V0007','Sex Hormone Binding Globulin (SHBG)'),('V0008','FT4'),('V0009','Complete Blood Count (CBC)'),('V0010','Calcium/Serum'),('V0011','Vitamin D Total (25 OH)'),('V0012','Calcium/Serum'),('V0013','Iron Studies'),('V0014','Anti Hepatitis B Core Antigen (AHBC)'),('V0015','Vitamin D Total (25 OH)'),('V0016','Thyroid Profile'),('V0017','Liver Function'),('V0018','FT4'),('V0019','Cortisol'),('V0020','Anti Hepatitis B Core Antigen Total'),('V0021','Sex Hormone Binding Globulin (SHBG)'),('V0022','Luteinizing Hormone (LH)'),('V0023','Liver Function'),('V0024','FT4'),('V0025','Lipid Profile'),('V0026','Thyroid Profile'),('V0027','Kidpro (KFT)'),('V0028','Thyroid Profile'),('V0029','Diabetic Profile'),('V0030','Liver Function'),('V0031','FSH-LH'),('V0032','Hba1c'),('V0033','Vitamin D Total (25 OH)'),('V0034','Follicle Stimulating Hormone (FSH)'),('V0035','FT4'),('V0036','Diabetic Profile'),('V0037','Iron Studies'),('V0038','Anti Hepatitis B Core Antigen Total'),('V0039','Anti Hepatitis B Core Antigen (AHBC)'),('V0040','Follicle Stimulating Hormone (FSH)'),('V0041','FT4'),('V0042','Complete Blood Count (CBC)'),('V0043','Kidpro (KFT)'),('V0044','Diabetic Profile'),('V0045','Hba1c'),('V0046','FSH-LH'),('V0047','Vitamin D Total (25 OH)'),('V0048','Calcium/Serum'),('V0049','Liver Function'),('V0050','Diabetic Profile'),('V0051','Diabetic Profile'),('V0052','Liver Function'),('V0053','Liver Function'),('V0054','Lipid Profile'),('V0055','FT4'),('V0056','Liver Function'),('V0057','FSH-LH'),('V0058','Sex Hormone Binding Globulin (SHBG)'),('V0059','Diabetic Profile'),('V0060','Follicle Stimulating Hormone (FSH)'),('V0061','Complete Blood Count (CBC)'),('V0062','Diabetic Profile'),('V0063','FT3'),('V0064','Luteinizing Hormone (LH)'),('V0065','FSH-LH'),('V0066','Hba1c'),('V0067','Sex Hormone Binding Globulin (SHBG)'),('V0068','Hba1c'),('V0069','Anti Hepatitis B Core Antigen (AHBC)'),('V0070','Vitamin D Total (25 OH)'),('V0071','FT4'),('V0072','Vitamin D Total (25 OH)'),('V0073','FSH-LH'),('V0074','Cortisol'),('V0075','Diabetic Profile'),('V0076','Diabetic Profile'),('V0077','Diabetic Profile'),('V0078','Kidpro (KFT)'),('V0079','Sex Hormone Binding Globulin (SHBG)'),('V0080','Vitamin D Total (25 OH)'),('V0081','Anti Hepatitis B Core Antigen Total'),('V0082','Liver Function'),('V0083','Thyroid Profile'),('V0084','Diabetic Profile'),('V0085','Thyroid Profile'),('V0086','Kidpro (KFT)'),('V0087','Vitamin D Total (25 OH)'),('V0088','Hba1c'),('V0089','Calcium/Serum'),('V0090','Diabetic Profile'),('V0091','Liver Function'),('V0092','Liver Function'),('V0093','Luteinizing Hormone (LH)'),('V0094','Luteinizing Hormone (LH)'),('V0095','Anti Hepatitis B Core Antigen Total'),('V0096','Vitamin D Total (25 OH)'),('V0097','Follicle Stimulating Hormone (FSH)'),('V0098','Cortisol'),('V0099','Vitamin D Total (25 OH)'),('V0100','TSH'),('V0101','Diabetic Profile'),('V0102','Diabetic Profile'),('V0103','FSH-LH'),('V0104','Anti Hepatitis B Core Antigen (AHBC)'),('V0105','Hba1c'),('V0106','FT3'),('V0107','Iron Studies'),('V0108','Anti Hepatitis B Core Antigen Total'),('V0109','Calcium/Serum'),('V0110','Sex Hormone Binding Globulin (SHBG)'),('V0111','Hba1c'),('V0112','FT3'),('V0113','Luteinizing Hormone (LH)'),('V0114','Anti Hepatitis B Core Antigen Total'),('V0115','Sex Hormone Binding Globulin (SHBG)'),('V0116','Anti Hepatitis B Core Antigen (AHBC)'),('V0117','Sex Hormone Binding Globulin (SHBG)'),('V0118','FT4'),('V0119','Kidpro (KFT)'),('V0120','Luteinizing Hormone (LH)'),('V0121','Hba1c'),('V0122','Thyroid Profile'),('V0123','Thyroid Profile'),('V0124','Lipid Profile'),('V0125','Sex Hormone Binding Globulin (SHBG)'),('V0126','Cortisol'),('V0127','Calcium/Serum'),('V0128','Liver Function'),('V0129','Follicle Stimulating Hormone (FSH)'),('V0130','Cortisol'),('V0131','Lipid Profile'),('V0132','FT3'),('V0133','Lipid Profile'),('V0134','Diabetic Profile'),('V0135','Vitamin D Total (25 OH)'),('V0136','Lipid Profile'),('V0137','Anti Hepatitis B Core Antigen Total'),('V0138','Anti Hepatitis B Core Antigen (AHBC)'),('V0139','Liver Function'),('V0140','Follicle Stimulating Hormone (FSH)'),('V0141','Lipid Profile'),('V0142','Diabetic Profile'),('V0143','Cortisol'),('V0144','Liver Function'),('V0145','Anti Hepatitis B Core Antigen Total'),('V0146','FSH-LH'),('V0147','Iron Studies'),('V0148','Follicle Stimulating Hormone (FSH)'),('V0149','Luteinizing Hormone (LH)'),('V0150','Cortisol'),('V0151','FT3'),('V0152','Cortisol'),('V0153','Iron Studies'),('V0154','Diabetic Profile'),('V0155','FT3'),('V0156','Sex Hormone Binding Globulin (SHBG)'),('V0157','Anti Hepatitis B Core Antigen Total'),('V0158','Vitamin D Total (25 OH)'),('V0159','Cortisol'),('V0160','Luteinizing Hormone (LH)'),('V0161','Complete Blood Count (CBC)'),('V0162','FSH-LH'),('V0163','Anti Hepatitis B Core Antigen Total'),('V0164','Hba1c'),('V0165','FSH-LH'),('V0166','Lipid Profile'),('V0167','Diabetic Profile'),('V0168','FT3'),('V0169','Anti Hepatitis B Core Antigen Total'),('V0170','Liver Function'),('V0171','Kidpro (KFT)'),('V0172','Iron Studies'),('V0173','Thyroid Profile'),('V0174','FT4'),('V0175','FSH-LH'),('V0176','Vitamin D Total (25 OH)'),('V0177','Sex Hormone Binding Globulin (SHBG)'),('V0178','Luteinizing Hormone (LH)'),('V0179','Hba1c'),('V0180','Kidpro (KFT)'),('V0181','Anti Hepatitis B Core Antigen (AHBC)'),('V0182','Luteinizing Hormone (LH)'),('V0183','FSH-LH'),('V0184','FT3'),('V0185','Diabetic Profile'),('V0186','TSH'),('V0187','Anti Hepatitis B Core Antigen (AHBC)'),('V0188','Liver Function'),('V0189','FT4'),('V0190','TSH'),('V0191','FT4'),('V0192','Thyroid Profile'),('V0193','Liver Function'),('V0194','Luteinizing Hormone (LH)'),('V0195','Iron Studies'),('V0196','Vitamin D Total (25 OH)'),('V0197','Lipid Profile'),('V0198','Kidpro (KFT)'),('V0199','Cortisol'),('V0200','Kidpro (KFT)');
+INSERT INTO `testsrecommended` VALUES ('V0014','Anti Hepatitis B Core Antigen (AHBC)'),('V0039','Anti Hepatitis B Core Antigen (AHBC)'),('V0069','Anti Hepatitis B Core Antigen (AHBC)'),('V0104','Anti Hepatitis B Core Antigen (AHBC)'),('V0116','Anti Hepatitis B Core Antigen (AHBC)'),('V0138','Anti Hepatitis B Core Antigen (AHBC)'),('V0181','Anti Hepatitis B Core Antigen (AHBC)'),('V0187','Anti Hepatitis B Core Antigen (AHBC)'),('V0020','Anti Hepatitis B Core Antigen Total'),('V0038','Anti Hepatitis B Core Antigen Total'),('V0081','Anti Hepatitis B Core Antigen Total'),('V0095','Anti Hepatitis B Core Antigen Total'),('V0108','Anti Hepatitis B Core Antigen Total'),('V0114','Anti Hepatitis B Core Antigen Total'),('V0137','Anti Hepatitis B Core Antigen Total'),('V0145','Anti Hepatitis B Core Antigen Total'),('V0157','Anti Hepatitis B Core Antigen Total'),('V0163','Anti Hepatitis B Core Antigen Total'),('V0169','Anti Hepatitis B Core Antigen Total'),('V0005','Calcium/Serum'),('V0010','Calcium/Serum'),('V0012','Calcium/Serum'),('V0048','Calcium/Serum'),('V0089','Calcium/Serum'),('V0109','Calcium/Serum'),('V0127','Calcium/Serum'),('V0009','Complete Blood Count (CBC)'),('V0042','Complete Blood Count (CBC)'),('V0061','Complete Blood Count (CBC)'),('V0161','Complete Blood Count (CBC)'),('V0006','Cortisol'),('V0019','Cortisol'),('V0074','Cortisol'),('V0098','Cortisol'),('V0126','Cortisol'),('V0130','Cortisol'),('V0143','Cortisol'),('V0150','Cortisol'),('V0152','Cortisol'),('V0159','Cortisol'),('V0199','Cortisol'),('V0003','Diabetic Profile'),('V0029','Diabetic Profile'),('V0036','Diabetic Profile'),('V0044','Diabetic Profile'),('V0050','Diabetic Profile'),('V0051','Diabetic Profile'),('V0059','Diabetic Profile'),('V0062','Diabetic Profile'),('V0075','Diabetic Profile'),('V0076','Diabetic Profile'),('V0077','Diabetic Profile'),('V0084','Diabetic Profile'),('V0090','Diabetic Profile'),('V0101','Diabetic Profile'),('V0102','Diabetic Profile'),('V0134','Diabetic Profile'),('V0142','Diabetic Profile'),('V0154','Diabetic Profile'),('V0167','Diabetic Profile'),('V0185','Diabetic Profile'),('V0034','Follicle Stimulating Hormone (FSH)'),('V0040','Follicle Stimulating Hormone (FSH)'),('V0060','Follicle Stimulating Hormone (FSH)'),('V0097','Follicle Stimulating Hormone (FSH)'),('V0129','Follicle Stimulating Hormone (FSH)'),('V0140','Follicle Stimulating Hormone (FSH)'),('V0148','Follicle Stimulating Hormone (FSH)'),('V0031','FSH-LH'),('V0046','FSH-LH'),('V0057','FSH-LH'),('V0065','FSH-LH'),('V0073','FSH-LH'),('V0103','FSH-LH'),('V0146','FSH-LH'),('V0162','FSH-LH'),('V0165','FSH-LH'),('V0175','FSH-LH'),('V0183','FSH-LH'),('V0063','FT3'),('V0106','FT3'),('V0112','FT3'),('V0132','FT3'),('V0151','FT3'),('V0155','FT3'),('V0168','FT3'),('V0184','FT3'),('V0008','FT4'),('V0018','FT4'),('V0024','FT4'),('V0035','FT4'),('V0041','FT4'),('V0055','FT4'),('V0071','FT4'),('V0118','FT4'),('V0174','FT4'),('V0189','FT4'),('V0191','FT4'),('V0032','Hba1c'),('V0045','Hba1c'),('V0066','Hba1c'),('V0068','Hba1c'),('V0088','Hba1c'),('V0105','Hba1c'),('V0111','Hba1c'),('V0121','Hba1c'),('V0164','Hba1c'),('V0179','Hba1c'),('V0013','Iron Studies'),('V0037','Iron Studies'),('V0107','Iron Studies'),('V0147','Iron Studies'),('V0153','Iron Studies'),('V0172','Iron Studies'),('V0195','Iron Studies'),('V0027','Kidpro (KFT)'),('V0043','Kidpro (KFT)'),('V0078','Kidpro (KFT)'),('V0086','Kidpro (KFT)'),('V0119','Kidpro (KFT)'),('V0171','Kidpro (KFT)'),('V0180','Kidpro (KFT)'),('V0198','Kidpro (KFT)'),('V0200','Kidpro (KFT)'),('V0025','Lipid Profile'),('V0054','Lipid Profile'),('V0124','Lipid Profile'),('V0131','Lipid Profile'),('V0133','Lipid Profile'),('V0136','Lipid Profile'),('V0141','Lipid Profile'),('V0166','Lipid Profile'),('V0197','Lipid Profile'),('V0002','Liver Function'),('V0017','Liver Function'),('V0023','Liver Function'),('V0030','Liver Function'),('V0049','Liver Function'),('V0052','Liver Function'),('V0053','Liver Function'),('V0056','Liver Function'),('V0082','Liver Function'),('V0091','Liver Function'),('V0092','Liver Function'),('V0128','Liver Function'),('V0139','Liver Function'),('V0144','Liver Function'),('V0170','Liver Function'),('V0188','Liver Function'),('V0193','Liver Function'),('V0004','Luteinizing Hormone (LH)'),('V0022','Luteinizing Hormone (LH)'),('V0064','Luteinizing Hormone (LH)'),('V0093','Luteinizing Hormone (LH)'),('V0094','Luteinizing Hormone (LH)'),('V0113','Luteinizing Hormone (LH)'),('V0120','Luteinizing Hormone (LH)'),('V0149','Luteinizing Hormone (LH)'),('V0160','Luteinizing Hormone (LH)'),('V0178','Luteinizing Hormone (LH)'),('V0182','Luteinizing Hormone (LH)'),('V0194','Luteinizing Hormone (LH)'),('V0007','Sex Hormone Binding Globulin (SHBG)'),('V0021','Sex Hormone Binding Globulin (SHBG)'),('V0058','Sex Hormone Binding Globulin (SHBG)'),('V0067','Sex Hormone Binding Globulin (SHBG)'),('V0079','Sex Hormone Binding Globulin (SHBG)'),('V0110','Sex Hormone Binding Globulin (SHBG)'),('V0115','Sex Hormone Binding Globulin (SHBG)'),('V0117','Sex Hormone Binding Globulin (SHBG)'),('V0125','Sex Hormone Binding Globulin (SHBG)'),('V0156','Sex Hormone Binding Globulin (SHBG)'),('V0177','Sex Hormone Binding Globulin (SHBG)'),('V0016','Thyroid Profile'),('V0026','Thyroid Profile'),('V0028','Thyroid Profile'),('V0083','Thyroid Profile'),('V0085','Thyroid Profile'),('V0122','Thyroid Profile'),('V0123','Thyroid Profile'),('V0173','Thyroid Profile'),('V0192','Thyroid Profile'),('V0001','TSH'),('V0100','TSH'),('V0186','TSH'),('V0190','TSH'),('V0011','Vitamin D Total (25 OH)'),('V0015','Vitamin D Total (25 OH)'),('V0033','Vitamin D Total (25 OH)'),('V0047','Vitamin D Total (25 OH)'),('V0070','Vitamin D Total (25 OH)'),('V0072','Vitamin D Total (25 OH)'),('V0080','Vitamin D Total (25 OH)'),('V0087','Vitamin D Total (25 OH)'),('V0096','Vitamin D Total (25 OH)'),('V0099','Vitamin D Total (25 OH)'),('V0135','Vitamin D Total (25 OH)'),('V0158','Vitamin D Total (25 OH)'),('V0176','Vitamin D Total (25 OH)'),('V0196','Vitamin D Total (25 OH)');
 /*!40000 ALTER TABLE `testsrecommended` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -535,7 +559,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `visits`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `visits` (
   `VisitID` char(5) NOT NULL,
   `PatientID` char(5) DEFAULT NULL,
@@ -569,4 +593,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-04-23 20:57:02
+-- Dump completed on 2020-04-26 23:12:58
