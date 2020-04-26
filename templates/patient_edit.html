@@ -1,0 +1,80 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+  <title>Welcome</title>
+  <meta name="description" content="website description" />
+  <meta name="keywords" content="website keywords, website keywords" />
+  <meta http-equiv="content-type" content="text/html; charset=windows-1252" />
+  <!-- <link rel="stylesheet" type="text/css" href="style/style.css" /> -->
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/style.css') }}">
+</head>
+
+<body>
+  <div id="main">
+    <div id="header">
+      <div id="logo">
+        <div id="logo_text">
+          <!-- class="logo_colour", allows you to change the colour of the text -->
+          <h1><a href="/doctors">Welcome<span class="logo_colour">{{name}}</span></a></h1>
+          <h2>Patient ID {{patientID}}</h2>
+        </div>
+      </div>
+      <div id="menubar">
+        <ul id="menu">
+          <!-- put class="selected" in the li tag for the selected page - to highlight which page you're on -->
+          <li><a href="/patient">Home</a></li>
+          <li><a href="/patient/medicine_info">Medicine Info</a></li>
+          <li><a href="/patient/test_info">Test Info</a></li>
+          <li><a href="/patient/test_reports">My Test Reports</a></li>
+          <li><a href="/patient/book_appointment">Book Appointment</a></li>
+          <li><a href="/patient/confirmed_appointment">Confirmed Appointments</a></li>
+          <li class="selected"><a href="/patient/edit_profile">Edit Profile</a></li>
+          <li><a href="/signout">Sign Out</a></li>
+        </ul>
+      </div>
+    </div>
+    <div id="site_content">
+      <div id="content">
+        {% if message != None%}
+        <h4>{{message}}</h4>
+        {%endif%}
+        <h2>Your Profile</h2>
+        <form action="/patient/edit_profile/submit" method="POST">
+          <strong>Patient ID: </strong><input type="text" name="Patient ID" placeholder={{profile_info[0]}} readonly>
+          <br>
+          <strong>Name: </strong><input type="text" name="Name" placeholder={{profile_info[1]}} readonly>
+          <br>
+          <strong>House No: </strong><input type="text" name="House No" value = {{profile_info[2]}}>
+          <br>
+          <strong>Street: </strong><input type="text" name="Street" value={{profile_info[3]}}>
+          <br>
+          <strong>City: </strong><input type="text" name="City" value={{profile_info[4]}}>
+          <br>
+          <strong>State: </strong><input type="text" name="State" value={{profile_info[5]}}>
+          <br>
+          <strong>District: </strong><input type="text" name="District" value={{profile_info[6]}}>
+          <br>
+          <strong>Pin Code: </strong><input type="text" name="Pin Code" value={{profile_info[7]}}>
+          <br>
+          <strong>Contact Number: </strong><input type="text" name="Contact Number" value={{profile_info[8]}}>
+          <br>
+          <strong>Blood Group: </strong><input type="text" name="Blood Group" value={{profile_info[9]}}>
+          <br>
+          <strong>DOB: </strong><input type="text" name="DOB" value={{profile_info[10]}} style = "color:grey" readonly>
+          <br>
+          <strong>Gender: </strong><input type="text" name="Gender" placeholder={{profile_info[11]}} readonly>
+          <br>
+          <strong>Type: </strong><input type="text" name="Type" value={{profile_info[12]}} style = "color:grey" readonly>
+          <br>
+          <input type="submit" value="Update">
+        </form>
+      </div>
+    </div>
+    <div id="footer">
+      <p>Copyright &copy; simplestyle_3</p>
+    </div>
+    <p>&nbsp;</p>
+  </div>
+</body>
+</html>

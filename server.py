@@ -7,7 +7,7 @@ import os
 
 app = Flask(__name__)
 
-connection = MySQL_Conn.getInstance('healthkart', 'raghav', 'some_pass')
+connection = MySQL_Conn.getInstance('healthkart', 'root', '2110')
 user = User()
 
 @app.route('/login')
@@ -109,6 +109,7 @@ def login():
 
 	if rec[0][0] == 1:
 		user.update(username)
+		user.updateusername("username")	#Need to add username. Need to make a query from database
 		# print(user.getName())
 		session['logged_in'] = True
 	else:
@@ -134,7 +135,7 @@ def patient_home():
 
 	# TODO: Multiple medicines/tests list -- correct
 	history = rec
-	return render_template("patient_home.html", patientID = patientID, history = history)
+	return render_template("patient_home.html", patientID = patientID, history = history, name = user.getusername())
 
 @app.route("/patient/medicine_info")
 def patient_med_info():
@@ -148,7 +149,7 @@ def patient_med_info():
 			 group by MedicineName")
 
 	# meds = [['med name','salts','200'], ['med name','salts','200']] #name of med, salts, cost
-	return render_template("medicine_info.html", patientID = patientID, medicines = meds)
+	return render_template("medicine_info.html", patientID = patientID, medicines = meds, name = user.getusername())
 
 @app.route("/patient/test_info")
 def patient_test_info():
@@ -159,7 +160,7 @@ def patient_test_info():
 	if connection.connect():
 		tests = connection.execute("select TestName, TestDescription, TestCost from labtests")
 	# tests = [['test name','desc','200'], ['test name','desc','200']] #name, desc, cost
-	return render_template("test_info.html", patientID = patientID, tests = tests)
+	return render_template("test_info.html", patientID = patientID, tests = tests, name = user.getusername())
 
 @app.route("/patient/test_reports")
 def patient_test_reports():
@@ -180,7 +181,7 @@ def patient_test_reports():
 			testnormalresults.AgeHigh >= (select(FLOOR(DATEDIFF(NOW(), DOB)/365))\
 			from patients where patients.PatientID = '%s') and (testnormalresults.Gender = (select Gender\
 			from patients where patients.PatientID = '%s') or testnormalresults.Gender = 'B')\
-			ORDER BY (visits.VisitDate);" %(patientID, patientID, patientID, patientID))
+			ORDER BY (visits.VisitDate) DESC;" %(patientID, patientID, patientID, patientID))
 		# print("quey")
 
 	# print("hello!!")
@@ -198,15 +199,72 @@ def patient_test_reports():
 		test_reports[i][-2] = str(test_rep[i][-2]) + "-" + str(test_rep[i][-1])
 		test_reports[i][-1] = res
 		
-	return render_template("test_reports.html", patientID = patientID, test_reports = test_reports)
+	return render_template("test_reports.html", patientID = patientID, test_reports = test_reports, name = user.getusername())
 
 
 @app.route("/patient/edit_profile", methods=['GET', 'POST'])
-def patient_edit_profile():
+def patient_edit_profile(message = None):
+	
 	if session['logged_in'] == False:
 		return redirect(url_for('home2'))
-	
-	return render_template("index.html", patientID = patientID, patient_name = patient_name)
+	patientID = user.getName()
+	profile_info = connection.execute("select * from patients where patientid = '" + patientID + "';")
+	profile_info = profile_info[0]
+
+	return render_template("patient_edit.html", patientID = patientID, profile_info = profile_info, name = user.getusername(), message = message)
+
+
+@app.route("/patient/edit_profile/submit", methods = ['GET', 'POST'])
+def patient_submit_edit_profile():
+	if session['logged_in'] == False:
+		return redirect(url_for('home2'))
+
+	patientID = user.getName()
+
+	# employeeId = request.form['Employee ID']
+	# name = request.form['Name']
+	# gender = request.form['Gender']
+	# occupation = request.form['Occupation']
+	# jdate = request.form['Joining Date']
+	houseno = request.form['House No']
+	street = request.form['Street']
+	city = request.form['City']
+	state = request.form['State']
+	district = request.form['District']
+	pincode = request.form['Pin Code']
+	contactno = request.form['Contact Number']
+	bloodgroup = request.form['Blood Group']
+	# Type = request.form['Type']
+
+	# salary = request.form['Salary']
+
+	print("UPDATE patients \
+			SET BloodGroup = '" + bloodgroup + "', \
+				houseno = '" + houseno + "', \
+				street = '" + street + "', \
+				city = '" + city + "', \
+				state = '" + state + "', \
+				district = '" + district + "', \
+				pincode = '" + pincode + "', \
+				contactnumber = '" + contactno + "' \
+			WHERE patientid = '" + patientID + "' ;")
+
+	if connection.connect():
+		connection.execute("UPDATE patients \
+			SET BloodGroup = '" + bloodgroup + "', \
+				houseno = '" + houseno + "', \
+				street = '" + street + "', \
+				city = '" + city + "', \
+				state = '" + state + "', \
+				district = '" + district + "', \
+				pincode = '" + pincode + "', \
+				contactnumber = '" + contactno + "' \
+			WHERE patientid = '" + patientID + "' ;", -1)
+
+
+	return patient_edit_profile("Changes saved")
+
+
 
 @app.route("/patient/book_appointment", methods=['GET', 'POST'])
 def patient_book_appointment():
@@ -219,7 +277,7 @@ def patient_book_appointment():
 		depts = connection.execute("select DepartmentName from departments")
 		for i in depts:
 			all_depts.append(i[0])
-	return render_template("book_appointment.html", patientID = patientID, depts = all_depts)
+	return render_template("book_appointment.html", patientID = patientID, depts = all_depts, name = user.getusername())
 
 @app.route("/patient/book_appointment_doctor", methods = ['GET', 'POST'])
 def choosedoctor():
@@ -234,7 +292,7 @@ def choosedoctor():
 		docs = connection.execute("select DoctorID, DoctorName from doctors where DepartmentName = '%s'" %dept)
 		for i in docs:
 			doctors.append(("Dr. " + i[1], i[0]))
-	return render_template("book_appointment_doctor.html", patientID = user.getName(), doctors = doctors, dept = dept)
+	return render_template("book_appointment_doctor.html", patientID = user.getName(), doctors = doctors, dept = dept, name = user.getusername())
 
 
 @app.route("/patient/book_appointment_slot", methods = ['GET', 'POST'])
@@ -323,7 +381,7 @@ def book_slot():
 		count += 1
 
 	return render_template("book_appointment_slot.html", dept = dept, doctor = doctor, 
-							dID = did, available_slots = available_slots, patientID = user.getName())
+							dID = did, available_slots = available_slots, patientID = user.getName(), name = user.getusername())
 
 
 
@@ -374,11 +432,14 @@ def slot_booked():
 
 
 	return render_template("slot_booked.html", doctor = doctor, day = doc_day_slot[2],\
-	 slot = slot, patientID = user.getName())
+	 slot = slot, patientID = user.getName(), name = user.getusername())
 
 
 
-
+@app.route("/patient/confirmed_appointment")
+def confirmed_appointment():
+	appointments = [['date', 'doctor', 'time'], ['date', 'doctor', 'time']]
+	return render_template("confirmed_appointments.html", appointments = appointments, patientID = user.getName(), name = user.getusername())
 
 #Change html for appointments
 #check booked appoints - booked appointment list with cancel
@@ -406,7 +467,7 @@ def doctor_home():
 
 	schedule.sort(key = lambda x: x[2])
 
-	return render_template("doctor_home.html", doctorID = doctorID, schedule = schedule)
+	return render_template("doctor_home.html", doctorID = doctorID, schedule = schedule, name = user.getusername())
 
 @app.route("/doctors/week_schedule")
 def doctor_schedule():
@@ -428,7 +489,7 @@ def doctor_schedule():
 	
 	schedule.sort(key = lambda x: (x[0], x[3]))
 
-	return render_template("doctor_schedule.html", doctorID = doctorID, schedule = schedule)
+	return render_template("doctor_schedule.html", doctorID = doctorID, schedule = schedule, name = user.getusername())
 	# week
 
 @app.route("/doctors/medicine_info")
@@ -448,7 +509,7 @@ def doc_med_info():
 
 	salts = [(0, "None")] + salts
 
-	return render_template("doctor_med_info.html", doctorID = doctorID, med = medicines, salts = salts)
+	return render_template("doctor_med_info.html", doctorID = doctorID, med = medicines, salts = salts, name = user.getusername())
 
 @app.route("/doctors/showMed", methods = ['GET', 'POST'])
 def doc_show_med():
@@ -500,7 +561,7 @@ def doc_show_med():
 
 	meds.sort()
 
-	return render_template("doctor_show_med.html", doctorID = doctorID, medicines = meds)
+	return render_template("doctor_show_med.html", doctorID = doctorID, medicines = meds, name = user.getusername())
 
 
 @app.route("/doctors/test_info")
@@ -512,7 +573,7 @@ def doc_test_info():
 	tests = connection.execute("select * from labtests")
 	for test in tests:
 		test = list(test)
-	return render_template("doctors_test_info.html", doctorID = doctorID, tests = tests)
+	return render_template("doctors_test_info.html", doctorID = doctorID, tests = tests, name = user.getusername())
 
 
 @app.route("/doctors/check_patient_record")
@@ -521,7 +582,7 @@ def doc_check_record():
 		return redirect(url_for('home2'))
 	
 	doctorID = user.getName()
-	return render_template("doctor_check_record.html", doctorID = doctorID)
+	return render_template("doctor_check_record.html", doctorID = doctorID, name = user.getusername())
 
 @app.route("/doctors/show_patient", methods = ['GET', 'POST'])
 def doc_show_record():
@@ -540,7 +601,7 @@ def doc_show_record():
 		 visits.visitid = medrecommended.visitid  join doctors on \
 		 visits.doctorID = doctors.doctorID where visits.patientid = '" + patientName + "' order by (visits.visitdate)")
 
-	return render_template("doctor_show_patient.html", doctorID = doctorID, reports = reports)
+	return render_template("doctor_show_patient.html", doctorID = doctorID, reports = reports, name = user.getusername())
 
 @app.route("/doctors/patient_diagnose")
 def doc_patient_diagnose():
@@ -549,7 +610,7 @@ def doc_patient_diagnose():
 	
 	#form to fill in patient diagnose
 	doctorID = user.getName()
-	return render_template("doctor_diagnose.html", doctorID = doctorID)
+	return render_template("doctor_diagnose.html", doctorID = doctorID, name = user.getusername())
 
 @app.route("/doctors/patient_diagnose/submit", methods = ['GET', 'POST'])
 def doc_submit_patient_diagnose():
@@ -570,13 +631,13 @@ def doc_submit_patient_diagnose():
 	return doc_patient_diagnose()
 
 @app.route("/doctors/edit_profile")
-def edit_profile():
+def edit_profile(message = None):
 	if session['logged_in'] == False:
 		return redirect(url_for('home2'))
 	doctorID = user.getName()
 	profile_info = connection.execute("select * from employees where employeeid = '" + doctorID + "';")
 	profile_info = profile_info[0]
-	return render_template("doctor_edit.html", doctorID = doctorID, profile_info = profile_info)
+	return render_template("doctor_edit.html", doctorID = doctorID, profile_info = profile_info, name = user.getusername(), message = message)
 
 @app.route("/doctors/edit_profile/submit", methods = ['GET', 'POST'])
 def submit_edit_profile():
@@ -622,7 +683,7 @@ def submit_edit_profile():
 				contactnumber = '" + contactno + "' \
 			WHERE employeeid = '" + doctorid + "' ;", -1)
 
-	return edit_profile()
+	return edit_profile("Changes saved")
 
 @app.route("/signout")
 def signout():
