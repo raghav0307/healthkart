@@ -7,8 +7,8 @@
   <meta name="keywords" content="website keywords, website keywords" />
   <meta http-equiv="content-type" content="text/html; charset=windows-1252" />
   <!-- <link rel="stylesheet" type="text/css" href="style/style.css" /> -->
-  <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/style.css') }}">
-
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/doctors.css') }}">
+  <link href="https://fonts.googleapis.com/css2?family=Bubblegum+Sans&family=Copse&family=Poppins:wght@400;600&family=Manrope:wght@500&display=swap" rel="stylesheet">
 </head>
 
 <body>
@@ -31,6 +31,7 @@
           <li class="selected"><a href="/doctors/check_patient_record">Patient Record</a></li>
           <li><a href="/doctors/patient_diagnose">Diagnose Patient</a></li>
           <li><a href="/doctors/edit_profile">Edit Profile</a></li>
+          <li><a href="/signout">Sign Out</a></li>
         </ul>
       </div>
     </div>
@@ -39,7 +40,8 @@
         <!-- visitid, patientid, doctorid, visitdate, doctorremarks, medicinename, quantity -->
         <h2>Patient's Medical Report</h2>
         <table style="width:100%; border-spacing:0;">
-          <tr><th>Doctor Name</th><th>Doctor Department</th>,<th>VisitDate</th><th>Remarks</th><th>Medicine Name</th><th>Medicine Quantity</th></tr>
+          <tr><th>Doctor Name</th><th>Doctor Department</th>,<th>Visit Date</th><th>Remarks</th><th>Medicine Name</th><th>Medicine Quantity</th></tr>
+
           {%for report in reports%}
             <tr>
               <td>{{report[0]}}</td>

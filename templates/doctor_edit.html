@@ -7,8 +7,8 @@
   <meta name="keywords" content="website keywords, website keywords" />
   <meta http-equiv="content-type" content="text/html; charset=windows-1252" />
   <!-- <link rel="stylesheet" type="text/css" href="style/style.css" /> -->
-  <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/style.css') }}">
-
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/doctors.css') }}">
+  <link href="https://fonts.googleapis.com/css2?family=Bubblegum+Sans&family=Copse&family=Poppins:wght@400;600&family=Manrope:wght@500&display=swap" rel="stylesheet">
 </head>
 
 <body>
@@ -31,18 +31,39 @@
           <li><a href="/doctors/check_patient_record">Patient Record</a></li>
           <li><a href="/doctors/patient_diagnose">Diagnose Patient</a></li>
           <li class="selected"><a href="/doctors/edit_profile">Edit Profile</a></li>
+          <li><a href="/signout">Sign Out</a></li>
         </ul>
       </div>
     </div>
     <div id="site_content">
       <div id="content">
-        <h2>Edit Patient</h2>
+        <h2>Your Profile</h2>
         <form action="/doctors/edit_profile/submit" method="POST">
-          <input type="text" name="Address" placeholder="Update Address">
+          <strong>Employee ID: </strong><input type="text" name="Employee ID" placeholder={{profile_info[0]}} readonly>
           <br>
-          <input type="text" name="PhoneNumber" placeholder="Update Phone Number">
+          <strong>Name: </strong><input type="text" name="Name" placeholder={{profile_info[1]}} readonly>
           <br>
-          <input type="text" name="Password" placeholder="Update password">
+          <strong>Gender: </strong><input type="text" name="Gender" placeholder={{profile_info[2]}} readonly>
+          <br>
+          <strong>Occupation: </strong><input type="text" name="Occupation" value={{profile_info[3]}}>
+          <br>
+          <strong>Joining Date: </strong><input type="text" name="Joining Date" placeholder={{profile_info[4]}} readonly>
+          <br>
+          <strong>House No: </strong><input type="text" name="House No" value = {{profile_info[5]}}>
+          <br>
+          <strong>Street: </strong><input type="text" name="Street" value={{profile_info[6]}}>
+          <br>
+          <strong>City: </strong><input type="text" name="City" value={{profile_info[7]}}>
+          <br>
+          <strong>State: </strong><input type="text" name="State" value={{profile_info[8]}}>
+          <br>
+          <strong>District: </strong><input type="text" name="District" value={{profile_info[9]}}>
+          <br>
+          <strong>Pin Code: </strong><input type="text" name="Pin Code" value={{profile_info[10]}}>
+          <br>
+          <strong>Contact Number: </strong><input type="text" name="Contact Number" value={{profile_info[11]}}>
+          <br>
+          <strong>Salary: </strong><input type="text" name="Salary" placeholder={{profile_info[12]}} readonly>
           <br>
           <input type="submit" value="Update">
         </form>

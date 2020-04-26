@@ -119,6 +119,9 @@ def login():
 
 @app.route("/patient")
 def patient_home():
+	if session['logged_in'] == False:
+		return redirect(url_for('home2'))
+
 	import datetime
 	patientID = user.getName()
 
@@ -135,6 +138,9 @@ def patient_home():
 
 @app.route("/patient/medicine_info")
 def patient_med_info():
+	if session['logged_in'] == False:
+		return redirect(url_for('home2'))
+	
 	patientID = user.getName()
 	if connection.connect():
 		meds = connection.execute("select MedicineName, SaltName, Cost from medicines join contains \
@@ -146,6 +152,9 @@ def patient_med_info():
 
 @app.route("/patient/test_info")
 def patient_test_info():
+	if session['logged_in'] == False:
+		return redirect(url_for('home2'))
+	
 	patientID = user.getName()
 	if connection.connect():
 		tests = connection.execute("select TestName, TestDescription, TestCost from labtests")
@@ -156,6 +165,9 @@ def patient_test_info():
 def patient_test_reports():
 	#Medical history - date, doc dep, doc name, rerks, tests, medicines
 	#date, test_name, results, normal_result, normal/abnormal
+	if session['logged_in'] == False:
+		return redirect(url_for('home2'))
+	
 	patientID = user.getName()
 	if connection.connect():
 		test_rep = connection.execute("select visits.VisitDate, test_reports.TestName, test_reports.TestResult, \
@@ -191,10 +203,16 @@ def patient_test_reports():
 
 @app.route("/patient/edit_profile", methods=['GET', 'POST'])
 def patient_edit_profile():
+	if session['logged_in'] == False:
+		return redirect(url_for('home2'))
+	
 	return render_template("index.html", patientID = patientID, patient_name = patient_name)
 
 @app.route("/patient/book_appointment", methods=['GET', 'POST'])
 def patient_book_appointment():
+	if session['logged_in'] == False:
+		return redirect(url_for('home2'))
+	
 	patientID = user.getName()
 	all_depts = []
 	if connection.connect():
@@ -205,6 +223,9 @@ def patient_book_appointment():
 
 @app.route("/patient/book_appointment_doctor", methods = ['GET', 'POST'])
 def choosedoctor():
+	if session['logged_in'] == False:
+		return redirect(url_for('home2'))
+	
 	if request.method != 'POST':
 		return patient_book_appointment()
 	dept = request.form['Department']
@@ -218,6 +239,9 @@ def choosedoctor():
 
 @app.route("/patient/book_appointment_slot", methods = ['GET', 'POST'])
 def book_slot():
+	if session['logged_in'] == False:
+		return redirect(url_for('home2'))
+	
 	if request.method != 'POST':
 		return patient_book_appointment()
 
@@ -277,14 +301,14 @@ def book_slot():
 				sttime = start_time
 				for i in range(slots):
 					# print(i+1, appointments, (i+1) not in appointments)
-					if (i+1) not in appointments:
+					if ( i + 1 ) not in appointments:
 						sttimeh = sttime//60
 						sttimem = sttime%60
 						amPm = "AM"
 						sttimem = str(sttimem)
-						if len(sttimem)<2:
+						if len(sttimem) < 2:
 							sttimem += "0"
-						if sttimeh>12:
+						if sttimeh > 12:
 							sttimeh -= 12
 							amPm = "PM"
 						if sttimeh == 12:
@@ -305,6 +329,9 @@ def book_slot():
 
 @app.route("/patient/slot_booked", methods = ['GET', 'POST'])
 def slot_booked():
+	if session['logged_in'] == False:
+		return redirect(url_for('home2'))
+	
 	import datetime
 
 	if request.method != 'POST':
@@ -339,7 +366,7 @@ def slot_booked():
 
 		cnt = connection.execute("select count(1) from appointments")
 		cnt = cnt[0][0]
-		cnt+=1
+		cnt += 1
 		cnt = str(cnt)
 
 		connection.execute("insert into appointments values ('%s', '%s', '%s', '%s', '%s', %d)" \
@@ -361,6 +388,9 @@ def slot_booked():
 
 @app.route("/doctors")
 def doctor_home():
+	if session['logged_in'] == False:
+		return redirect(url_for('home2'))
+
 	import datetime
 
 	doctorID = user.getName()
@@ -379,7 +409,10 @@ def doctor_home():
 	return render_template("doctor_home.html", doctorID = doctorID, schedule = schedule)
 
 @app.route("/doctors/week_schedule")
-def doctor_schedule():
+def doctor_schedule()
+	if session['logged_in'] == False:
+		return redirect(url_for('home2'))
+
 	import datetime
 
 	doctorID = user.getName()
@@ -400,6 +433,9 @@ def doctor_schedule():
 
 @app.route("/doctors/medicine_info")
 def doc_med_info():
+	if session['logged_in'] == False:
+		return redirect(url_for('home2'))
+	
 	doctorID = user.getName()
 
 	if connection.connect():
@@ -416,6 +452,9 @@ def doc_med_info():
 
 @app.route("/doctors/showMed", methods = ['GET', 'POST'])
 def doc_show_med():
+	if session['logged_in'] == False:
+		return redirect(url_for('home2'))
+	
 	doctorID = user.getName()
 
 	submitVal = request.form['submit']
@@ -466,6 +505,9 @@ def doc_show_med():
 
 @app.route("/doctors/test_info")
 def doc_test_info():
+	if session['logged_in'] == False:
+		return redirect(url_for('home2'))
+	
 	doctorID = user.getName()
 	tests = connection.execute("select * from labtests")
 	for test in tests:
@@ -475,11 +517,17 @@ def doc_test_info():
 
 @app.route("/doctors/check_patient_record")
 def doc_check_record():
+	if session['logged_in'] == False:
+		return redirect(url_for('home2'))
+	
 	doctorID = user.getName()
 	return render_template("doctor_check_record.html", doctorID = doctorID)
 
 @app.route("/doctors/show_patient", methods = ['GET', 'POST'])
 def doc_show_record():
+
+	if session['logged_in'] == False:
+		return redirect(url_for('home2'))
 
 	doctorID = user.getName()
 
@@ -493,17 +541,22 @@ def doc_show_record():
 		 visits.visitid = medrecommended.visitid  join doctors on \
 		 visits.doctorID = doctors.doctorID where visits.patientid = '" + patientName + "' order by (visits.visitdate)")
 
-
 	return render_template("doctor_show_patient.html", doctorID = doctorID, reports = reports)
 
 @app.route("/doctors/patient_diagnose")
 def doc_patient_diagnose():
+	if session['logged_in'] == False:
+		return redirect(url_for('home2'))
+	
 	#form to fill in patient diagnose
 	doctorID = user.getName()
 	return render_template("doctor_diagnose.html", doctorID = doctorID)
 
 @app.route("/doctors/patient_diagnose/submit", methods = ['GET', 'POST'])
 def doc_submit_patient_diagnose():
+	if session['logged_in'] == False:
+		return redirect(url_for('home2'))
+	
 	#form to fill in patient diagnose
 	"""
 	FLASK FORM Expiry date everyting etc etc
@@ -519,25 +572,63 @@ def doc_submit_patient_diagnose():
 
 @app.route("/doctors/edit_profile")
 def edit_profile():
-	"""
-	update address
-	contact number
-	change password
-	"""
+	if session['logged_in'] == False:
+		return redirect(url_for('home2'))
 	doctorID = user.getName()
-	return render_template("doctor_edit.html", doctorID = doctorID)
+	profile_info = connection.execute("select * from employees where employeeid = '" + doctorID + "';")
+	profile_info = profile_info[0]
+	return render_template("doctor_edit.html", doctorID = doctorID, profile_info = profile_info)
 
 @app.route("/doctors/edit_profile/submit", methods = ['GET', 'POST'])
 def submit_edit_profile():
-	"""
-	update address
-	contact number
-	change password
-	"""
-	entry = [request.form['Address'], request.form['PhoneNumber'], request.form['Password']]
-	print(entry)
+	if session['logged_in'] == False:
+		return redirect(url_for('home2'))
+
+	doctorid = user.getName()
+
+	# employeeId = request.form['Employee ID']
+	# name = request.form['Name']
+	# gender = request.form['Gender']
+	occupation = request.form['Occupation']
+	# jdate = request.form['Joining Date']
+	houseno = request.form['House No']
+	street = request.form['Street']
+	city = request.form['City']
+	state = request.form['State']
+	district = request.form['District']
+	pincode = request.form['Pin Code']
+	contactno = request.form['Contact Number']
+	# salary = request.form['Salary']
+
+	print("UPDATE employees \
+			SET occupation = '" + occupation + "', \
+				houseno = '" + houseno + "', \
+				street = '" + street + "', \
+				city = '" + city + "', \
+				state = '" + state + "', \
+				district = '" + district + "', \
+				pincode = '" + pincode + "', \
+				contactnumber = '" + contactno + "' \
+			WHERE employeeid = '" + doctorid + "' ;")
+
+	if connection.connect():
+		connection.execute("UPDATE employees \
+			SET occupation = '" + occupation + "', \
+				houseno = '" + houseno + "', \
+				street = '" + street + "', \
+				city = '" + city + "', \
+				state = '" + state + "', \
+				district = '" + district + "', \
+				pincode = '" + pincode + "', \
+				contactnumber = '" + contactno + "' \
+			WHERE employeeid = '" + doctorid + "' ;", -1)
+
 	return edit_profile()
 
+@app.route("/signout")
+def signout():
+	session['logged_in'] = False
+	return redirect(url_for('homePage'))
 
 if __name__ == "__main__":
 	app.secret_key = os.urandom(12)
