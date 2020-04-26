@@ -409,7 +409,7 @@ def doctor_home():
 	return render_template("doctor_home.html", doctorID = doctorID, schedule = schedule)
 
 @app.route("/doctors/week_schedule")
-def doctor_schedule()
+def doctor_schedule():
 	if session['logged_in'] == False:
 		return redirect(url_for('home2'))
 
