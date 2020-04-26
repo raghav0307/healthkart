@@ -3,6 +3,8 @@ from mysqlLib import MySQL_Conn
 from pprint import pprint
 from helperLib import convertDay, User
 import os
+from flask_wtf import FlaskForm
+from wtforms import Form, FieldList, FormField, IntegerField, StringField, SelectField, SubmitField
 
 
 app = Flask(__name__)
@@ -603,14 +605,42 @@ def doc_show_record():
 
 	return render_template("doctor_show_patient.html", doctorID = doctorID, reports = reports, name = user.getusername())
 
-@app.route("/doctors/patient_diagnose")
+@app.route("/doctors/patient_diagnose", methods = ['GET', 'POST'])
 def doc_patient_diagnose():
-	if session['logged_in'] == False:
-		return redirect(url_for('home2'))
-	
-	#form to fill in patient diagnose
+	medlist = [('mid1','zantc'), ('mid2','ranitidine')] #has to be input from sql database
+	testlist = [('tid1','test1'), ('tid2','test2')]
+	# if session['logged_in'] == False:
+	# 	return redirect(url_for('home2'))
+
+	class MedForm(Form):
+		medicine_name = SelectField(u'Medicine', choices=medlist)
+		quantity = IntegerField('Quantity')
+
+	class TestForm(Form):
+		test_name = SelectField(u'Test', choices = testlist)
+		quantity = IntegerField('Quantity')
+
+
+	class MainForm(FlaskForm):
+		meds_test = FieldList(
+			FormField(MedForm),
+			FormField(TestForm),
+			min_entries=1,
+			max_entries=30
+		)
+
+	form = MainForm()
+	if form.validate_on_submit():
+		inp = []
+		entry = [request.form['Patient Name'], request.form['Remarks']]
+		print(entry)
+		print(form.meds.data)
+		for med in form.meds.data:
+			# print(med)
+			newinp = med
+
 	doctorID = user.getName()
-	return render_template("doctor_diagnose.html", doctorID = doctorID, name = user.getusername())
+	return render_template("doctor_diagnose.html", doctorID = doctorID, name = user.getusername(), form = form, medlist = medlist)
 
 @app.route("/doctors/patient_diagnose/submit", methods = ['GET', 'POST'])
 def doc_submit_patient_diagnose():
