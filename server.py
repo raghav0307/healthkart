@@ -963,7 +963,7 @@ def labtech_submit_edit_profile():
 			WHERE employeeid = '" + labtechid + "' ;", -1)
 
 	return edit_profile("Changes saved")
->>>>>>> 2acd98068e73aecd5b2b8424f3a60bdda5767e7d
+
 
 if __name__ == "__main__":
 	app.secret_key = os.urandom(12)
