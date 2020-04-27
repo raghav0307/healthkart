@@ -83,62 +83,6 @@ ol
 ol li
 { margin: 0 0 11px 0;}
 
-
-.input{
-  max-width: 350px;
-  min-width: 350px;
-  margin-right: 20px;
-  padding: 5px 5px;
-  font-family: 'Poppins', sans-serif;
-  font-size: 120%;
-  border-radius: 10px;
-  background-color: none;
-  border: 1px solid grey;
-  color: #000000;
-}
-
-.remarks{
-  max-width: 350px;
-  min-width: 350px;
-  height: 50px;
-  margin-right: 20px;
-  padding: 5px 5px;
-  font-family: 'Poppins', sans-serif;
-  font-size: 120%;
-  border-radius: 10px;
-  background-color: none;
-  border: 1px solid grey;
-  color: #000000;
-}
-
-input[type = submit]{
-  width: 100px;
-  padding: 5px 5px;
-  font-family: 'Poppins', sans-serif;
-  font-size: 120%;
-  color: #ffffff;
-  -webkit-border-radius: 10px;
-  background-image: linear-gradient(to right, #DD5E89 10%, #B60000 90%);
-}
-
-input[type = submit]:hover { 
-  background-image: linear-gradient(to right, #B60000 10%, #DD5E89 90%); 
-}
-
-.button_submit{
-  width: 100px;
-  padding: 5px 5px;
-  font-family: 'Poppins', sans-serif;
-  font-size: 120%;
-  color: #ffffff;
-  -webkit-border-radius: 10px;
-  background-image: linear-gradient(to right, #DD5E89 10%, #B60000 90%);
-}
-
-.button_submit:hover { 
-  background-image: linear-gradient(to right, #B60000 10%, #DD5E89 90%); 
-}
-
 .left
 { float: left;
   width: auto;
@@ -155,20 +99,19 @@ input[type = submit]:hover {
   margin: 20px auto;}
 
 #main, #header, #logo, #menubar, #site_content, #footer
-{ margin-left: 0; 
+{ margin-left: auto; 
   margin-right: auto;}
 
 #main
-{ width: 1150px;
-  margin: 20px 100px auto 200px;}
+{ width: 950px;
+  margin: 20px auto;}
 
 #header
-{ width: 1150px;
-  height: 121px;
-  margin-left: 0;}
+{ width: 950px;
+  height: 121px;}
 
 #logo
-{ width: 1150px;
+{ width: 910px;
   position: relative;
   height: 100px;
   background: transparent;
@@ -196,14 +139,13 @@ input[type = submit]:hover {
   color: #ffffff;}
 
 #menubar
-{ height: 50px;
-  width: 1150px;
-  margin: 1px auto 0 0;
+{ height: 46px;
+  width: 950px;
+  margin: 1px auto 0 auto;
   background: transparent url(tab.png);} 
 
 ul#menu
 { float: left;
-  width: 1150px;
   margin: 0;padding: 0;}
 
 ul#menu li
@@ -214,7 +156,7 @@ ul#menu li
 
 ul#menu li a
 { font-family: 'Manrope', sans-serif;
-  font-size: 105%;
+  font-size: 90%;
   text-transform: uppercase;
   font-style: normal;
   display: block; 
@@ -239,9 +181,9 @@ ul#menu li a:hover
 }
 
 #site_content
-{ width: 1125px;
+{ width: 925px;
   overflow: hidden;
-  margin: 44px 0 0 auto;
+  margin: 44px auto 0 auto;
   padding: 10px 0 0 25px;
   background: #EEE;
   border-top: 0;
@@ -292,7 +234,7 @@ ul#menu li a:hover
 
 #content
 { text-align: left;
-  width: 1000px;
+  width: 855px;
   padding: 15px 0 20px 0;
   margin: 0;}
 
@@ -307,7 +249,7 @@ ul#menu li a:hover
   line-height: 1.5em;}
 
 #footer
-{ width: 1150px;
+{ width: 950px;
   font: normal 90% 'trebuchet ms',  arial, sans-serif;
   height: 65px;
   padding: 20px 0 5px 0;
