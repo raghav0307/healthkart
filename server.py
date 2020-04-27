@@ -28,13 +28,14 @@ def home2():	#add
 
 		elif uname[0] == "E":
 			if connection.connect():
-				occp = connection.execute("select Occupation from employees \
+				occp = connection.execute("select Name, Occupation from employees \
 					where EmployeeID = '%s'" %uname);
 
-				rec = connection.execute("select Name from employees where EmployeeID = '%s'" %(uname))
-				user.updateusername(rec[0][0])
+				print(occp)
 
-				if occp[0][0] == "D":
+				user.updateusername(occp[0][0])
+
+				if occp[0][1] == "D":
 					return doctor_home()
 
 				else:
@@ -52,18 +53,22 @@ def signup():
 def signupCheck():
 	import datetime
 
-	name = request.form['name']
-	gender = request.form['gender']
-	dob = request.form['DOB']
-	house = request.form['HouseNo']
-	street = request.form['Street']
-	city = request.form['city']
-	district = request.form['District']
-	state = request.form['State']
-	pincode = request.form['Pincode']
-	contactNo = request.form['contactNo']
-	BloodGroup = request.form['BloodGroup']
-	ptype = request.form['type']
+	try:
+		name = request.form['name']
+		gender = request.form['gender']
+		dob = request.form['DOB']
+		house = request.form['HouseNo']
+		street = request.form['Street']
+		city = request.form['city']
+		district = request.form['District']
+		state = request.form['State']
+		pincode = request.form['Pincode']
+		contactNo = request.form['contactNo']
+		BloodGroup = request.form['BloodGroup']
+		ptype = request.form['type']
+	except:
+		flash(f'All fields are mandatory. Put N/A if not applicable')
+		return redirect(url_for('signup'))
 
 	if datetime.datetime.strptime(dob, '%Y-%m-%d').date() > datetime.date.today():
 		flash(f'Invalid DOB')
@@ -82,18 +87,20 @@ def signupCheck():
 		return redirect(url_for('signup'))
 
 	if connection.connect():
-		idCount = connection.execute("select count(1) from patients");
+		idCount = connection.execute("select Entries from metadata \
+			where TableName = 'patients'");
 		idCount = idCount[0][0]
 
 	id_int = str(idCount+1)
 	pid = "P" + "0"*(4-len(id_int)) + id_int
 
 	if connection.connect(): 
-		query = "insert into patients values('%s', '%s', '%s', '%s', '%s', '%s', '%s', \
+		query1 = "insert into patients values('%s', '%s', '%s', '%s', '%s', '%s', '%s', \
 		'%s', '%s', '%s', '%s', '%s', '%s')" %(pid, name, house, street, city, state, \
 			district, pincode, contactNo, BloodGroup, dob, gender, ptype)
-		connection.execute(query, -1)
-		connection.execute("insert into logins value('%s', SHA2('%s', 256))" %(pid, "pass" + id_int), -1)
+		query2 = "insert into logins value('%s', SHA2('%s', 256))" %(pid, "pass" + id_int)
+		query3 = "update metadata set Entries = %d where TableName = 'patients'" %(idCount+1)
+		connection.bulkModQueries([query1, query2, query3])
 		flash(f'Signed up successfully! Patient ID is {pid}. Login to Continue', 'success')
 		return redirect(url_for('home2'))
 
@@ -129,13 +136,13 @@ def patient_home():
 	patientID = user.getName()
 
 	if connection.connect():
-		rec = connection.execute("select visits.VisitDate, doctors.DoctorName, doctors.DepartmentName, \
-			visits.DoctorRemarks, medrecommended.MedicineName, testsrecommended.Testname from visits \
-			join medrecommended on visits.visitID = medrecommended.visitID join testsrecommended on \
-			visits.visitID = testsrecommended.visitID join doctors on visits.DoctorID = doctors.DoctorID \
-			where PatientID = '%s' order by (VisitDate)" %(user.getName()))
 
-	# TODO: Multiple medicines/tests list -- correct
+		rec = connection.execute("select visits.VisitDate, doctors.DoctorName, doctors.DepartmentName, \
+		visits.DoctorRemarks, med.MedicineName, testsrecommended.Testname from visits \
+		 join (select visitID, MedicineName from medrecommended) as med on visits.visitID = med.visitID \
+		  join testsrecommended on visits.visitID = testsrecommended.visitID join doctors on \
+		   visits.DoctorID = doctors.DoctorID  where PatientID = '%s' order by (VisitDate) desc" %(user.getName()))
+
 	history = rec
 	return render_template("patient_home.html", patientID = patientID, history = history, name = user.getusername())
 
@@ -148,7 +155,7 @@ def patient_med_info():
 	if connection.connect():
 		meds = connection.execute("select MedicineName, SaltName, Cost from medicines join contains \
 			on medicines.MedicineID = contains.MedicineID join salts on contains.SaltID = salts.SaltID \
-			where ExpiryDate > curdate()")
+			where ExpiryDate > curdate() and QuantityAvailable > 0")
 
 	# meds = [['med name','salts','200'], ['med name','salts','200']] #name of med, salts, cost
 	return render_template("medicine_info.html", patientID = patientID, medicines = meds, name = user.getusername())
@@ -161,7 +168,6 @@ def patient_test_info():
 	patientID = user.getName()
 	if connection.connect():
 		tests = connection.execute("select TestName, TestDescription, TestCost from labtests")
-	# tests = [['test name','desc','200'], ['test name','desc','200']] #name, desc, cost
 	return render_template("test_info.html", patientID = patientID, tests = tests, name = user.getusername())
 
 @app.route("/patient/test_reports")
@@ -173,17 +179,15 @@ def patient_test_reports():
 	
 	patientID = user.getName()
 	if connection.connect():
-		test_rep = connection.execute("select visits.VisitDate, test_reports.TestName, test_reports.TestResult, \
-			testnormalresults.RangeLow,testnormalresults.RangeHigh from test_reports join visits on\
-			test_reports.VisitID = visits.VisitID join testnormalresults\
-			on test_reports.TestName = testnormalresults.TestName where\
-			visits.PatientID = '%s' and \
-			testnormalresults.AgeLow <= (select(FLOOR(DATEDIFF(NOW(), DOB)/365))\
-			from patients where patients.PatientID = '%s') and\
-			testnormalresults.AgeHigh >= (select(FLOOR(DATEDIFF(NOW(), DOB)/365))\
-			from patients where patients.PatientID = '%s') and (testnormalresults.Gender = (select Gender\
-			from patients where patients.PatientID = '%s') or testnormalresults.Gender = 'B')\
-			ORDER BY (visits.VisitDate) DESC;" %(patientID, patientID, patientID, patientID))
+		test_rep = connection.execute("select v.VisitDate, test_reports.TestName, test_reports.TestResult,  \
+		testnormalresults.RangeLow,testnormalresults.RangeHigh from test_reports join \
+		(select visits.VisitID, visits.VisitDate,  visits.PatientID from visits) as v on \
+		test_reports.VisitID = v.VisitID join testnormalresults  on test_reports.TestName = testnormalresults.TestName\
+ 		where  v.PatientID = '%s' and  testnormalresults.AgeLow <= (select age from patientage where \
+ 		patientage.PatientID = '%s') and  testnormalresults.AgeHigh >= (select age from patientage \
+ 		where patientage.PatientID = '%s') and  (testnormalresults.Gender = (select Gender from patients \
+ 		where patients.PatientID = '%s')  or testnormalresults.Gender = 'B') ORDER BY (v.VisitDate) DESC;" \
+ 		%(patientID, patientID, patientID, patientID))
 		# print("quey")
 
 	# print("hello!!")
@@ -240,15 +244,15 @@ def patient_submit_edit_profile():
 
 	# salary = request.form['Salary']
 
-	print("UPDATE patients \
-			SET houseno = '" + houseno + "', \
-				street = '" + street + "', \
-				city = '" + city + "', \
-				state = '" + state + "', \
-				district = '" + district + "', \
-				pincode = '" + pincode + "', \
-				contactnumber = '" + contactno + "' \
-			WHERE patientid = '" + patientID + "' ;")
+	# print("UPDATE patients \
+	# 		SET houseno = '" + houseno + "', \
+	# 			street = '" + street + "', \
+	# 			city = '" + city + "', \
+	# 			state = '" + state + "', \
+	# 			district = '" + district + "', \
+	# 			pincode = '" + pincode + "', \
+	# 			contactnumber = '" + contactno + "' \
+	# 		WHERE patientid = '" + patientID + "' ;")
 
 	if connection.connect():
 		connection.execute("UPDATE patients \
@@ -423,13 +427,17 @@ def slot_booked():
 
 		slot_num = (total-start_time_m)//20 + 1
 
-		cnt = connection.execute("select count(1) from appointments")
+		cnt = connection.execute("select entries from metadata where TableName ='appointments'")
 		cnt = cnt[0][0]
 		cnt += 1
+		cnt_ = cnt
 		cnt = str(cnt)
 
-		connection.execute("insert into appointments values ('%s', '%s', '%s', '%s', '%s', %d)" \
-			%(cnt, user.getName(), dID, date, convDay, slot_num), -1)
+		query1 = "insert into appointments values ('%s', '%s', '%s', '%s', '%s', %d)" \
+			%(cnt, user.getName(), dID, date, convDay, slot_num)
+
+		query2 = "update metadata set Entries = %d where TableName = 'appointments'" %(cnt_)
+		connection.bulkModQueries([query1, query2])
 
 
 	return render_template("slot_booked.html", doctor = doctor, day = doc_day_slot[2],\
@@ -447,8 +455,9 @@ def confirmed_appointment():
 	cur_date = datetime.date.today()
 
 	if (connection.connect()):
-		appointments = connection.execute("select VisitDate, DoctorName, SlotNumber from appointments join \
-			doctors on doctors.doctorID = appointments.DoctorID where PatientID = '%s' and VisitDate >= '%s' order by \
+		appointments = connection.execute("select VisitDate, d.DoctorName, SlotNumber from appointments join \
+			 (select DoctorID, DoctorName from doctors) as d on d.doctorID = appointments.DoctorID where \
+			  PatientID = '%s' and VisitDate >= '%s' order by \
 			VisitDate" %(user.getName(), cur_date))
 
 	return render_template("confirmed_appointments.html", appointments = appointments, \
@@ -474,8 +483,9 @@ def doctor_home():
 
 	if connection.connect():
 
-		schedule = connection.execute("select patients.PatientID, PatientName, SlotNumber from \
-			appointments join patients on appointments.PatientID = patients.PatientID where VisitDate \
+		schedule = connection.execute("select p.PatientID, p.PatientName, SlotNumber from \
+			appointments join (select PatientID, PatientName from patients) as p \
+			 on appointments.PatientID = p.PatientID where VisitDate \
 			= '%s' and DoctorID = '%s';" %(cur_date, doctorID)) 
 
 	schedule.sort(key = lambda x: x[2])
@@ -543,7 +553,7 @@ def doc_show_med():
 			meds = connection.execute("select MedicineName, SaltName, QuantityAvailable, ExpiryDate, Cost, \
 				Composition  from medicines join contains on medicines.MedicineID = contains.MedicineID \
 				join salts on salts.SaltID = contains.SaltID where medicines.MedicineID = '%s' and \
-				ExpiryDate > curdate()" %(mid))
+				ExpiryDate > curdate() and QuantityAvailable > 0" %(mid))
 
 	elif submitVal == "Search Similar":
 		medicineName = request.form['MedicineName']
@@ -552,7 +562,7 @@ def doc_show_med():
 			meds = connection.execute("select MedicineName, SaltName, QuantityAvailable, ExpiryDate, Cost, \
 				Composition  from medicines join contains on medicines.MedicineID = contains.MedicineID \
 				join salts on salts.SaltID = contains.SaltID where medicines.MedicineName like ('%%%s%%') \
-				and ExpiryDate > curdate()" %(medicineName))
+				and ExpiryDate > curdate() and QuantityAvailable > 0" %(medicineName))
 
 	elif submitVal == "Search Salt":
 		salts = request.form['Salt1'].split(";")
@@ -563,7 +573,8 @@ def doc_show_med():
 		if (connection.connect()):
 			meds = connection.execute("select MedicineName, SaltName, QuantityAvailable, ExpiryDate, Cost, \
 				Composition  from medicines join contains on medicines.MedicineID = contains.MedicineID \
-				join salts on salts.SaltID = contains.SaltID where salts.SaltID = '%s' and ExpiryDate > curdate()"
+				join salts on salts.SaltID = contains.SaltID where salts.SaltID = '%s' and ExpiryDate > curdate() \
+				and QuantityAvailable > 0"
 				 %(sid))
 
 
@@ -574,7 +585,7 @@ def doc_show_med():
 		meds = connection.execute("select MedicineName, SaltName, QuantityAvailable, ExpiryDate, Cost, \
 				Composition  from medicines join contains on medicines.MedicineID = contains.MedicineID \
 				join salts on salts.SaltID = contains.SaltID where salts.SaltName like ('%%%s%%') and \
-				 ExpiryDate > curdate()" %(sname))
+				 ExpiryDate > curdate() and QuantityAvailable > 0" %(sname))
 
 	meds.sort()
 
@@ -617,7 +628,8 @@ def doc_show_record():
 		 visits.visitdate, visits.doctorremarks, medrecommended.medicinename,\
 		 medrecommended.quantity  from visits inner join medrecommended on \
 		 visits.visitid = medrecommended.visitid  join doctors on \
-		 visits.doctorID = doctors.doctorID where visits.patientid = '" + patientName + "' order by (visits.visitdate)")
+		 visits.doctorID = doctors.doctorID where visits.patientid = '" + patientName + "' \
+		 order by (visits.visitdate)")
 
 	return render_template("doctor_show_patient.html", doctorID = doctorID, reports = reports, name = user.getusername())
 
@@ -693,11 +705,7 @@ def submit_edit_profile():
 
 	doctorid = user.getName()
 
-	# employeeId = request.form['Employee ID']
-	# name = request.form['Name']
-	# gender = request.form['Gender']
 	occupation = request.form['Occupation']
-	# jdate = request.form['Joining Date']
 	houseno = request.form['House No']
 	street = request.form['Street']
 	city = request.form['City']
@@ -707,16 +715,16 @@ def submit_edit_profile():
 	contactno = request.form['Contact Number']
 	# salary = request.form['Salary']
 
-	print("UPDATE employees \
-			SET occupation = '" + occupation + "', \
-				houseno = '" + houseno + "', \
-				street = '" + street + "', \
-				city = '" + city + "', \
-				state = '" + state + "', \
-				district = '" + district + "', \
-				pincode = '" + pincode + "', \
-				contactnumber = '" + contactno + "' \
-			WHERE employeeid = '" + doctorid + "' ;")
+	# print("UPDATE employees \
+	# 		SET occupation = '" + occupation + "', \
+	# 			houseno = '" + houseno + "', \
+	# 			street = '" + street + "', \
+	# 			city = '" + city + "', \
+	# 			state = '" + state + "', \
+	# 			district = '" + district + "', \
+	# 			pincode = '" + pincode + "', \
+	# 			contactnumber = '" + contactno + "' \
+	# 		WHERE employeeid = '" + doctorid + "' ;")
 
 	if connection.connect():
 		connection.execute("UPDATE employees \
