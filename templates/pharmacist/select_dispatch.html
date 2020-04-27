@@ -1,0 +1,29 @@
+{% extends "/pharmacist/pharmacist.html" %}
+
+{% block content %}
+
+
+{%for x in message%}
+  <p>Deleted {{x}}</p>
+{%endfor%}
+<h2>Enter Medicine Name to get info</h2>
+        <form action="/pharmacist/dispatch_med" method="POST">
+          <select id="id" name="MedicineName1">
+              {% for mid, mname in med%}
+              <option value="{{mid}};{{mname}}">{{mname}}</option>
+              {% endfor %}
+          </select>
+          <input type="submit" name = "submit" value="Search"><br><br>
+          <input type="text" name="MedicineName" placeholder="MedicineName">
+          <input type="submit" name = "submit" value="Search Similar">
+          <h2>Enter Salt Name to get info</h2>
+          <select id="id" name="Salt1">
+              {% for sid, sname in salts%}
+              <option value="{{sid}};{{sname}}">{{sname}}</option>
+              {% endfor %}
+          </select>
+          <input type="submit" name = "submit" value="Search Salt"><br><br>
+          <input type="text" name="SaltName" placeholder="SaltName">
+          <input type="submit" name = "submit" value="Search Similar Salts">
+        </form>
+{% endblock %}

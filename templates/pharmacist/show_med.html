@@ -1,0 +1,35 @@
+{% extends "/pharmacist/pharmacist.html" %}
+
+{% block content %}
+
+  <h2>Medicines Available in Dispensary Information</h2>
+  <h3>Expired - Select the ones to be deleted and click delete </h3>
+          <form action="/pharmacist/deleted_med" method="POST">
+          <table style="width:100%; border-spacing:0;">
+            <tr><th>Medicine Name</th><th>Salts</th><th>Composition</th><th>Quantity Available</th><th>Expiry Date</th> <th>Cost</th><th>Delete</th></tr>
+            {%for medicine in expired_med%}
+              <tr><td>{{medicine[0]}}</td>
+                <td>{{medicine[1]}}</td>
+                <td>{{medicine[5]}}</td>
+                <td>{{medicine[2]}}</td>
+                <td>{{medicine[3]}}</td>
+                <td>{{medicine[4]}}</td>
+                <td>{{medicine[6]}}<input type="checkbox" id="deleted" name="deleted" value="{{medicine[6]}}"></td>
+              </tr>
+            {%endfor%}
+          </table>
+          <input type="submit" value="Delete">
+        </form>
+  <h3>Not Expired</h3>
+  <table style="width:100%; border-spacing:0;">
+            <tr><th>Medicine Name</th><th>Salts</th><th>Composition</th><th>Quantity Available</th><th>Expiry Date</th> <th>Cost</th></tr>
+            {%for medicine in not_expired%}
+              <tr><td>{{medicine[0]}}</td>
+                <td>{{medicine[1]}}</td>
+                <td>{{medicine[5]}}</td>
+                <td>{{medicine[2]}}</td>
+                <td>{{medicine[3]}}</td>
+                <td>{{medicine[4]}}</td></tr>
+            {%endfor%}
+          </table>
+{% endblock %}

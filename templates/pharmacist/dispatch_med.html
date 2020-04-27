@@ -1,0 +1,31 @@
+{% extends "/pharmacist/pharmacist.html" %}
+
+{% block content %}
+
+  <h2>Medicines Available in Dispensary Information</h2>
+  <h3>Select the ones to be indented to patient </h3>
+          <form action="/pharmacist/dispatched" method="POST">
+          Enter patient ID<input type="text" name="patientID">
+          <table style="width:100%; border-spacing:0;">
+            <tr><th>Medicine Name</th><th>Salts</th><th>Composition</th><th>Quantity Available</th><th>Expiry Date</th> <th>Cost</th><th>Dispatch</th></tr>
+            {%for medicine in meds%}
+              <tr><td>{{medicine[0]}}</td>
+                <td>{{medicine[1]}}</td>
+                <td>{{medicine[5]}}</td>
+                <td>{{medicine[2]}}</td>
+                <td>{{medicine[3]}}</td>
+                <td>{{medicine[4]}}</td>
+                <td>
+                 <select id="id" name="Quantity">
+                    <option value="{{medicine[6]}};0" selected>0</option>
+                    {% for i in range(medicine[2])%}
+                    <option value="{{medicine[6]}};{{i + 1}}">{{i + 1}}</option>
+                    {% endfor %}
+                </select>
+                </td>
+              </tr>
+            {%endfor%}
+          </table>
+          <input type="submit" value="Indent">
+        </form>
+{% endblock %}

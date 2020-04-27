@@ -9,7 +9,7 @@ from wtforms import Form, FieldList, FormField, IntegerField, StringField, Selec
 
 app = Flask(__name__)
 
-connection = MySQL_Conn.getInstance('healthkart', 'root')
+connection = MySQL_Conn.getInstance('healthkart', 'root', '2110')
 user = User()
 
 @app.route('/login')
@@ -838,6 +838,182 @@ def signup_employee_nurse():
 		query = "insert into nurses values('%s', '%s', '%s')" %(eid, name, dept_name)
 		connection.execute(query, -1)
 	return signup_employee("Nurse signed up successfully")
+
+
+##################################################################	Pharmacist ##########################################
+
+@app.route("/pharmacist/show_med")
+def pharmacist_show_meds():
+	eid = user.getName()
+
+	meds = [['med name','salts', 'Quantity', 'Expirydate', '200', 'Composition', 'Expiry Status']]
+	return render_template("/pharmacist/all_meds.html", eid = eid, medicines = meds, name = user.getusername())
+
+
+@app.route("/pharmacist/medicine_info")
+def pharmacist_med_info(message = []):
+	eid = user.getName()
+
+	if connection.connect():
+		medicines = connection.execute("select MedicineID, MedicineName from medicines")
+		salts = connection.execute("select SaltID, SaltName from salts")
+
+	medicines.sort(key = lambda x: x[1])
+
+	medicines = [(0, "None")] + medicines
+
+	salts = [(0, "None")] + salts
+
+	return render_template("/pharmacist/med_info.html", eid = eid, med = medicines, salts = salts, name = user.getusername(), message = message)
+
+
+@app.route("/pharmacist/showMed", methods = ['GET', 'POST'])
+def pharmacist_search_meds():
+	# if session['logged_in'] == False:
+	# 	return redirect(url_for('home2'))
+	
+	eid = user.getName()
+
+	submitVal = request.form['submit']
+
+	if submitVal == "Search":
+		meds = request.form['MedicineName1']
+		meds = meds.split(";")
+		mid = meds[0]
+		mname = meds[1]
+
+		if connection.connect():
+			meds = connection.execute("select MedicineName, SaltName, QuantityAvailable, ExpiryDate, Cost, \
+				Composition, medicines.MedicineID  from medicines join contains on medicines.MedicineID = contains.MedicineID \
+				join salts on salts.SaltID = contains.SaltID where medicines.MedicineID = '%s' and \
+				ExpiryDate > curdate()" %(mid))
+
+	elif submitVal == "Search Similar":
+		medicineName = request.form['MedicineName']
+
+		if (connection.connect()):
+			meds = connection.execute("select MedicineName, SaltName, QuantityAvailable, ExpiryDate, Cost, \
+				Composition, medicines.MedicineID  from medicines join contains on medicines.MedicineID = contains.MedicineID \
+				join salts on salts.SaltID = contains.SaltID where medicines.MedicineName like ('%%%s%%') \
+				and ExpiryDate > curdate()" %(medicineName))
+
+	elif submitVal == "Search Salt":
+		salts = request.form['Salt1'].split(";")
+
+		sid = salts[0]
+		sname = salts[1]
+
+		if (connection.connect()):
+			meds = connection.execute("select MedicineName, SaltName, QuantityAvailable, ExpiryDate, Cost, \
+				Composition, medicines.MedicineID  from medicines join contains on medicines.MedicineID = contains.MedicineID \
+				join salts on salts.SaltID = contains.SaltID where salts.SaltID = '%s' and ExpiryDate > curdate()"
+				 %(sid))
+
+
+
+	elif submitVal == "Search Similar Salts":
+		sname = request.form['SaltName']
+
+		meds = connection.execute("select MedicineName, SaltName, QuantityAvailable, ExpiryDate, Cost, \
+				Composition, medicines.MedicineID  from medicines join contains on medicines.MedicineID = contains.MedicineID \
+				join salts on salts.SaltID = contains.SaltID where salts.SaltName like ('%%%s%%') and \
+				 ExpiryDate > curdate()" %(sname))
+
+	meds.sort()
+	print(meds)
+	expired_med = [['medname', 'saltname', 'quantity', 'expiry', 'cost', 'Composition', 'medid'], ['medname', 'saltname', 'quantity', 'expiry', 'cost', 'Composition', 'medid2']]		#Get this explicitly
+	return render_template("/pharmacist/show_med.html", eid = eid, expired_med = expired_med, not_expired = meds, name = user.getusername())
+
+@app.route("/pharmacist/deleted_med", methods = ['GET', 'POST'])
+def deleted_med():
+	deleted =  request.form.getlist('deleted')		#delete the medicines, Medicine Id's will be returned
+	print(deleted)
+	print("I am here")
+	return pharmacist_med_info(deleted)
+
+@app.route("/pharmacist/select_dispatch")
+def select_dispatch():
+	eid = user.getName()
+
+	if connection.connect():
+		medicines = connection.execute("select MedicineID, MedicineName from medicines")
+		salts = connection.execute("select SaltID, SaltName from salts")
+
+	medicines.sort(key = lambda x: x[1])
+
+	medicines = [(0, "None")] + medicines
+
+	salts = [(0, "None")] + salts
+
+	return render_template("/pharmacist/select_dispatch.html", eid = eid, med = medicines, salts = salts, name = user.getusername())
+
+@app.route("/pharmacist/dispatch_med", methods = ['GET', 'POST'])
+def dispatch_med():
+	eid = user.getName()
+
+	submitVal = request.form['submit']
+
+	if submitVal == "Search":
+		meds = request.form['MedicineName1']
+		meds = meds.split(";")
+		mid = meds[0]
+		mname = meds[1]
+
+		if connection.connect():
+			meds = connection.execute("select MedicineName, SaltName, QuantityAvailable, ExpiryDate, Cost, \
+				Composition, medicines.MedicineID  from medicines join contains on medicines.MedicineID = contains.MedicineID \
+				join salts on salts.SaltID = contains.SaltID where medicines.MedicineID = '%s' and \
+				ExpiryDate > curdate()" %(mid))
+
+	elif submitVal == "Search Similar":
+		medicineName = request.form['MedicineName']
+
+		if (connection.connect()):
+			meds = connection.execute("select MedicineName, SaltName, QuantityAvailable, ExpiryDate, Cost, \
+				Composition, medicines.MedicineID  from medicines join contains on medicines.MedicineID = contains.MedicineID \
+				join salts on salts.SaltID = contains.SaltID where medicines.MedicineName like ('%%%s%%') \
+				and ExpiryDate > curdate()" %(medicineName))
+
+	elif submitVal == "Search Salt":
+		salts = request.form['Salt1'].split(";")
+
+		sid = salts[0]
+		sname = salts[1]
+
+		if (connection.connect()):
+			meds = connection.execute("select MedicineName, SaltName, QuantityAvailable, ExpiryDate, Cost, \
+				Composition, medicines.MedicineID  from medicines join contains on medicines.MedicineID = contains.MedicineID \
+				join salts on salts.SaltID = contains.SaltID where salts.SaltID = '%s' and ExpiryDate > curdate()"
+				 %(sid))
+
+
+
+	elif submitVal == "Search Similar Salts":
+		sname = request.form['SaltName']
+
+		meds = connection.execute("select MedicineName, SaltName, QuantityAvailable, ExpiryDate, Cost, \
+				Composition, medicines.MedicineID  from medicines join contains on medicines.MedicineID = contains.MedicineID \
+				join salts on salts.SaltID = contains.SaltID where salts.SaltName like ('%%%s%%') and \
+				 ExpiryDate > curdate()" %(sname))
+
+	meds.sort()
+	return render_template("/pharmacist/dispatch_med.html", eid = eid, meds = meds, name = user.getusername())
+
+@app.route("/pharmacist/dispatched", methods = ['GET', 'POST'])
+def dispatched():
+	patientID = request.form.get('patientID')			
+	print(patientID)
+	indented = request.form.getlist('Quantity')
+	dispach = {}
+	for x in indented:
+		y = x.split(';')
+		if int(y[1]) != 0:
+			dispach[y[0]] = int(y[1])
+	print(dispach)							#remove the deleted messages from database
+	return select_dispatch();
+
+
+
 
 if __name__ == "__main__":
 	app.secret_key = os.urandom(12)
