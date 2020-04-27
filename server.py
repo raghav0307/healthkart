@@ -4,6 +4,8 @@ from pprint import pprint
 from helperLib import convertDay, User
 import os
 import nurses
+from flask_wtf import FlaskForm
+from wtforms import Form, FieldList, FormField, IntegerField, StringField, SelectField, SubmitField
 
 
 app = Flask(__name__)
@@ -19,6 +21,9 @@ def home2():	#add
 		uname = user.getName()
 
 		if uname[0] == "P":
+			if (connection.connect()):
+				rec = connection.execute("select PatientName from patients where PatientID = '%s'" %(uname))
+				user.updateusername(rec[0][0])
 			return redirect(url_for('patient_home'))
 			
 
@@ -27,12 +32,11 @@ def home2():	#add
 				occp = connection.execute("select Occupation from employees \
 					where EmployeeID = '%s'" %uname);
 
-				print(occp, occp[0][0])
+				rec = connection.execute("select Name from employees where EmployeeID = '%s'" %(uname))
+				user.updateusername(rec[0][0])
 
 				if occp[0][0] == "D":
 					return doctor_home()
-					# return render_template("path to patient dashboard")
-					# return "Proceed to doctor login " + str(user.getName())
 
 				if occp[0][0] == "N":
 					return nurses.nurses_home()
@@ -93,7 +97,7 @@ def signupCheck():
 		'%s', '%s', '%s', '%s', '%s', '%s')" %(pid, name, house, street, city, state, \
 			district, pincode, contactNo, BloodGroup, dob, gender, ptype)
 		connection.execute(query, -1)
-		connection.execute("insert into Logins value('%s', SHA2('%s', 256))" %(pid, "pass" + id_int), -1)
+		connection.execute("insert into logins value('%s', SHA2('%s', 256))" %(pid, "pass" + id_int), -1)
 		flash(f'Signed up successfully! Patient ID is {pid}. Login to Continue', 'success')
 		return redirect(url_for('home2'))
 
@@ -108,18 +112,16 @@ def login():
 	password = request.form['password']
 	# print(username, password)
 	if connection.connect():
-		rec = connection.execute("select count(1) from Logins\
+		rec = connection.execute("select count(1) from logins\
 		 where UserID = '%s' and Password = SHA2(\""'%s'"\", 256)" %(username, password))
 
 	if rec[0][0] == 1:
 		user.update(username)
-		user.updateusername("username")	#Need to add username. Need to make a query from database
 		# print(user.getName())
 		session['logged_in'] = True
 	else:
 		flash(f'Invalid UserID or Password')
 	return home2()
-
 
 
 @app.route("/patient")
@@ -149,8 +151,8 @@ def patient_med_info():
 	patientID = user.getName()
 	if connection.connect():
 		meds = connection.execute("select MedicineName, SaltName, Cost from medicines join contains \
-			on medicines.MedicineID = contains.MedicineID join salts on contains.SaltID = salts.SaltID\
-			 group by MedicineName")
+			on medicines.MedicineID = contains.MedicineID join salts on contains.SaltID = salts.SaltID \
+			where ExpiryDate > curdate()")
 
 	# meds = [['med name','salts','200'], ['med name','salts','200']] #name of med, salts, cost
 	return render_template("medicine_info.html", patientID = patientID, medicines = meds, name = user.getusername())
@@ -211,11 +213,18 @@ def patient_edit_profile(message = None):
 	
 	if session['logged_in'] == False:
 		return redirect(url_for('home2'))
+
 	patientID = user.getName()
 	profile_info = connection.execute("select * from patients where patientid = '" + patientID + "';")
 	profile_info = profile_info[0]
 
-	return render_template("patient_edit.html", patientID = patientID, profile_info = profile_info, name = user.getusername(), message = message)
+	profile_info_ = []
+
+	for i in profile_info:
+		profile_info_.append(i)
+
+	return render_template("patient_edit.html", patientID = patientID, \
+		profile_info = profile_info_, name = user.getusername(), message = message)
 
 
 @app.route("/patient/edit_profile/submit", methods = ['GET', 'POST'])
@@ -224,12 +233,6 @@ def patient_submit_edit_profile():
 		return redirect(url_for('home2'))
 
 	patientID = user.getName()
-
-	# employeeId = request.form['Employee ID']
-	# name = request.form['Name']
-	# gender = request.form['Gender']
-	# occupation = request.form['Occupation']
-	# jdate = request.form['Joining Date']
 	houseno = request.form['House No']
 	street = request.form['Street']
 	city = request.form['City']
@@ -237,14 +240,12 @@ def patient_submit_edit_profile():
 	district = request.form['District']
 	pincode = request.form['Pin Code']
 	contactno = request.form['Contact Number']
-	bloodgroup = request.form['Blood Group']
 	# Type = request.form['Type']
 
 	# salary = request.form['Salary']
 
 	print("UPDATE patients \
-			SET BloodGroup = '" + bloodgroup + "', \
-				houseno = '" + houseno + "', \
+			SET houseno = '" + houseno + "', \
 				street = '" + street + "', \
 				city = '" + city + "', \
 				state = '" + state + "', \
@@ -255,8 +256,7 @@ def patient_submit_edit_profile():
 
 	if connection.connect():
 		connection.execute("UPDATE patients \
-			SET BloodGroup = '" + bloodgroup + "', \
-				houseno = '" + houseno + "', \
+			SET houseno = '" + houseno + "', \
 				street = '" + street + "', \
 				city = '" + city + "', \
 				state = '" + state + "', \
@@ -398,6 +398,7 @@ def slot_booked():
 
 	if request.method != 'POST':
 		return patient_book_appointment()
+
 	doc_day_slot = (request.form["slot_booked"]).split(';')
 	dID = doc_day_slot[0]
 	doctor = doc_day_slot[1]
@@ -442,8 +443,20 @@ def slot_booked():
 
 @app.route("/patient/confirmed_appointment")
 def confirmed_appointment():
-	appointments = [['date', 'doctor', 'time'], ['date', 'doctor', 'time']]
-	return render_template("confirmed_appointments.html", appointments = appointments, patientID = user.getName(), name = user.getusername())
+	if session['logged_in'] == False:
+		return redirect(url_for('home2'))
+
+	import datetime
+
+	cur_date = datetime.date.today()
+
+	if (connection.connect()):
+		appointments = connection.execute("select VisitDate, DoctorName, SlotNumber from appointments join \
+			doctors on doctors.doctorID = appointments.DoctorID where PatientID = '%s' and VisitDate >= '%s' order by \
+			VisitDate" %(user.getName(), cur_date))
+
+	return render_template("confirmed_appointments.html", appointments = appointments, \
+		patientID = user.getName(), name = user.getusername())
 
 #Change html for appointments
 #check booked appoints - booked appointment list with cancel
@@ -455,13 +468,13 @@ def confirmed_appointment():
 def doctor_home():
 	if session['logged_in'] == False:
 		return redirect(url_for('home2'))
-	
+
 	import datetime
 
 	doctorID = user.getName()
 
 	cur_date = datetime.date.today()
-	cur_date = "2020-01-31"
+	# cur_date = "2020-01-31"
 
 	if connection.connect():
 
@@ -477,13 +490,13 @@ def doctor_home():
 def doctor_schedule():
 	if session['logged_in'] == False:
 		return redirect(url_for('home2'))
-	
+
 	import datetime
 
 	doctorID = user.getName()
 
 	cur_date = datetime.date.today()
-	cur_date = "2020-01-31"
+	# cur_date = "2020-01-31"
 
 	if connection.connect():
 
@@ -533,7 +546,8 @@ def doc_show_med():
 		if connection.connect():
 			meds = connection.execute("select MedicineName, SaltName, QuantityAvailable, ExpiryDate, Cost, \
 				Composition  from medicines join contains on medicines.MedicineID = contains.MedicineID \
-				join salts on salts.SaltID = contains.SaltID where medicines.MedicineID = '%s'" %(mid))
+				join salts on salts.SaltID = contains.SaltID where medicines.MedicineID = '%s' and \
+				ExpiryDate > curdate()" %(mid))
 
 	elif submitVal == "Search Similar":
 		medicineName = request.form['MedicineName']
@@ -541,7 +555,8 @@ def doc_show_med():
 		if (connection.connect()):
 			meds = connection.execute("select MedicineName, SaltName, QuantityAvailable, ExpiryDate, Cost, \
 				Composition  from medicines join contains on medicines.MedicineID = contains.MedicineID \
-				join salts on salts.SaltID = contains.SaltID where medicines.MedicineName like ('%%%s%%')" %(medicineName))
+				join salts on salts.SaltID = contains.SaltID where medicines.MedicineName like ('%%%s%%') \
+				and ExpiryDate > curdate()" %(medicineName))
 
 	elif submitVal == "Search Salt":
 		salts = request.form['Salt1'].split(";")
@@ -552,7 +567,8 @@ def doc_show_med():
 		if (connection.connect()):
 			meds = connection.execute("select MedicineName, SaltName, QuantityAvailable, ExpiryDate, Cost, \
 				Composition  from medicines join contains on medicines.MedicineID = contains.MedicineID \
-				join salts on salts.SaltID = contains.SaltID where salts.SaltID = '%s'" %(sid))
+				join salts on salts.SaltID = contains.SaltID where salts.SaltID = '%s' and ExpiryDate > curdate()"
+				 %(sid))
 
 
 
@@ -561,7 +577,8 @@ def doc_show_med():
 
 		meds = connection.execute("select MedicineName, SaltName, QuantityAvailable, ExpiryDate, Cost, \
 				Composition  from medicines join contains on medicines.MedicineID = contains.MedicineID \
-				join salts on salts.SaltID = contains.SaltID where salts.SaltName like ('%%%s%%')" %(sname))
+				join salts on salts.SaltID = contains.SaltID where salts.SaltName like ('%%%s%%') and \
+				 ExpiryDate > curdate()" %(sname))
 
 	meds.sort()
 
@@ -590,9 +607,10 @@ def doc_check_record():
 
 @app.route("/doctors/show_patient", methods = ['GET', 'POST'])
 def doc_show_record():
+
 	if session['logged_in'] == False:
 		return redirect(url_for('home2'))
-	
+
 	doctorID = user.getName()
 
 	submitVal = request.form['Submit']
@@ -607,14 +625,42 @@ def doc_show_record():
 
 	return render_template("doctor_show_patient.html", doctorID = doctorID, reports = reports, name = user.getusername())
 
-@app.route("/doctors/patient_diagnose")
+@app.route("/doctors/patient_diagnose", methods = ['GET', 'POST'])
 def doc_patient_diagnose():
-	if session['logged_in'] == False:
-		return redirect(url_for('home2'))
-	
-	#form to fill in patient diagnose
+	medlist = [('mid1','zantc'), ('mid2','ranitidine')] #has to be input from sql database
+	testlist = [('tid1','test1'), ('tid2','test2')]
+	# if session['logged_in'] == False:
+	# 	return redirect(url_for('home2'))
+
+	class MedForm(Form):
+		medicine_name = SelectField(u'Medicine', choices=medlist)
+		quantity = IntegerField('Quantity')
+
+	class TestForm(Form):
+		test_name = SelectField(u'Test', choices = testlist)
+		quantity = IntegerField('Quantity')
+
+
+	class MainForm(FlaskForm):
+		meds_test = FieldList(
+			FormField(MedForm),
+			FormField(TestForm),
+			min_entries=1,
+			max_entries=30
+		)
+
+	form = MainForm()
+	if form.validate_on_submit():
+		inp = []
+		entry = [request.form['Patient Name'], request.form['Remarks']]
+		print(entry)
+		print(form.meds.data)
+		for med in form.meds.data:
+			# print(med)
+			newinp = med
+
 	doctorID = user.getName()
-	return render_template("doctor_diagnose.html", doctorID = doctorID, name = user.getusername())
+	return render_template("doctor_diagnose.html", doctorID = doctorID, name = user.getusername(), form = form, medlist = medlist)
 
 @app.route("/doctors/patient_diagnose/submit", methods = ['GET', 'POST'])
 def doc_submit_patient_diagnose():
@@ -638,6 +684,7 @@ def doc_submit_patient_diagnose():
 def edit_profile(message = None):
 	if session['logged_in'] == False:
 		return redirect(url_for('home2'))
+
 	doctorID = user.getName()
 	profile_info = connection.execute("select * from employees where employeeid = '" + doctorID + "';")
 	profile_info = profile_info[0]
@@ -693,6 +740,108 @@ def submit_edit_profile():
 def signout():
 	session['logged_in'] = False
 	return redirect(url_for('homePage'))
+
+
+@app.route("/admin")
+def admin_home(): #dispensary analysis
+	#Medicine recommended quantity wise bar chart
+	#Most recommended test bar chart
+	#appointments made with different doctors bar chart
+	#datawise window
+	return render_template("admin_home.html")
+
+@app.route("/admin/add_employee", methods = ['GET', 'POST'])
+def signup_employee(message = None):
+	if message != None:
+		flash(f"Signed up successfully!")
+	return render_template("signup_employee.html")
+
+@app.route("/admin/add_employee_check", methods=['GET', 'POST'])
+def signupCheck_employee():
+	import datetime
+
+	name = request.form['name']
+	gender = request.form['gender']
+	occupation = request.form['occupation']
+	joiningdate = request.form['Joining_date']
+	house = request.form['HouseNo']
+	street = request.form['Street']
+	city = request.form['city']
+	district = request.form['District']
+	state = request.form['State']
+	pincode = request.form['Pincode']
+	contactNo = request.form['contactNo']
+	salary = request.form['Salary']
+
+	if datetime.datetime.strptime(joiningdate, '%Y-%m-%d').date() > datetime.date.today():
+		flash(f'Invalid Date of joining')
+		return redirect(url_for('signup_employee'))
+
+	if len(pincode)!=6 or not pincode.isdigit():
+		flash(f'Invalid Pincode')
+		return redirect(url_for('signup_employee'))
+
+	if len(contactNo)!=10 or not contactNo.isdigit():
+		flash(f'Invalid Phone Number')
+		return redirect(url_for('signup_employee'))
+
+	if connection.connect():
+		idCount = connection.execute("select entries from metadata where TableName ='employees' ");
+		idCount = idCount[0][0]
+
+	id_int = str(idCount+1)
+	pid = "E" + "0"*(4-len(id_int)) + id_int
+	print(id_int)
+
+	if connection.connect():
+		query = "update metadata set entries = '%d' where TableName = '%s' " %(idCount + 1, 'employees')
+		connection.execute(query, -1) 
+		query = "insert into employees values('%s', '%s', '%s', '%s', '%s', '%s', '%s', \
+		'%s', '%s', '%s', '%s', '%s', '%s')" %(pid, name, gender, occupation, joiningdate, house, street, city, state, \
+			district, pincode, contactNo, salary)
+		connection.execute(query, -1)
+		connection.execute("insert into logins value('%s', SHA2('%s', 256))" %(pid, "pass" + id_int), -1)
+		flash(f'Signed up successfully! Employee ID is {pid}. Login to Continue', 'success')
+		# if occupation == 'N':
+		# 	all_depts = []
+		# 	if connection.connect():
+		# 		depts = connection.execute("select DepartmentName from departments")
+		# 		for i in depts:
+		# 			all_depts.append(i[0])
+		# 	return render_template("signup_employee_doctor.html", eid = pid, name = name, depts = depts)
+		if occupation == 'D':
+			all_depts = []
+			if connection.connect():
+				depts = connection.execute("select DepartmentName from departments")
+				for i in depts:
+					all_depts.append(i[0])
+			return render_template("signup_employee_doctor.html", eid = pid, name = name, depts = all_depts)
+
+		return redirect(url_for('home2'))
+
+	return redirect(url_for('homepage'))
+
+@app.route("/admin/signup_employee_doctor", methods = ['GET', 'POST'])
+def signup_employee_doctor():
+	eid = request.form['eid']
+	print("Eid is ", eid)
+	name = request.form['name']
+	dept_name = request.form['Department']
+	room_no = int(request.form['room_no'])
+	if connection.connect():
+		query = "insert into doctors values('%s', '%s', '%s', '%d')" %(eid, name, dept_name, room_no)
+		connection.execute(query, -1)
+	return signup_employee("Doctor signed up successfully")
+
+@app.route("/admin/signup_employee_nurse", methods = ['GET', 'POST'])
+def signup_employee_nurse():
+	eid = request.form['eid']
+	name = request.form['name']
+	dept_name = request.form['dept_name']
+	if connection.connect():
+		query = "insert into nurses values('%s', '%s', '%s')" %(eid, name, dept_name)
+		connection.execute(query, -1)
+	return signup_employee("Nurse signed up successfully")
 
 if __name__ == "__main__":
 	app.secret_key = os.urandom(12)

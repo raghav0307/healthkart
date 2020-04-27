@@ -41,32 +41,35 @@
         {%endif%}
         <h2>Your Profile</h2>
         <form action="/patient/edit_profile/submit" method="POST">
-          <strong>Patient ID: </strong><input type="text" name="Patient ID" placeholder={{profile_info[0]}} readonly>
-          <br>
-          <strong>Name: </strong><input type="text" name="Name" placeholder={{profile_info[1]}} readonly>
-          <br>
-          <strong>House No: </strong><input type="text" name="House No" value = {{profile_info[2]}}>
-          <br>
-          <strong>Street: </strong><input type="text" name="Street" value={{profile_info[3]}}>
-          <br>
-          <strong>City: </strong><input type="text" name="City" value={{profile_info[4]}}>
-          <br>
-          <strong>State: </strong><input type="text" name="State" value={{profile_info[5]}}>
-          <br>
-          <strong>District: </strong><input type="text" name="District" value={{profile_info[6]}}>
-          <br>
-          <strong>Pin Code: </strong><input type="text" name="Pin Code" value={{profile_info[7]}}>
-          <br>
-          <strong>Contact Number: </strong><input type="text" name="Contact Number" value={{profile_info[8]}}>
-          <br>
-          <strong>Blood Group: </strong><input type="text" name="Blood Group" value={{profile_info[9]}}>
-          <br>
-          <strong>DOB: </strong><input type="text" name="DOB" placeholder = {{profile_info[10]} readonly>
-          <br>
-          <strong>Gender: </strong><input type="text" name="Gender" placeholder={{profile_info[11]}} readonly>
-          <br>
-          <strong>Type: </strong><input type="text" name="Type" placeholder={{profile_info[12]}} readonly>
-          <br>
+          <table>
+            <tr>
+          <td><strong>Patient ID: </strong></td> <td><input type="text" name="Patient ID" placeholder={{profile_info[0]}} readonly></td>
+          </tr><tr>
+          <td><strong>Name: </strong></td><td><input type="text" name="Name" placeholder={{profile_info[1]}} readonly></td>
+          </tr><tr>
+          <td><strong>House No: </strong></td><td><input type="text" name="House No" value = {{profile_info[2]}}></td>
+          </tr><tr>
+          <td><strong>Street: </strong></td><td><input type="text" name="Street" value={{profile_info[3]}}></td>
+          </tr><tr>
+          <td><strong>City: </strong></td><td><input type="text" name="City" value={{profile_info[4]}}></td>
+          </tr><tr>
+          <td><strong>State: </strong></td><td><input type="text" name="State" value={{profile_info[5]}}></td>
+          </tr><tr>
+          <td><strong>District: </strong></td><td><input type="text" name="District" value={{profile_info[6]}}></td>
+          </tr><tr>
+          <td><strong>Pin Code: </strong></td><td><input type="text" name="Pin Code" value={{profile_info[7]}}></td>
+          </tr><tr>
+          <td><strong>Contact Number: </strong></td><td><input type="text" name="Contact Number" value={{profile_info[8]}}></td>
+          </tr><tr>
+          <td><strong>Blood Group: </strong></td><td><input type="text" name="Blood Group" placeholder={{profile_info[9]}} readonly></td>
+          </tr><tr>
+          <td><strong>DOB: </strong></td><td><input type="text" name="DOB" placeholder={{profile_info[10]}} readonly></td>
+         </tr><tr>
+          <td><strong>Gender: </strong></td><td><input type="text" name="Gender" placeholder={{profile_info[11]}} readonly></td>
+          </tr><tr>
+          <td><strong>Type: </strong></td><td><input type="text" name="Type" placeholder{profile_info[12]}} readonly></td>
+          </tr>
+          </table>
           <input type="submit" value="Update">
         </form>
       </div>

@@ -41,6 +41,7 @@
         <h2>Patient's Medical Report</h2>
         <table style="width:100%; border-spacing:0;">
           <tr><th>Doctor Name</th><th>Doctor Department</th>,<th>Visit Date</th><th>Remarks</th><th>Medicine Name</th><th>Medicine Quantity</th></tr>
+
           {%for report in reports%}
             <tr>
               <td>{{report[0]}}</td>

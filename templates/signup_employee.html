@@ -1,0 +1,142 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+  <title>Welcome {{patientID}}</title>
+  <meta name="description" content="website description" />
+  <meta name="keywords" content="website keywords, website keywords" />
+  <meta http-equiv="content-type" content="text/html; charset=windows-1252" />
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/style.css') }}">
+</head>
+
+<body>
+  <div id="main">
+    <div id="header">
+      <div id="logo">
+        <div id="logo_text">
+          <!-- class="logo_colour", allows you to change the colour of the text -->
+          <h1><a href="/admin">Welcome<span class="logo_colour">{{name}}</span></a></h1>
+          <h2>Admin ID {{adminID}}</h2>
+        </div>
+      </div>
+      <div id="menubar">
+        <ul id="menu">
+          <li><a href="/admin">Home</a></li>
+          <li class = "selected"><a href="/admin/add_employee">Add Employee</a></li>
+          <li><a href="/admin/change_beneficiary_status">Change Patient Status</a></li>
+          <li><a href="/signout">Sign Out</a></li>
+      </div>
+    </div>
+    <div id="site_content">
+      <div id="content">
+        <div id = "panel">
+    <h1>HealthKart</h1>
+    <h2>THE MEDICINE DISPENSARY</h2>
+    </div>
+    <div class="form-group-signup">
+      <form action="/admin/add_employee_check" method="POST">
+        <div>
+          {% with messages = get_flashed_messages(with_categories=true)%}
+              {% if messages %}
+                {% for category, message in messages %}
+                  <div class="alert alert-{{ category }}">
+                    <h1>{{ message }}</h1>
+                  </div>
+                {% endfor %}
+              {% endif %}
+            {% endwith %}
+        </div>
+        <ul class = "form-control-signup">
+          <h2>EMPLOYEE SIGN UP</h2>
+          <li>
+            <label for = "InputName">NAME: </label>
+            <input type="text" name="name" id="InputName" placeholder="Enter Employee Name">
+          </li>
+          <li>
+            <label class = "break">GENDER: </label>
+            
+            <input type="radio" id="male" name="gender" value="M">
+            <label for="male">MALE</label>
+            
+            <input type="radio" id="female" name="gender" value="F">
+            <label for="female">FEMALE</label>
+            
+            <input type="radio" id="other" name="gender" value="O">
+            <label for="other">OTHER</label>
+            
+          </li>
+          <li>
+            <label class = "break">OCCUPATION: </label>
+            
+            <input type="radio" id="Doctor" name="occupation" value="D">
+            <label for="Doctor">Doctor</label>
+            
+            <input type="radio" id="Nurse" name="occupation" value="N">
+            <label for="Nurse">Nurse</label>
+            
+            <input type="radio" id="Lab_Technician" name="occupation" value="L">
+            <label for="Lab_Technician">Lab Technician</label>
+
+            <input type="radio" id="Pharmacist" name="occupation" value="P">
+            <label for="Pharmacist">Pharmacist</label>
+            
+            <input type="radio" id="FMS" name="occupation" value="F">
+            <label for="FMS">FMS</label>
+            
+            <input type="radio" id="Receptionist" name="occupation" value="R">
+            <label for="Receptionist">Receptionist</label>
+          </li>
+
+          <li>
+            <label for = "Joining_date">Joining Date: </label>
+            <input type="date" id="Joinng_date" name = "Joining_date" placeholder="dd-mm-yyyy">
+          </li>
+
+          <li>
+            <label for = "InputHouse">HOUSE No: </label>
+            <input type="text" id="InputHouse" name = "HouseNo"placeholder="House Number">
+          </li>
+          <li>
+            <label for = "InputStreet">STREET: </label>
+            <input type="text" id="InputStreet" name = "Street" placeholder="Street">
+          </li>
+          <li>
+            <label for = "InputCity">CITY: </label>
+            <input type="text" id="InputCity" name = "city" placeholder="City">
+          </li>
+          <li>
+            <label for = "InputDistrict">DISTRICT: </label>
+            <input type="text" id="InputDistrict" name = "District" placeholder="District">
+          </li>
+          <li>
+              <label for = "InputState">STATE: </label>
+              <input type="text" id="InputState" name = "State" placeholder="State">
+          </li>
+          <li>
+            <label for = "InputPincode">PINCODE: </label>
+            <input type="text" id="InputPincode" name = "Pincode" placeholder="Pincode">
+          </li>
+          <li>
+            <label for = "InputContact">CONTACT No: </label>
+            <input type="text" id="InputContact" name = "contactNo" placeholder="Contact Number">
+          </li>
+          <li>
+            <label for = "Salary">SALARY: </label>
+            <input type="text" id="Salary" name = "Salary" placeholder="Salary">
+          </li>
+        <div class = "buttons">
+          <li><button type="reset" value = "Reset">RESET</button></li>
+          <li><button type="submit" value = "Submit">SUBMIT</button></li>
+          </div>
+        </ul>
+      </form>
+    </div>      
+      </div>
+    </div>
+    <div id="footer">
+      <p>Copyright &copy; simplestyle_3</p>
+    </div>
+    <p>&nbsp;</p>
+  </div>
+</body>
+</html>
