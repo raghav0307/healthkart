@@ -3,11 +3,12 @@ from mysqlLib import MySQL_Conn
 from pprint import pprint
 from helperLib import convertDay, User
 import os
+import nurses
 
 
 app = Flask(__name__)
 
-connection = MySQL_Conn.getInstance('healthkart', 'root', '2110')
+connection = MySQL_Conn.getInstance('healthkart', 'raghav', 'some_pass')
 user = User()
 
 @app.route('/login')
@@ -32,6 +33,9 @@ def home2():	#add
 					return doctor_home()
 					# return render_template("path to patient dashboard")
 					# return "Proceed to doctor login " + str(user.getName())
+
+				if occp[0][0] == "N":
+					return nurses.nurses_home()
 
 				else:
 					return "Dashboard not Ready!"
