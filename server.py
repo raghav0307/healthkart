@@ -31,12 +31,13 @@ def home2():	#add
 				occp = connection.execute("select Name, Occupation from employees \
 					where EmployeeID = '%s'" %uname);
 
-				print(occp)
-
 				user.updateusername(occp[0][0])
 
 				if occp[0][1] == "D":
 					return doctor_home()
+
+				elif occp[0][1] == "L":
+					return redirect(url_for('labtech_home'))
 
 				else:
 					return "Dashboard not Ready!"
@@ -455,6 +456,7 @@ def confirmed_appointment():
 	cur_date = datetime.date.today()
 
 	if (connection.connect()):
+
 		appointments = connection.execute("select VisitDate, d.DoctorName, SlotNumber from appointments join \
 			 (select DoctorID, DoctorName from doctors) as d on d.doctorID = appointments.DoctorID where \
 			  PatientID = '%s' and VisitDate >= '%s' order by \
@@ -790,7 +792,7 @@ def signupCheck_employee():
 		return redirect(url_for('signup_employee'))
 
 	if connection.connect():
-		idCount = connection.execute("select entries from metadata where TableName ='employees' ");
+		idCount = connection.execute("select entries from metadata where TableName ='employees' ")
 		idCount = idCount[0][0]
 
 	id_int = str(idCount+1)
@@ -846,6 +848,122 @@ def signup_employee_nurse():
 		query = "insert into nurses values('%s', '%s', '%s')" %(eid, name, dept_name)
 		connection.execute(query, -1)
 	return signup_employee("Nurse signed up successfully")
+
+
+@app.route("/labtech")
+def labtech_home():
+	if session['logged_in'] == False:
+		return redirect(url_for('home2'))
+
+	
+	
+	return render_template("labtech_home.html", labtechID = user.getName(), name = user.getusername())
+
+@app.route("/labtech/test_report")
+def labtech_test_report():
+	if session['logged_in'] == False:
+		return redirect(url_for('home2'))
+	
+	if connection.connect():
+		tests = connection.execute('select * from test_reports')
+
+	return render_template("labtech_test_report.html", labtechID = user.getName(), name = user.getusername(), tests = tests)
+
+@app.route("/labtech/test_info")
+def labtech_test_info():
+	if session['logged_in'] == False:
+		return redirect(url_for('home2'))
+
+	if connection.connect():
+		tests = connection.execute('select testname from labtests where testname in (select testname from testnormalresults)')
+	
+	return render_template("labtech_test_info.html", labtechID = user.getName(), name = user.getusername(), tests = tests)
+
+@app.route("/labtech/show_test", methods = ['GET', 'POST'])
+def labtech_show_test():
+	if session['logged_in'] == False:
+		return redirect(url_for('home2'))
+
+	testname = request.form['TestName']
+
+	if connection.connect():
+		test_info = connection.execute("select * from labtests where testname = '" + testname + "';")
+		test_results = connection.execute("select * from testnormalresults where testname = '" + testname + "'")
+	
+	return render_template("labtech_show_test.html", labtechID = user.getName(), name = user.getusername(), test_info = test_info[0], test_results = test_results)
+
+
+@app.route("/labtech/patient_record")
+def labtech_patient_record():
+	if session['logged_in'] == False:
+		return redirect(url_for('home2'))
+	
+	return render_template("labtech_patient_record.html", labtechID = user.getName(), name = user.getusername())
+
+@app.route("/labtech/show_patient", methods = ['GET', 'POST'])
+def labtech_show_patient():
+	if session['logged_in'] == False:
+		return redirect(url_for('home2'))
+
+	if (connection.connect()):
+		patientName = request.form['PatientID']
+		reports = connection.execute("select doctors.DoctorName, doctors.DepartmentName, \
+		 visits.visitdate, visits.doctorremarks, medrecommended.medicinename,\
+		 medrecommended.quantity  from visits inner join medrecommended on \
+		 visits.visitid = medrecommended.visitid  join doctors on \
+		 visits.doctorID = doctors.doctorID where visits.patientid = '" + patientName + "' order by (visits.visitdate)")
+
+	return render_template("labtech_show_patient.html", labtechID = user.getName(), name = user.getusername(), reports = reports)
+
+
+@app.route("/labtech/publish_report")
+def labtech_publish_report():
+	if session['logged_in'] == False:
+		return redirect(url_for('home2'))
+	
+	return render_template("labtech_publish_report.html", labtechID = user.getName(), name = user.getusername())
+
+@app.route("/labtech/edit_profile")
+def labtech_edit_profile(message = None):
+	if session['logged_in'] == False:
+		return redirect(url_for('home2'))
+	
+	labtechID = user.getName()
+	profile_info = connection.execute("select * from employees where employeeid = '" + labtechID + "';")
+	profile_info = profile_info[0]
+
+	return render_template("labtech_edit_profile.html", labtechID = user.getName(), name = user.getusername(), profile_info = profile_info, message = message)
+
+@app.route("/labtech/edit_profile/submit", methods = ['GET', 'POST'])
+def labtech_submit_edit_profile():
+	if session['logged_in'] == False:
+		return redirect(url_for('home2'))
+
+	labtechid = user.getName()
+
+	occupation = request.form['Occupation']
+	houseno = request.form['House No']
+	street = request.form['Street']
+	city = request.form['City']
+	state = request.form['State']
+	district = request.form['District']
+	pincode = request.form['Pin Code']
+	contactno = request.form['Contact Number']
+	
+	if connection.connect():
+		connection.execute("UPDATE employees \
+			SET occupation = '" + occupation + "', \
+				houseno = '" + houseno + "', \
+				street = '" + street + "', \
+				city = '" + city + "', \
+				state = '" + state + "', \
+				district = '" + district + "', \
+				pincode = '" + pincode + "', \
+				contactnumber = '" + contactno + "' \
+			WHERE employeeid = '" + labtechid + "' ;", -1)
+
+	return edit_profile("Changes saved")
+>>>>>>> 2acd98068e73aecd5b2b8424f3a60bdda5767e7d
 
 if __name__ == "__main__":
 	app.secret_key = os.urandom(12)

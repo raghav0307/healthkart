@@ -1,0 +1,81 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+  <title>Welcome</title>
+  <meta name="description" content="website description" />
+  <meta name="keywords" content="website keywords, website keywords" />
+  <meta http-equiv="content-type" content="text/html; charset=windows-1252" />
+  <!-- <link rel="stylesheet" type="text/css" href="style/style.css" /> -->
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/doctors.css') }}">
+  <link href="https://fonts.googleapis.com/css2?family=Bubblegum+Sans&family=Copse&family=Poppins:wght@400;600&family=Manrope:wght@500&display=swap" rel="stylesheet">
+</head>
+
+<body>
+  <div id="main">
+    <div id="header">
+      <div id="logo">
+        <div id="logo_text">
+          <!-- class="logo_colour", allows you to change the colour of the text -->
+          <h1><a href="/labtech">Welcome<span class="logo_colour">{{name}}</span></a></h1>
+          <h2>LabTechnician ID {{labtechID}}</h2>
+        </div>
+      </div>
+      <div id="menubar">
+        <ul id="menu">
+          <!-- put class="selected" in the li tag for the selected page - to highlight which page you're on -->
+          <li><a href="/labtech">Home</a></li>
+          <li><a href="/labtech/test_report">Test Reports</a></li>
+          <li><a href="/labtech/test_info">Test Information</a></li>
+          <li><a href="/labtech/patient_record">Patient Record</a></li>
+          <li><a href="/labtech/publish_report">Publish Report</a></li>
+          <li class="selected"><a href="/labtech/edit_profile">Edit Profile</a></li>
+          <li><a href="/signout">Sign Out</a></li>
+        </ul>
+      </div>
+    </div>
+    <div id="site_content">
+      {% if message != None%}
+        <h4>{{message}}</h4>
+        {%endif%}
+      <div id="content">
+        <h2>Your Profile</h2>
+        <form action="/labtech/edit_profile/submit" method="POST">
+          <table><tr><td>
+          <strong>Employee ID: </strong></td><td><input type="text" name="Employee ID" placeholder={{profile_info[0]}} readonly>
+          </td></tr><tr><td>
+          <strong>Name: </strong></td><td><input type="text" name="Name" placeholder={{profile_info[1]}} readonly>
+          </td></tr><tr><td>
+          <strong>Gender: </strong></td><td><input type="text" name="Gender" placeholder={{profile_info[2]}} readonly>
+          </td></tr><tr><td>
+          <strong>Occupation: </strong></td><td><input type="text" name="Occupation" value={{profile_info[3]}} readonly style = "color:grey">
+          </td></tr><tr><td>
+          <strong>Joining Date: </strong></td><td><input type="text" name="Joining Date" placeholder={{profile_info[4]}} readonly>
+          </td></tr><tr><td>
+          <strong>House No: </strong></td><td><input type="text" name="House No" value = {{profile_info[5]}}>
+          </td></tr><tr><td>
+          <strong>Street: </strong></td><td><input type="text" name="Street" value={{profile_info[6]}}>
+          </td></tr><tr><td>
+          <strong>City: </strong></td><td><input type="text" name="City" value={{profile_info[7]}}>
+          </td></tr><tr><td>
+          <strong>State: </strong></td><td><input type="text" name="State" value={{profile_info[8]}}>
+          </td></tr><tr><td>
+          <strong>District: </strong></td><td><input type="text" name="District" value={{profile_info[9]}}>
+          </td></tr><tr><td>
+          <strong>Pin Code: </strong></td><td><input type="text" name="Pin Code" value={{profile_info[10]}}>
+          </td></tr><tr><td>
+          <strong>Contact Number: </strong></td><td><input type="text" name="Contact Number" value={{profile_info[11]}}>
+          </td></tr><tr><td>
+          <strong>Salary: </strong></td><td><input type="text" name="Salary" placeholder={{profile_info[12]}} readonly>
+          </td></tr>
+          </table>
+          <input type="submit" value="Update">
+        </form>
+      </div>
+    <div id="footer">
+      <p>Copyright &copy; simplestyle_3</p>
+    </div>
+    <p>&nbsp;</p>
+  </div>
+</body>
+</html>

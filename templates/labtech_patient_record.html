@@ -17,20 +17,19 @@
       <div id="logo">
         <div id="logo_text">
           <!-- class="logo_colour", allows you to change the colour of the text -->
-          <h1><a href="/doctors">Welcome<span class="logo_colour">{{name}}</span></a></h1>
-          <h2>Doctor ID {{doctorID}}</h2>
+          <h1><a href="/labtech">Welcome<span class="logo_colour">{{name}}</span></a></h1>
+          <h2>LabTechnician ID {{labtechID}}</h2>
         </div>
       </div>
       <div id="menubar">
         <ul id="menu">
           <!-- put class="selected" in the li tag for the selected page - to highlight which page you're on -->
-          <li><a href="/doctors">Home</a></li>
-          <li><a href="/doctors/week_schedule">Week Schedule</a></li>
-          <li><a href="/doctors/medicine_info">Medicine Info</a></li>
-          <li><a href="/doctors/test_info">Test Info</a></li>
-          <li class="selected"><a href="/doctors/check_patient_record">Patient Record</a></li>
-          <li><a href="/doctors/patient_diagnose">Diagnose Patient</a></li>
-          <li><a href="/doctors/edit_profile">Edit Profile</a></li>
+          <li><a href="/labtech">Home</a></li>
+          <li><a href="/labtech/test_report">Test Reports</a></li>
+          <li><a href="/labtech/test_info">Test Information</a></li>
+          <li class="selected"><a href="/labtech/patient_record">Patient Record</a></li>
+          <li><a href="/labtech/publish_report">Publish Report</a></li>
+          <li><a href="/labtech/edit_profile">Edit Profile</a></li>
           <li><a href="/signout">Sign Out</a></li>
         </ul>
       </div>
@@ -38,8 +37,8 @@
     <div id="site_content">
       <div id="content">
         <h2>Enter Patient ID or Patient Name to get past reports</h2>
-        <form action="/doctors/show_patient" method="POST">
-          <input class = "input" type="text" name="PatientID" placeholder="Patient ID">
+        <form action="/labtech/show_patient" method="POST">
+          <input type="text" name="PatientID" placeholder="Patient ID">
           <input type="submit" name = "Submit" value="Search ID">
       </div>
     </div>
