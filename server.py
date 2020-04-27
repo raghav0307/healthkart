@@ -855,9 +855,12 @@ def labtech_home():
 	if session['logged_in'] == False:
 		return redirect(url_for('home2'))
 
+	if connection.connect():
+		tests = connection.execute("select TestName, TestDescription, TestCost from \
+			labtests where TechnicianID = '%s'" %(user.getName()))
 	
-	
-	return render_template("labtech_home.html", labtechID = user.getName(), name = user.getusername())
+	return render_template("labtech_home.html", labtechID = user.getName(), \
+		name = user.getusername(), tests = tests)
 
 @app.route("/labtech/test_report")
 def labtech_test_report():
@@ -865,7 +868,13 @@ def labtech_test_report():
 		return redirect(url_for('home2'))
 	
 	if connection.connect():
-		tests = connection.execute('select * from test_reports')
+		tests = connection.execute("select VisitDate, p.PatientName, \
+		patientage.age, test_reports.TestName, TestResult from test_reports join (select Testname, TechnicianID from \
+			labtests where TechnicianID = '%s') as lt on\
+		 test_reports.TestName = lt.TestName join (select VisitID, PatientID, VisitDate from visits) as v \
+		  on v.VisitID = test_reports.VisitID \
+		 join (select PatientID, PatientName from patients) as p on p.PatientID = v.PatientID join patientage on \
+		 p.PatientID = patientage.PatientID order by (VisitDate) desc" %(user.getName()))
 
 	return render_template("labtech_test_report.html", labtechID = user.getName(), name = user.getusername(), tests = tests)
 
@@ -911,7 +920,8 @@ def labtech_show_patient():
 		 visits.visitdate, visits.doctorremarks, medrecommended.medicinename,\
 		 medrecommended.quantity  from visits inner join medrecommended on \
 		 visits.visitid = medrecommended.visitid  join doctors on \
-		 visits.doctorID = doctors.doctorID where visits.patientid = '" + patientName + "' order by (visits.visitdate)")
+		 visits.doctorID = doctors.doctorID where visits.patientid = '" + patientName + "' \
+		 order by (visits.visitdate) desc")
 
 	return render_template("labtech_show_patient.html", labtechID = user.getName(), name = user.getusername(), reports = reports)
 
@@ -963,7 +973,6 @@ def labtech_submit_edit_profile():
 			WHERE employeeid = '" + labtechid + "' ;", -1)
 
 	return edit_profile("Changes saved")
->>>>>>> 2acd98068e73aecd5b2b8424f3a60bdda5767e7d
 
 if __name__ == "__main__":
 	app.secret_key = os.urandom(12)

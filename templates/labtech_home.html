@@ -35,16 +35,16 @@
       </div>
     </div>
     <div id="site_content">
-      <!-- <div id="content">
-        <h1>Today's Schedule</h1>
-        {% for record in schedule %}
-          <div>
-            <h2> Patient: {{record[1]}}</h2>
-            <h3><strong>Patient ID</strong>: {{record[0]}}<br>
-              <strong>Slot Number</strong>: {{record[2]}} </h3>
-          </div>
-        {% endfor %}
-      </div> -->
+      <div id="content">
+        <!-- insert the page content here -->
+        <h2>Tests Assigned to you in Dispensary</h2>
+        <table style="width:100%; border-spacing:0;">
+          <tr><th>Test Name</th><th>Description</th><th>Cost</th></tr>
+          {%for test in tests%}
+            <tr><td>{{test[0]}}</td><td>{{test[1]}}</td><td>{{test[2]}}</td></tr>
+          {%endfor%}
+        </table>
+      </div>
     </div>
     <div id="footer">
       <p>Copyright &copy; simplestyle_3</p>

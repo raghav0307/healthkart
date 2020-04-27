@@ -38,9 +38,9 @@
       <div id="content">
         <h2>All Tests Reports</h2>
         <table style="width:100%; border-spacing:0;">
-          <tr><th>Visit ID</th><th>Test Name</th><th>Test Result</th></tr>
+          <tr><th>Visit Date</th><th>Patient Name</th><th>Patient Age</th><th>Test Name</th><th>Test Result</th></tr>
           {%for test in tests%}
-            <tr><td>{{test[0]}}</td><td>{{test[1]}}</td><td>{{test[2]}}</td></tr>
+            <tr><td>{{test[0]}}</td><td>{{test[1]}}</td><td>{{test[2]}}</td><td>{{test[3]}}</td><td>{{test[4]}}</td></tr>
           {%endfor%}
         </table>
       </div>
