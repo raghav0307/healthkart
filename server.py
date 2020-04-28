@@ -10,6 +10,7 @@ from wtforms import Form, FieldList, FormField, IntegerField, StringField, Selec
 app = Flask(__name__)
 
 connection = MySQL_Conn.getInstance('healthkart', 'root')
+
 user = User()
 
 @app.route('/login')
@@ -244,19 +245,6 @@ def patient_submit_edit_profile():
 	district = request.form['District']
 	pincode = request.form['Pin Code']
 	contactno = request.form['Contact Number']
-	# Type = request.form['Type']
-
-	# salary = request.form['Salary']
-
-	# print("UPDATE patients \
-	# 		SET houseno = '" + houseno + "', \
-	# 			street = '" + street + "', \
-	# 			city = '" + city + "', \
-	# 			state = '" + state + "', \
-	# 			district = '" + district + "', \
-	# 			pincode = '" + pincode + "', \
-	# 			contactnumber = '" + contactno + "' \
-	# 		WHERE patientid = '" + patientID + "' ;")
 
 	if connection.connect():
 		connection.execute("UPDATE patients \
@@ -718,18 +706,6 @@ def submit_edit_profile():
 	district = request.form['District']
 	pincode = request.form['Pin Code']
 	contactno = request.form['Contact Number']
-	# salary = request.form['Salary']
-
-	# print("UPDATE employees \
-	# 		SET occupation = '" + occupation + "', \
-	# 			houseno = '" + houseno + "', \
-	# 			street = '" + street + "', \
-	# 			city = '" + city + "', \
-	# 			state = '" + state + "', \
-	# 			district = '" + district + "', \
-	# 			pincode = '" + pincode + "', \
-	# 			contactnumber = '" + contactno + "' \
-	# 		WHERE employeeid = '" + doctorid + "' ;")
 
 	if connection.connect():
 		connection.execute("UPDATE employees \
@@ -934,11 +910,29 @@ def labtech_show_patient():
 
 
 @app.route("/labtech/publish_report")
-def labtech_publish_report():
+def labtech_publish_report(message = None):
 	if session['logged_in'] == False:
 		return redirect(url_for('home2'))
 	
-	return render_template("labtech_publish_report.html", labtechID = user.getName(), name = user.getusername())
+	if connection.connect():
+		labtechID = user.getName()
+		tests = connection.execute("select testname from labtests where technicianid ='" + labtechID + "'")
+
+	return render_template("labtech_publish_report.html", labtechID = user.getName(), name = user.getusername(), tests = tests, message = message)
+
+@app.route("/labtech/submit_report", methods = ['GET', 'POST'])
+def labtech_submit_report():
+	if session['logged_in'] == False:
+		return redirect(url_for('home2'))
+	
+	if connection.connect():
+		visitid = request.form['visitid']
+		test = request.form['test']
+		result = request.form['testresult']
+		connection.execute("insert into test_reports values ('" + visitid + "', '" + test + "', '" + result + "')", -1)
+
+	return labtech_publish_report(message="Report Submitted")
+
 
 @app.route("/labtech/edit_profile")
 def labtech_edit_profile(message = None):

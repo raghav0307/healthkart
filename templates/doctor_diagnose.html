@@ -160,7 +160,9 @@
 
             <input class = "input" type="text" name="Patient Name" placeholder="Patient Name">
             <br>
-            <input class = "remarks" type="text" name="Remarks" placeholder="Remarks">
+            <textarea placeholder="Remarks" class = "remarks" rows = "10" cols = "100" name = "remarks" >Remarks...
+            </textarea>
+            <!-- <input class = "remarks" type="text" name="Remarks" placeholder="Remarks"> -->
             <br>
             <div id="subforms-container">
                 {% for subform in form.meds %}
@@ -182,7 +184,7 @@
             </div>
             <a id="add" href="#">Add Medicine</a>
 
-            <button type="submit">Send</button>
+            <button class = "button_submit" type="submit">Send</button>
         </form>
 
         {% if form.errors %}
