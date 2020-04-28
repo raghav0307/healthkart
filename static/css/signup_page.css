@@ -50,6 +50,11 @@ h2{
 
 }
 
+.alert-error{
+	color: red;
+	text-align: center;
+}
+
 
 .form-control-signup{
 	list-style-type: none;

@@ -72,19 +72,19 @@ def signupCheck():
 		return redirect(url_for('signup'))
 
 	if datetime.datetime.strptime(dob, '%Y-%m-%d').date() > datetime.date.today():
-		flash(f'Invalid DOB')
+		flash('Invalid DOB', 'error')
 		return redirect(url_for('signup'))
 
 	if len(pincode)!=6 or not pincode.isdigit():
-		flash(f'Invalid Pincode')
+		flash('Invalid Pincode', 'error')
 		return redirect(url_for('signup'))
 
 	if len(contactNo)!=10 or not contactNo.isdigit():
-		flash(f'Invalid Phone Number')
+		flash('Invalid Phone Number', 'error')
 		return redirect(url_for('signup'))
 
 	if BloodGroup not in ['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-']:
-		flash(f'Inavlid Blood Group')
+		flash('Inavlid Blood Group', 'error')
 		return redirect(url_for('signup'))
 
 	if connection.connect():
@@ -102,7 +102,7 @@ def signupCheck():
 		query2 = "insert into logins value('%s', SHA2('%s', 256))" %(pid, "pass" + id_int)
 		query3 = "update metadata set Entries = %d where TableName = 'patients'" %(idCount+1)
 		connection.bulkModQueries([query1, query2, query3])
-		flash(f'Signed up successfully! Patient ID is {pid}. Login to Continue', 'success')
+		flash(f'Signed up successfully! Patient ID is {pid}. Login to Continue', 'error')
 		return redirect(url_for('home2'))
 
 	return redirect(url_for('homepage'))
@@ -124,7 +124,7 @@ def login():
 		# print(user.getName())
 		session['logged_in'] = True
 	else:
-		flash(f'Invalid UserID or Password')
+		flash('Invalid UserID or Password', 'error')
 	return home2()
 
 
@@ -884,7 +884,7 @@ def labtech_test_info():
 		return redirect(url_for('home2'))
 
 	if connection.connect():
-		tests = connection.execute('select testname from labtests where testname in (select testname from testnormalresults)')
+		tests = connection.execute('select testname from labtests')
 	
 	return render_template("labtech_test_info.html", labtechID = user.getName(), name = user.getusername(), tests = tests)
 
