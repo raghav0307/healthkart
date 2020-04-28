@@ -22,12 +22,15 @@
   <h2>Add Medicines</h2>
   <form action="/pharmacist/added_medicine" method="POST">
   <p>Medicine Name : <input type = "text" name = "name"></p>
+  <p>Salt Name     : <input type = "text" name = "Saltname"></p>
+  <p>Salt Quantity : <input type = "text" name = "Saltquantity"></p>
   <p>Quantity      : <input type = "number" name = "quantity"></p>
   <p>Expiry Date   : <input type = "date" name = "expiry"></p>
+  <p>Cost          : <input type = "number" name = "cost"></p>
   <p>
     Company Name   :
   <select id="id" name="company">
-            {% for companyId, companyname in companies.items() %}
+            {% for companyId, companyname in companies %}
             <option value="{{companyId}};{{companyname}}">{{companyname}}</option>
             {% endfor %}
   </select>

@@ -989,14 +989,38 @@ def labtech_submit_edit_profile():
 
 @app.route("/pharmacist/show_med")
 def pharmacist_show_meds():
+	if session['logged_in'] == False:
+		return redirect(url_for('home2'))
+
 	eid = user.getName()
 
-	meds = [['med name','salts', 'Quantity', 'Expirydate', '200', 'Composition', 'Expired']]
+	import datetime
+	cur_date = datetime.date.today()
+	if connection.connect():
+		med_rec = connection.execute("select MedicineName, SaltName, Composition, \
+			QuantityAvailable, ExpiryDate, Cost from medicines join contains on medicines.MedicineID \
+			= contains.MedicineID join salts on salts.SaltID = contains.SaltID")
+
+	meds = []
+	for i in med_rec:
+		temp = []
+		for j in i:
+			temp.append(j)
+
+		if temp[4] <= cur_date:
+			temp.append("Expired")
+		else:
+			temp.append("Not Expired")
+		meds.append(temp)
+
 	return render_template("/pharmacist/all_meds.html", eid = eid, medicines = meds, name = user.getusername())
 
 
 @app.route("/pharmacist/medicine_info")
 def pharmacist_med_info(message = []):
+	if session['logged_in'] == False:
+		return redirect(url_for('home2'))
+
 	eid = user.getName()
 
 	if connection.connect():
@@ -1014,8 +1038,11 @@ def pharmacist_med_info(message = []):
 
 @app.route("/pharmacist/showMed", methods = ['GET', 'POST'])
 def pharmacist_search_meds():
-	# if session['logged_in'] == False:
-	# 	return redirect(url_for('home2'))
+	if session['logged_in'] == False:
+		return redirect(url_for('home2'))
+
+	import datetime
+	cur_date = datetime.date.today()
 	
 	eid = user.getName()
 
@@ -1030,8 +1057,7 @@ def pharmacist_search_meds():
 		if connection.connect():
 			meds = connection.execute("select MedicineName, SaltName, QuantityAvailable, ExpiryDate, Cost, \
 				Composition, medicines.MedicineID  from medicines join contains on medicines.MedicineID = contains.MedicineID \
-				join salts on salts.SaltID = contains.SaltID where medicines.MedicineID = '%s' and \
-				ExpiryDate > curdate()" %(mid))
+				join salts on salts.SaltID = contains.SaltID where medicines.MedicineID = '%s'" %(mid))
 
 	elif submitVal == "Search Similar":
 		medicineName = request.form['MedicineName']
@@ -1039,8 +1065,7 @@ def pharmacist_search_meds():
 		if (connection.connect()):
 			meds = connection.execute("select MedicineName, SaltName, QuantityAvailable, ExpiryDate, Cost, \
 				Composition, medicines.MedicineID  from medicines join contains on medicines.MedicineID = contains.MedicineID \
-				join salts on salts.SaltID = contains.SaltID where medicines.MedicineName like ('%%%s%%') \
-				and ExpiryDate > curdate()" %(medicineName))
+				join salts on salts.SaltID = contains.SaltID where medicines.MedicineName like ('%%%s%%')" %(medicineName))
 
 	elif submitVal == "Search Salt":
 		salts = request.form['Salt1'].split(";")
@@ -1051,8 +1076,7 @@ def pharmacist_search_meds():
 		if (connection.connect()):
 			meds = connection.execute("select MedicineName, SaltName, QuantityAvailable, ExpiryDate, Cost, \
 				Composition, medicines.MedicineID  from medicines join contains on medicines.MedicineID = contains.MedicineID \
-				join salts on salts.SaltID = contains.SaltID where salts.SaltID = '%s' and ExpiryDate > curdate()"
-				 %(sid))
+				join salts on salts.SaltID = contains.SaltID where salts.SaltID = '%s'" %(sid))
 
 
 
@@ -1061,23 +1085,43 @@ def pharmacist_search_meds():
 
 		meds = connection.execute("select MedicineName, SaltName, QuantityAvailable, ExpiryDate, Cost, \
 				Composition, medicines.MedicineID  from medicines join contains on medicines.MedicineID = contains.MedicineID \
-				join salts on salts.SaltID = contains.SaltID where salts.SaltName like ('%%%s%%') and \
-				 ExpiryDate > curdate()" %(sname))
+				join salts on salts.SaltID = contains.SaltID where salts.SaltName like ('%%%s%%')" %(sname))
 
-	meds.sort()
-	print(meds)
-	expired_med = [['medname', 'saltname', 'quantity', 'expiry', 'cost', 'Composition', 'medid'], ['medname', 'saltname', 'quantity', 'expiry', 'cost', 'Composition', 'medid2']]		#Get this explicitly
-	return render_template("/pharmacist/show_med.html", eid = eid, expired_med = expired_med, not_expired = meds, name = user.getusername())
+	expired_med = []
+	not_expired = []
+
+	for i in meds:
+		if i[3] < cur_date:
+			expired_med.append(i)
+		else:
+			not_expired.append(i)
+
+	# expired_med = [['medname', 'saltname', 'quantity', 'expiry', 'cost', 'Composition', 'medid'], ['medname', 'saltname', 'quantity', 'expiry', 'cost', 'Composition', 'medid2']]		#Get this explicitly
+	return render_template("/pharmacist/show_med.html", eid = eid, expired_med = expired_med, \
+		not_expired = not_expired, name = user.getusername())
 
 @app.route("/pharmacist/deleted_med", methods = ['GET', 'POST'])
 def deleted_med():
+	if session['logged_in'] == False:
+		return redirect(url_for('home2'))
+
 	deleted =  request.form.getlist('deleted')		#delete the medicines, Medicine Id's will be returned
-	print(deleted)
-	print("I am here")
+
+	if connection.connect():
+		queries = []
+		for i in deleted:
+			queries.append("delete from contains where MedicineID = '%s'" %(i))
+			queries.append("delete from medicines where MedicineID = '%s'" %(i))
+
+		connection.bulkModQueries(queries)
+
 	return pharmacist_med_info(deleted)
 
 @app.route("/pharmacist/select_dispatch")
 def select_dispatch(message = None):
+	if session['logged_in'] == False:
+		return redirect(url_for('home2'))
+
 	eid = user.getName()
 
 	if connection.connect():
@@ -1094,6 +1138,9 @@ def select_dispatch(message = None):
 
 @app.route("/pharmacist/dispatch_med", methods = ['GET', 'POST'])
 def dispatch_med():
+	if session['logged_in'] == False:
+		return redirect(url_for('home2'))
+
 	eid = user.getName()
 
 	submitVal = request.form['submit']
@@ -1146,73 +1193,171 @@ def dispatch_med():
 
 @app.route("/pharmacist/dispatched", methods = ['GET', 'POST'])
 def dispatched():
+	if session['logged_in'] == False:
+		return redirect(url_for('home2'))
+
 	patientID = request.form.get('patientID')			
-	print(patientID)
 	indented = request.form.getlist('Quantity')
 	dispach = {}
 	for x in indented:
 		y = x.split(';')
 		if int(y[1]) != 0:
-			dispach[y[0]] = int(y[1])
-	print(dispach)							#remove the deleted messages from database
+			dispach[y[0]] = [int(y[1]), int(y[2])]
+	# print(dispach)					#remove the deleted messages from database
+
+	if connection.connect():
+		queries = []
+
+		for i in dispach:
+			new = dispach[i][1] - dispach[i][0]
+			dispach[i][1] = new
+			queries.append("update medicines set QuantityAvailable = %d where MedicineID = '%s'" %(new, i))
+
+		connection.bulkModQueries(queries)
+
 	message = [patientID, dispach]
 	return select_dispatch(message);
 
 @app.route("/pharmacist/add_medicine")
 def add_medicine(message = None):
-	#new medicine ID will be generated
-	#company list from database
-	companies = {"companyID1" : "CompanyName1", "companyID2" : "Company2Name2"}
+	if session['logged_in'] == False:
+		return redirect(url_for('home2'))
+
+	if connection.connect():
+		companies = connection.execute("select CompanyID, Name from pharmaceutical_companies")
+
 	return render_template("/pharmacist/add_medicines.html",  eid = user.getName(), name = user.getusername(), companies = companies, message = message)
 
 @app.route("/pharmacist/added_medicine", methods = ['GET', 'POST'])
 def added_medicine():
+	if session['logged_in'] == False:
+		return redirect(url_for('home2'))
+
 	name = request.form.get('name')
-	quantity = request.form.get('quantity')
+	salts = request.form.get('Saltname').split(";")
+	salt_quant = list(map(int, request.form.get('Saltquantity').split(";")))
+	quantity = int(request.form.get('quantity'))
 	expiry_date = request.form.get('expiry')
-	company = request.form.get('company')
-	added_med = [name, str(quantity), str(expiry_date), str(company)]
-	print(name, str(quantity), str(expiry_date), str(company))
+	company = request.form.get('company').split(";")[0]
+	cost = int(request.form.get('cost'))
+	added_med = [name] + salts +  [str(quantity), str(expiry_date), str(company)]
+
+	if connection.connect():
+		not_found = []
+		for i in salts:
+			res = connection.execute("select * from salts where SaltName = '%s'" %(i))
+			if len(res) == 0:
+				not_found.append(i)
+
+		if len(not_found)!=0:
+			saltID = connection.execute("select Entries from metadata where TableName = 'salts'")
+			saltID = saltID[0][0]
+
+			queries = []
+
+			for i in not_found:
+				saltID += 1
+				sid = "S" + "0"*(4 - len(str(saltID))) + str(saltID)
+				queries.append("insert into salts values ('%s','%s')" %(sid, i))
+				
+
+			queries.append("update metadata set Entries = %d where TableName = 'salts'" %(saltID))
+
+			connection.bulkModQueries(queries)
+
+		mid = connection.execute("select Entries from metadata where TableName = 'medicines'")
+
+		mid = mid[0][0] + 1
+
+		mid_ = "M" + "0"*(9 - len(str(mid))) + str(mid)
+
+		query_1 = "insert into medicines values ('%s', '%s', %d, '%s', %d, '%s')" %(mid_, name, quantity, \
+			expiry_date, cost, company)
+		query_2 = "update metadata set Entries = %d where TableName = 'medicines'" %(mid)
+
+		connection.bulkModQueries([query_1, query_2])
+
+		query_set = []
+
+		res = connection.execute("select * from salts")
+		salt_dict = {}
+
+		for i in res:
+			salt_dict[i[1]] = i[0]
+		print(salt_dict)
+
+		for i in range(len(salts)):
+			query_set.append("insert into contains values ('%s', '%s', %d)" %(mid_, salt_dict[salts[i]], salt_quant[i]))
+
+		connection.bulkModQueries(query_set)
+
 
 	return add_medicine(added_med)
 
 
 @app.route("/pharmacist/all_companies")
 def all_companies(message1 = None, message2 = None):
-	companies = [["ID", "Name1", "Contact"], ["ID", "Name2", "Contact"]]	#get from sql
+	if session['logged_in'] == False:
+		return redirect(url_for('home2'))
+
+	if connection.connect():
+		companies = connection.execute("select * from pharmaceutical_companies")
+
 	return render_template("/pharmacist/all_companies.html", eid = user.getName(), name = user.getusername(), companies = companies, message1 = message1, message2 = message2)
 
 @app.route("/pharmacist/added_company", methods = ['GET', 'POST'])
 def add_company():
+	if session['logged_in'] == False:
+		return redirect(url_for('home2'))
+
 	name = request.form.get("name")
-	phone = request.form.get("phone")
-	companyId = 'C002'		#generate from metadata
-	added = [companyId, name, phone] 	#add to sql
+	phone = request.form.get("phone").split("-")
+	phone = "".join(phone)
+
+	if connection.connect():
+		companyId = connection.execute("select count(1) from pharmaceutical_companies")
+		companyId = companyId[0][0] + 1
+
+		companyId = "C" + "0" * (4 - len(str(companyId))) + str(companyId)
+		added = [companyId, name, phone] 	#add to sql
+
+		connection.execute("insert into pharmaceutical_companies values ('%s', '%s', '%s')" %(companyId, name, phone), -1)
+
 	return all_companies(added, None)
 
 @app.route("/pharmacist/edited_company", methods = ['GET', 'POST'])
 def edit_company():
+	if session['logged_in'] == False:
+		return redirect(url_for('home2'))
+		
 	id_name = request.form.get("name").split(';')
 	companyId = id_name[0]
 	name = id_name[1]
-	phone = request.form.get("phone")
-	edited = [companyId, name, phone]	#edit details in sql
+	phone = request.form.get("phone").split("-")
+	phone = "".join(phone)
+	edited = [companyId, name, phone]
+
+	if connection.connect():
+		connection.execute("update pharmaceutical_companies set Contact_Number = '%s'\
+		 where CompanyID = '%s'" %(phone, companyId), -1)
+
 	return all_companies(None, edited)
 
 @app.route("/pharmacist/edit_profile")
 def pharma_edit_profile(message = None):
-	# if session['logged_in'] == False:
-	# 	return redirect(url_for('home2'))
+	if session['logged_in'] == False:
+		return redirect(url_for('home2'))
 
 	eid = user.getName()
-	profile_info = connection.execute("select * from employees where employeeid = '" + str(eid) + "';")
-	profile_info = profile_info[0]
+	if connection.connect():
+		profile_info = connection.execute("select * from employees where employeeid = '" + str(eid) + "';")
+		profile_info = profile_info[0]
 	return render_template("/pharmacist/pharma_edit.html", eid = eid, profile_info = profile_info, name = user.getusername(), message = message)
 
 @app.route("/pharmacist/pharma_edit_profile/submit", methods = ['GET', 'POST'])
 def pharma_submit_edit_profile():
-	# if session['logged_in'] == False:
-	# 	return redirect(url_for('home2'))
+	if session['logged_in'] == False:
+		return redirect(url_for('home2'))
 
 	eid = user.getName()
 

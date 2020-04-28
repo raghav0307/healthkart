@@ -73,13 +73,19 @@ if __name__ == "__main__":
 	connection = MySQL_Conn.getInstance('healthkart', 'root')
 
 	if connection.connect():
-		appointments = connection.execute("select SlotNumber from appointments \
-					where DoctorID = '%s' and VisitDate = '%s'" %("E0016", "2020-01-07"))
+		res = connection.execute("select * from salts")
+		salt_dict = {}
 
-		appointments = [i[0] for i in appointments]
-		for i in appointments:
-			print(i)
-		pprint(appointments)
+		for i in res:
+			salt_dict[i[1]] = i[0]
+		print(salt_dict)
+		# appointments = connection.execute("select SlotNumber from appointments \
+		# 			where DoctorID = '%s' and VisitDate = '%s'" %("E0016", "2020-01-07"))
+
+		# appointments = [i[0] for i in appointments]
+		# for i in appointments:
+		# 	print(i)
+		# pprint(appointments)
 		# rec = conn.execute("insert into Patients values ('P0021', 'Nam', 'A-50', '', '', 'Delhi', 'Central Delhi', '110001', '9765456789', 'O-', '1988-07-09', 'M', 'B')", -1)
 		# pprint(rec)
 		# rec = conn.execute("select * from Patients")
