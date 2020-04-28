@@ -17,7 +17,7 @@
       <div id="logo">
         <div id="logo_text">
           <!-- class="logo_colour", allows you to change the colour of the text -->
-          <h1><a href="/doctors">Welcome<span class="logo_colour">{{name}}</span></a></h1>
+          <h1><a href="/labtech">Welcome<span class="logo_colour">{{name}}</span></a></h1>
           <h2>LabTechnician ID {{labtechID}}</h2>
         </div>
       </div>
@@ -35,16 +35,29 @@
       </div>
     </div>
     <div id="site_content">
-      <!-- <div id="content">
-        <h1>Today's Schedule</h1>
-        {% for record in schedule %}
-          <div>
-            <h2> Patient: {{record[1]}}</h2>
-            <h3><strong>Patient ID</strong>: {{record[0]}}<br>
-              <strong>Slot Number</strong>: {{record[2]}} </h3>
-          </div>
-        {% endfor %}
-      </div> -->
+      {% if message != None%}
+        <h4>{{message}}</h4>
+      {%endif%}
+      <div id="content">
+        <h2>Submit Test Report</h2>
+        <form action="/labtech/submit_report" method="POST">
+          <table>
+            <tr><td><strong>Visit ID</strong></td><td><input type="text" name="visitid" placeholder="Enter Visit ID"></td></tr>
+            <tr>
+              <td><strong>Test Name</strong></td>
+              <td>
+                <select id="id" name="test">
+                  {% for test in tests%}
+                  <option value="{{test[0]}}">{{test[0]}}</option>
+                  {% endfor %}
+              </select>
+              </td>
+            </tr>
+            <tr><td><strong>Test Result</strong></td><td><input type="text" name="testresult" placeholder="Enter Test Result"></td></tr>
+          </table>
+          <input type="submit" name = "submit" value="Submit">
+        </form>
+      </div>
     </div>
     <div id="footer">
       <p>Copyright &copy; simplestyle_3</p>

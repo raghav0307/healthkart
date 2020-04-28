@@ -46,16 +46,16 @@
           </select>
           <input type="submit" name = "submit" value="Search"><br><br>
           <input class = "input" type="text" name="MedicineName" placeholder="MedicineName">
-          <input type="submit" name = "submit" value="Search Similar">
+          <input type="submit" class="similar" name = "submit" value="Search Similar">
           <h2>Enter Salt Name to get info</h2>
           <select id="id" name="Salt1">
               {% for sid, sname in salts%}
               <option value="{{sid}};{{sname}}">{{sname}}</option>
               {% endfor %}
           </select>
-          <input type="submit" name = "submit" value="Search Salt"><br><br>
+          <input type="submit" class="similar" name = "submit" value="Search Salt"><br><br>
           <input class = "input" type="text" name="SaltName" placeholder="SaltName">
-          <input type="submit" name = "submit" value="Search Similar Salts">
+          <input type="submit" class="similar" name = "submit" value="Search Similar Salts">
         </form>
       </div>
     </div>
