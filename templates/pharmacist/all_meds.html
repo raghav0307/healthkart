@@ -1,0 +1,33 @@
+{% extends "/pharmacist/pharmacist.html" %}
+
+{% block menu %}
+          <li class="selected"><a href="/pharmacist/show_med">All Medicines</a></li>
+          <li><a href="/pharmacist/medicine_info">Search Medicines</a></li>
+          <li><a href="/pharmacist/select_dispatch">Dispatch Medicines</a></li>
+          <li><a href="/pharmacist/add_medicine">Add Medicines</a></li>
+          <li><a href="/pharmacist/all_companies">Medicine Companies</a></li>
+          <li><a href="/pharmacist/edit_profile">Edit Profile</a></li>
+          <li><a href="/signout">Sign Out</a></li>
+{% endblock %}
+
+
+{% block content %}
+<h2>Medicines Available in Dispensary Information</h2>
+        <table style="width:100%; border-spacing:0;">
+          <tr><th>Medicine Name</th><th>Salts</th><th>Composition</th><th>Quantity Available</th><th>Expiry Date</th> <th>Cost</th><th>Expiry Status</th></tr>
+          {%for medicine in medicines%}
+            <tr><td>{{medicine[0]}}</td>
+              <td>{{medicine[1]}}</td>
+              <td>{{medicine[5]}}</td>
+              <td>{{medicine[2]}}</td>
+              <td>{{medicine[3]}}</td>
+              <td>{{medicine[4]}}</td>
+              {% if medicine[6] == "Expired" %}
+              <td style="background-color:Red;">{{medicine[6]}}</td>
+              {% else %}
+              <td >{{medicine[6]}}</td>
+              {% endif %}
+              </tr>
+          {%endfor%}
+        </table>
+{% endblock %}
