@@ -131,7 +131,7 @@ def login():
 		flash('Invalid UserID or Password', 'error')
 	return home2()
 
-
+########################patients start ######################################################################################
 @app.route("/patient")
 def patient_home():
 	if session['logged_in'] == False:
@@ -461,6 +461,9 @@ def confirmed_appointment():
 
 #later = indented medicine tab
 
+########################patients start ######################################################################################
+
+########################doctors start ######################################################################################
 
 @app.route("/doctors")
 def doctor_home():
@@ -725,6 +728,8 @@ def submit_edit_profile():
 def signout():
 	session['logged_in'] = False
 	return redirect(url_for('homePage'))
+
+########################doctor ends ######################################################################################
 
 ##############################################################		ADMIN STARTS #########################################################
 
