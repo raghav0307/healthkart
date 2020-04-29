@@ -1,0 +1,26 @@
+{% extends "/admin/admin.html" %}
+
+{% block menu %}
+          <li class="selected"><a href="/admin/analyse">Analyse</a></li>
+          <li><a href="/admin/add_employees">Add Employees</a></li>
+          <li><a href="/signout">Sign Out</a></li>
+{% endblock %}
+
+
+{% block content %}
+<h1>{{title}}</h1>
+<table style="width:100%; border-spacing:0;">
+    <tr>
+    {% for column in header%}
+    <th>{{column}}</th>
+    {% endfor %}
+    </tr>
+    {%for row in table%}
+      <tr>
+        {% for val in row%}
+        <td>{{val}}</td>
+        {% endfor %}
+      </tr>
+    {%endfor%}
+  </table>
+{% endblock %}

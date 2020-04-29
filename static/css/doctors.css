@@ -112,34 +112,6 @@ ol li
 }
 
 input[type = submit]{
-  width: 350px;
-  padding: 5px 5px;
-  font-family: 'Poppins', sans-serif;
-  font-size: 120%;
-  color: #ffffff;
-  -webkit-border-radius: 10px;
-  background-image: linear-gradient(to right, #DD5E89 10%, #B60000 90%);
-}
-
-input[type = submit]:hover { 
-  background-image: linear-gradient(to right, #B60000 10%, #DD5E89 90%); 
-}
-
-input[type = submit] .similar{
-  width: 350px;
-  padding: 5px 5px;
-  font-family: 'Poppins', sans-serif;
-  font-size: 120%;
-  color: #ffffff;
-  -webkit-border-radius: 10px;
-  background-image: linear-gradient(to right, #DD5E89 10%, #B60000 90%);
-}
-
-input[type = submit] .similar:hover { 
-  background-image: linear-gradient(to right, #B60000 10%, #DD5E89 90%); 
-}
-
-.button_submit{
   width: 100px;
   padding: 5px 5px;
   font-family: 'Poppins', sans-serif;
@@ -149,7 +121,7 @@ input[type = submit] .similar:hover {
   background-image: linear-gradient(to right, #DD5E89 10%, #B60000 90%);
 }
 
-.button_submit:hover { 
+input[type = submit]:hover { 
   background-image: linear-gradient(to right, #B60000 10%, #DD5E89 90%); 
 }
 
@@ -182,6 +154,31 @@ input[type = submit] .similar:hover {
   text-align: center;
   margin: 20px auto;}
 
+.input{
+  width: 350px;
+  margin-right: 20px;
+  padding: 5px 5px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 120%;
+  border-radius: 10px;
+  background-color: none;
+  border: 1px solid grey;
+  color: #000000;
+}
+
+input[type = submit]{
+  width: 100px;
+  padding: 5px 5px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 120%;
+  color: #ffffff;
+  -webkit-border-radius: 10px;
+  background-image: linear-gradient(to right, #DD5E89 10%, #B60000 90%);
+}
+
+input[type = submit]:hover { 
+  background-image: linear-gradient(to right, #B60000 10%, #DD5E89 90%); 
+}
 
 #main, #header, #logo, #menubar, #site_content, #footer
 { margin-left: 0; 
