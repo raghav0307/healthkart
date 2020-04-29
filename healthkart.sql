@@ -265,7 +265,7 @@ DROP TABLE IF EXISTS `logins`;
 CREATE TABLE `logins` (
   `UserID` char(5) DEFAULT NULL,
   `Password` varchar(150) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -349,7 +349,7 @@ CREATE TABLE `metadata` (
   `TableName` varchar(25) NOT NULL,
   `Entries` int NOT NULL,
   PRIMARY KEY (`TableName`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --

@@ -9,7 +9,7 @@ from wtforms import Form, FieldList, FormField, IntegerField, StringField, Selec
 
 app = Flask(__name__)
 
-connection = MySQL_Conn.getInstance('healthkart', 'root', '2110')
+connection = MySQL_Conn.getInstance('healthkart', 'root')
 user = User()
 
 @app.route('/login')
@@ -650,9 +650,9 @@ def doc_show_record():
 @app.route("/doctors/patient_diagnose", methods = ['GET', 'POST'])
 def doc_patient_diagnose():
 	if connection.connect():
-		medlist = connection.execute("select MedicineID, MedicineName from medicines;")
-		testlist = connection.execute("select TestName from labtests;")
-		visits = connection.execute("select entries from metadata where TableName = 'Visits';")
+		medlist = connection.execute("select MedicineID, MedicineName from medicines")
+		testlist = connection.execute("select TestName from labtests")
+		visits = connection.execute("select entries from metadata where TableName = 'visits'")
 	# if session['logged_in'] == False:
 	# 	return redirect(url_for('home2'))
 
@@ -686,23 +686,27 @@ def doc_patient_diagnose():
 		inp = []
 		entry = [request.form['Patient Name'], request.form['Remarks']]
 		tests = [request.form['Test'+str(i + 1)] for i in range(5)]
-		print(entry)
-		print(tests)
-		print(form.meds.data)
+		print(entry, "entry")
+		print(tests, "tests")
+		print(form.meds.data, "meds data")
+		print("form validates")
 		for med in form.meds.data:
 			print(med)
 			newinp = med
 		if connection.connect():
-			query = "insert into visits values('%s', '%s', '%s', '%s', '%s')" %(vid, str(entry[0]), doctorID, str(datetime.date.today()), str(entry[1]))
+			# query = "insert into visits values('%s', '%s', '%s', '%s', '%s')" %(vid, str(entry[0]), doctorID, str(datetime.date.today()), str(entry[1]))
 			for i in range(len(forms.med.data)):
 				mid = medlist['medicine_name']
 				quantity = int(medlist['quantity'])
-				query = "insert into medrecommended values('%s', '%s', '%s', '%d')" %(vid, mid, medlist[mid], quantity)
-				connection.execute(query)
-			for test in tests:
-				if test != 'None':
-					query = "insert into testsrecommended values('%s', '%s')" %(vid, test)
-					connection.execute(query)
+				# query = "insert into medrecommended values('%s', '%s', '%s', '%d')" %(vid, mid, medlist[mid], quantity)
+				# connection.execute(query)
+			# for test in tests:
+			# 	if test != 'None':
+					# query = "insert into testsrecommended values('%s', '%s')" %(vid, test)
+					# connection.execute(query)
+
+	else:
+		print("Nopes")
 
 
 	return render_template("doctor_diagnose.html", doctorID = doctorID, name = user.getusername(), form = form, medlist = medlist, testlist = testlist)
@@ -721,7 +725,7 @@ def doc_submit_patient_diagnose():
 	tests
 	"""
 	entry = [request.form['Patient Name'], request.form['Remarks'], request.form['Medicine'], request.form['Test']]
-	print(entry)
+	print(entry, "entryyy")
 	#Store the entry in db
 	return doc_patient_diagnose()
 
@@ -831,11 +835,10 @@ def analyse_day_rank():
 	x_y1 = []
 	for row1 in x_y:
 		row = list(row1)
-		# print(row[0])
 		if row[0] == 'M':
 			row[0] = "Monday"
-		elif row[0] == 'T':
-			row[0] == "Tuesday"
+		elif row[0] == "T":
+			row[0] = "Tuesday"
 		elif row[0] == 'W':
 			row[0] = "Wednesday"
 		elif row[0] == "Th":
@@ -852,7 +855,7 @@ def analyse_day_rank():
 
 def analyse_doctor_rank():
 	if connection.connect():
-		x_y = connection.execute("select DepartmentName, DoctorName, rank() over(order by a.v) as new from (select doctors.DepartmentName, visits.DoctorID, count(VisitDate) as v, doctors.DoctorName from visits join doctors on visits.DoctorID = doctors.DoctorID  group by (visits.DoctorID)) as a;")
+		x_y = connection.execute("select DepartmentName, DoctorName, rank() over(order by a.v desc) as new from (select doctors.DepartmentName, visits.DoctorID, count(VisitDate) as v, doctors.DoctorName from visits join doctors on visits.DoctorID = doctors.DoctorID  group by (visits.DoctorID)) as a;")
 	header = ["Department", "Doctor", "Rank"]
 	return render_template("/admin/analyse_ranks.html", table = x_y, header = header, title = "Analyse doctor rank in terms of patient visits", eid = user.getName(), name = user.getusername())
 
