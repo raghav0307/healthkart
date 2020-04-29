@@ -10,6 +10,7 @@ from wtforms import Form, FieldList, FormField, IntegerField, StringField, Selec
 app = Flask(__name__)
 
 connection = MySQL_Conn.getInstance('healthkart', 'root')
+
 user = User()
 
 @app.route('/login')
@@ -84,19 +85,19 @@ def signupCheck():
 		return redirect(url_for('signup'))
 
 	if datetime.datetime.strptime(dob, '%Y-%m-%d').date() > datetime.date.today():
-		flash(f'Invalid DOB')
+		flash('Invalid DOB', 'error')
 		return redirect(url_for('signup'))
 
 	if len(pincode)!=6 or not pincode.isdigit():
-		flash(f'Invalid Pincode')
+		flash('Invalid Pincode', 'error')
 		return redirect(url_for('signup'))
 
 	if len(contactNo)!=10 or not contactNo.isdigit():
-		flash(f'Invalid Phone Number')
+		flash('Invalid Phone Number', 'error')
 		return redirect(url_for('signup'))
 
 	if BloodGroup not in ['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-']:
-		flash(f'Inavlid Blood Group')
+		flash('Inavlid Blood Group', 'error')
 		return redirect(url_for('signup'))
 
 	if connection.connect():
@@ -114,7 +115,7 @@ def signupCheck():
 		query2 = "insert into logins value('%s', SHA2('%s', 256))" %(pid, "pass" + id_int)
 		query3 = "update metadata set Entries = %d where TableName = 'patients'" %(idCount+1)
 		connection.bulkModQueries([query1, query2, query3])
-		flash(f'Signed up successfully! Patient ID is {pid}. Login to Continue', 'success')
+		flash(f'Signed up successfully! Patient ID is {pid}. Login to Continue', 'error')
 		return redirect(url_for('home2'))
 
 	return redirect(url_for('homepage'))
@@ -136,7 +137,7 @@ def login():
 		# print(user.getName())
 		session['logged_in'] = True
 	else:
-		flash(f'Invalid UserID or Password')
+		flash('Invalid UserID or Password', 'error')
 	return home2()
 
 
@@ -253,19 +254,6 @@ def patient_submit_edit_profile():
 	district = request.form['District']
 	pincode = request.form['Pin Code']
 	contactno = request.form['Contact Number']
-	# Type = request.form['Type']
-
-	# salary = request.form['Salary']
-
-	# print("UPDATE patients \
-	# 		SET houseno = '" + houseno + "', \
-	# 			street = '" + street + "', \
-	# 			city = '" + city + "', \
-	# 			state = '" + state + "', \
-	# 			district = '" + district + "', \
-	# 			pincode = '" + pincode + "', \
-	# 			contactnumber = '" + contactno + "' \
-	# 		WHERE patientid = '" + patientID + "' ;")
 
 	if connection.connect():
 		connection.execute("UPDATE patients \
@@ -667,47 +655,37 @@ def doc_patient_diagnose():
 	visits_ = visits
 	visits = str(visits)
 	vid = "V" + "0"*(4-len(visits)) + visits
-	print(visits, vid)
+	# print(visits, vid)
 
 	for i in range(len(testlist)):
 		testlist[i] = str(testlist[i][0])
 		
-	class MedForm(Form):
-		medicine_name = SelectField(u'Medicine', choices=medlist)
-		quantity = IntegerField('Quantity')
 
-	class MainForm(FlaskForm):
-		meds = FieldList(
-			FormField(MedForm),
-			min_entries=1,
-			max_entries=30
-		)
-
-	form = MainForm()
 	doctorID = user.getName()
-	if form.validate_on_submit():
+
+	if request.method == 'POST':
 		import datetime
 		inp = []
 		pid = request.form['Patient Name']
 		remarks =  request.form['Remarks']
 		tests = [request.form['Test'+str(i + 1)] for i in range(5)]
-		# print(entry, "entries")
-		print(tests, "tests")
-		print(form.meds.data)
-		for med in form.meds.data:
-			print(med, "meds")
-			newinp = med
+		meds = [(request.form['Med'+str(i + 1)],request.form['q'+str(i + 1)]) for i in range(5)]
+
 		if connection.connect():
 			query1 = "insert into visits values('%s', '%s', '%s', '%s', '%s')" \
 			%(vid, pid, doctorID, datetime.date.today(), remarks)
 			# print(query)
 			queries = [query1]
-			for i in range(len(form.meds.data)):
-				mid = form.meds.data[i]['medicine_name']
-				quantity = int(form.meds.data[i]['quantity'])
-				query = "insert into medrecommended values('%s', '%s', '%s', '%d')" %(vid, mid, med_dict[mid], quantity)
-				queries.append(query)
-		# 		connection.execute(query)
+
+			for med in meds:
+				if med[0] != 'None' and med[1] != 0:
+					mid_medname = med[0].split(';')
+					mid = mid_medname[0]
+					medname = mid_medname[1]
+					quantity = int(med[1])
+					query = "insert into medrecommended values('%s', '%s', '%s', %d)" %(vid, mid, medname, quantity)
+					queries.append(query)
+
 			for test in tests:
 				if test != 'None':
 					query = "insert into testsrecommended values('%s', '%s')" %(vid, test)
@@ -717,8 +695,7 @@ def doc_patient_diagnose():
 			connection.bulkModQueries(queries)
 		# 	connection.execute("update metadata set entries = '%d' where TableName = '%s' ") %(visits, "visits")
 
-	return render_template("doctor_diagnose.html", doctorID = doctorID, name = user.getusername(), \
-		form = form, medlist = medlist, testlist = testlist)
+	return render_template("doctor_diagnose.html", doctorID = doctorID, name = user.getusername(), medlist = medlist, testlist = testlist)
 	
 	
 @app.route("/doctors/patient_diagnose/submit", methods = ['GET', 'POST'])
@@ -762,18 +739,6 @@ def submit_edit_profile():
 	district = request.form['District']
 	pincode = request.form['Pin Code']
 	contactno = request.form['Contact Number']
-	# salary = request.form['Salary']
-
-	# print("UPDATE employees \
-	# 		SET occupation = '" + occupation + "', \
-	# 			houseno = '" + houseno + "', \
-	# 			street = '" + street + "', \
-	# 			city = '" + city + "', \
-	# 			state = '" + state + "', \
-	# 			district = '" + district + "', \
-	# 			pincode = '" + pincode + "', \
-	# 			contactnumber = '" + contactno + "' \
-	# 		WHERE employeeid = '" + doctorid + "' ;")
 
 	if connection.connect():
 		connection.execute("UPDATE employees \
@@ -968,7 +933,7 @@ def analyse_time_wise():
 	X = set(X)
 	X = list(X)
 	Y = [list([]) for i in range(13)]
-	
+	header = ["Year", "Month", "Number of Patient's Visits"]
 	for i in range(1,14):
 		for year in X:
 			if (i, year) not in subgraphs:
@@ -986,7 +951,7 @@ def analyse_time_wise():
 	title = {"text": 'Expiring Medicines'}
 	xAxis = {"categories": X}
 	yAxis = {"title": {"text": 'Expiring Medicines'}}
-	return render_template('/admin/analyse_rollup.html', chartID=chartID, chart=chart, series=series, title=title, xAxis=xAxis, yAxis=yAxis, table = x_y, eid = user.getName(), name = user.getusername())
+	return render_template('/admin/analyse_rollup.html', header=header, chartID=chartID, chart=chart, series=series, title=title, xAxis=xAxis, yAxis=yAxis, table = x_y, eid = user.getName(), name = user.getusername())
 
 @app.route('/admin/analyse_area_wise')
 def analyse_area_wise():
@@ -1029,7 +994,8 @@ def analyse_area_wise():
 	title = {"text": 'Number of Patients'}
 	xAxis = {"categories": X}
 	yAxis = {"title": {"text": 'Number of Patients'}}
-	return render_template('/admin/analyse_rollup.html', chartID=chartID, chart=chart, series=series, title=title, xAxis=xAxis, yAxis=yAxis, table = x_y, eid = user.getName(), name = user.getusername())
+	header = ["City", "District", "Number of Patients Residing"]
+	return render_template('/admin/analyse_rollup.html', header=header, chartID=chartID, chart=chart, series=series, title=title, xAxis=xAxis, yAxis=yAxis, table = x_y, eid = user.getName(), name = user.getusername())
 
 
 @app.route("/admin/add_employees", methods = ['GET', 'POST'])
@@ -1514,11 +1480,8 @@ def add_medicine(message = None):
 
 	if connection.connect():
 		companies = connection.execute("select CompanyID, Name from pharmaceutical_companies")
-	companies_dict = {}
-	for x in companies:
-		companies_dict[x[0]] = x[1]
 
-	return render_template("/pharmacist/add_medicines.html",  eid = user.getName(), name = user.getusername(), companies = companies_dict, message = message)
+	return render_template("/pharmacist/add_medicines.html",  eid = user.getName(), name = user.getusername(), companies = companies, message = message)
 
 @app.route("/pharmacist/added_medicine", methods = ['GET', 'POST'])
 def added_medicine():
@@ -1693,8 +1656,6 @@ def pharma_submit_edit_profile():
 	return pharma_edit_profile("Changes saved")
 
 ####################################################################	Pharmacist Ends ##############################################################################
-
-
 
 
 

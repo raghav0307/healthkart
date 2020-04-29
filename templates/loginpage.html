@@ -21,18 +21,18 @@
 		  			<li><input type="password" name="password" id="InputPassword" placeholder="Password"></li>
 		  			<li><button type="submit" value = "Submit">SUBMIT</button></li>
 		  		</ul>
-		  	</form>
-		 	<div>
-			{% with messages = get_flashed_messages(with_categories=true)%}
-		    		{% if messages %}
-		    			{% for category, message in messages %}
-				    		<div class="alert alert-{{ category }}">
-				    			{{ message }}
-				    		</div>
-				    	{% endfor %}
-		    		{% endif %}
+		  		<div>
+				{% with messages = get_flashed_messages(with_categories=true)%}
+			    		{% if messages %}
+			    			{% for category, message in messages %}
+					    		<div class="alert alert-{{ category }}">
+					    			{{ message }}
+					    		</div>
+					    	{% endfor %}
+			    		{% endif %}
 		    	{% endwith %}
-		    </div>
+			    </div>
+		  	</form>
 	  	</div>
 
 </body>

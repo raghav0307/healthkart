@@ -13,18 +13,18 @@
 		<h2>THE MEDICINE DISPENSARY</h2>
 		</div>
   	<div class="form-group-signup">
+      <div>
+        {% with messages = get_flashed_messages(with_categories=true)%}
+            {% if messages %}
+              {% for category, message in messages %}
+                <div class="alert alert-{{ category }}">
+                  {{ message }}
+                </div>
+              {% endfor %}
+            {% endif %}
+          {% endwith %}
+      </div>
       <form action="/signupEntry" method="POST">
-        <div>
-          {% with messages = get_flashed_messages(with_categories=true)%}
-              {% if messages %}
-                {% for category, message in messages %}
-                  <div class="alert alert-{{ category }}">
-                    {{ message }}
-                  </div>
-                {% endfor %}
-              {% endif %}
-            {% endwith %}
-        </div>
     		<ul class = "form-control-signup">
     			<li id = "signuptext">PATIENT SIGN UP</li>
     			<li>

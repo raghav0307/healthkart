@@ -29,7 +29,7 @@
                  <select id="id" name="Quantity">
                     <option value="{{medicine[6]}};0" selected>0</option>
                     {% for i in range(medicine[2])%}
-                    <option value="{{medicine[6]}};{{i + 1}}">{{i + 1}}</option>
+                    <option value="{{medicine[6]}};{{i + 1}};{{medicine[2]}}">{{i + 1}}</option>
                     {% endfor %}
                 </select>
                 </td>

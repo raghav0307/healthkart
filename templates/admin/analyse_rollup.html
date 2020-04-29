@@ -22,12 +22,16 @@
   <script src="../static/graphs.js"></script>
 
 <table style="width:100%; border-spacing:0;">
-            <tr><th>Year</th><th>Month</th><th>Number of Medicines</th></tr>
-            {%for row in table%}
-              <tr><td>{{row[0]}}</td>
-                <td>{{row[1]}}</td>
-                <td>{{row[2]}}</td>
-              </tr>
-            {%endfor%}
-          </table>
+  <tr>
+    {%for column in header%}
+    <th>{{column}}</th>
+    {%endfor%}
+  </tr>
+  {%for row in table%}
+    <tr><td>{{row[0]}}</td>
+      <td>{{row[1]}}</td>
+      <td>{{row[2]}}</td>
+    </tr>
+  {%endfor%}
+</table>
 {% endblock %}

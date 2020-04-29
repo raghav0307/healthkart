@@ -43,6 +43,10 @@ h2{
 	opacity: 1;
 }
 
+.alert-error{
+	color: black;
+	text-align: center;
+}
 
 #logintext{
 	font-family: 'Bangers', cursive;
@@ -57,8 +61,8 @@ h2{
 
 	min-width: 480px;
 	max-width: 480px;
-	min-height:330px;
-	max-height: 330px;
+	min-height: 400px;
+	max-height: 400px;
 	margin-top: 7%;
 	margin-left: 12%;
 	align-content: center;
