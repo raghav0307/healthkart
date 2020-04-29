@@ -649,10 +649,10 @@ def doc_show_record():
 
 @app.route("/doctors/patient_diagnose", methods = ['GET', 'POST'])
 def doc_patient_diagnose():
-	# medlist = [('mid1','zantc'), ('mid2','ranitidine')] #has to be input from sql database
-	# testlist = [('tid1','test1'), ('tid2','test2')]
-	# if session['logged_in'] == False:
-	# 	return redirect(url_for('home2'))
+
+	if session['logged_in'] == False:
+		return redirect(url_for('home2'))
+
 	if connection.connect():
 		medlist = connection.execute("select MedicineID, MedicineName from medicines;")
 		testlist = connection.execute("select TestName from labtests;")
@@ -664,6 +664,7 @@ def doc_patient_diagnose():
 
 	visits = int(visits[0][0])
 	visits += 1
+	visits_ = visits
 	visits = str(visits)
 	vid = "V" + "0"*(4-len(visits)) + visits
 	print(visits, vid)
@@ -687,92 +688,39 @@ def doc_patient_diagnose():
 	if form.validate_on_submit():
 		import datetime
 		inp = []
-		entry = [request.form['Patient Name'], request.form['Remarks']]
+		pid = request.form['Patient Name']
+		remarks =  request.form['Remarks']
 		tests = [request.form['Test'+str(i + 1)] for i in range(5)]
-		print(entry)
-		print(tests)
+		# print(entry, "entries")
+		print(tests, "tests")
 		print(form.meds.data)
 		for med in form.meds.data:
-			print(med)
+			print(med, "meds")
 			newinp = med
 		if connection.connect():
-			query = "insert into visits values('%s', '%s', '%s', '%s', '%s')" %(vid, str(entry[0]), doctorID, str(datetime.date.today()), str(entry[1]))
+			query1 = "insert into visits values('%s', '%s', '%s', '%s', '%s')" \
+			%(vid, pid, doctorID, datetime.date.today(), remarks)
+			# print(query)
+			queries = [query1]
 			for i in range(len(form.meds.data)):
 				mid = form.meds.data[i]['medicine_name']
 				quantity = int(form.meds.data[i]['quantity'])
 				query = "insert into medrecommended values('%s', '%s', '%s', '%d')" %(vid, mid, med_dict[mid], quantity)
-				connection.execute(query)
+				queries.append(query)
+		# 		connection.execute(query)
 			for test in tests:
 				if test != 'None':
 					query = "insert into testsrecommended values('%s', '%s')" %(vid, test)
-					connection.execute(query)
-			connection.execute("update metadata set entries = '%d' where TableName = '%s' ") %(visits, "visits")
+					queries.append(query)
+		# 			connection.execute(query)
+			queries.append("update metadata set entries = %d where TableName = '%s' " %(visits_, 'visits'))
+			connection.bulkModQueries(queries)
+		# 	connection.execute("update metadata set entries = '%d' where TableName = '%s' ") %(visits, "visits")
 
-	return render_template("doctor_diagnose.html", doctorID = doctorID, name = user.getusername(), form = form, medlist = medlist, testlist = testlist)
+	return render_template("doctor_diagnose.html", doctorID = doctorID, name = user.getusername(), \
+		form = form, medlist = medlist, testlist = testlist)
 	
-	# if session['logged_in'] == False:
-	# 	return redirect(url_for('home2'))
-	# print(medlist)
-
-	med_dict = {}
-	for tup in medlist:
-		med_dict[tup[0]] = tup[1]
-
-	visits = int(visits[0][0])
-	visits += 1
-	visits = str(visits)
-	vid = "V" + "0"*(4-len(visits)) + visits
-	print(visits, vid)
-
-	for i in range(len(testlist)):
-		testlist[i] = str(testlist[i][0])
-
-	# class MedForm(Form):
-	# 	medicine_name = SelectField(u'Medicine', choices=medlist)
-	# 	quantity = IntegerField('Quantity')
-
-	# class TestForm(Form):
-	# 	test_name = SelectField(u'Test', choices = testlist)
-	# 	quantity = IntegerField('Quantity')
-
-
-	class MainForm(FlaskForm):
-		meds = FieldList(
-			FormField(MedForm),
-			min_entries=1,
-			max_entries=30
-		)
-
-	doctorID = user.getName()
-
-	form = MainForm()
-	if form.validate_on_submit():
-		import datetime
-		inp = []
-		entry = [request.form['Patient Name'], request.form['Remarks']]
-		tests = [request.form['Test'+str(i + 1)] for i in range(5)]
-		print(entry, "entry")
-		print(tests, "tests")
-		print(form.meds.data, "meds data")
-		print("form validates")
-		for med in form.meds.data:
-			print(med)
-			newinp = med
-		if connection.connect():
-			# query = "insert into visits values('%s', '%s', '%s', '%s', '%s')" %(vid, str(entry[0]), doctorID, str(datetime.date.today()), str(entry[1]))
-			for i in range(len(forms.med.data)):
-				mid = forms.med.data[i]['medicine_name']
-				quantity = int(forms.med.data[i]['quantity'])
-				query = "insert into medrecommended values('%s', '%s', '%s', '%d')" %(vid, mid, med_dict[mid], quantity)
-				connection.execute(query)
-			for test in tests:
-				if test != 'None':
-					query = "insert into testsrecommended values('%s', '%s')" %(vid, test)
-					connection.execute(query)
-
-
-	return render_template("doctor_diagnose.html", doctorID = doctorID, name = user.getusername(), form = form, medlist = medlist, testlist = testlist)
-
+	
 @app.route("/doctors/patient_diagnose/submit", methods = ['GET', 'POST'])
 def doc_submit_patient_diagnose():
 	if session['logged_in'] == False:
@@ -787,8 +735,6 @@ def doc_submit_patient_diagnose():
 	tests
 	"""
 	entry = [request.form['Patient Name'], request.form['Remarks'], request.form['Medicine'], request.form['Test']]
-	print(entry, "entryyy")
-	#Store the entry in db
 	return doc_patient_diagnose()
 
 @app.route("/doctors/edit_profile")
