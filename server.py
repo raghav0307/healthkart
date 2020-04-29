@@ -655,47 +655,37 @@ def doc_patient_diagnose():
 	visits_ = visits
 	visits = str(visits)
 	vid = "V" + "0"*(4-len(visits)) + visits
-	print(visits, vid)
+	# print(visits, vid)
 
 	for i in range(len(testlist)):
 		testlist[i] = str(testlist[i][0])
 		
-	class MedForm(Form):
-		medicine_name = SelectField(u'Medicine', choices=medlist)
-		quantity = IntegerField('Quantity')
 
-	class MainForm(FlaskForm):
-		meds = FieldList(
-			FormField(MedForm),
-			min_entries=1,
-			max_entries=30
-		)
-
-	form = MainForm()
 	doctorID = user.getName()
-	if form.validate_on_submit():
+
+	if request.method == 'POST':
 		import datetime
 		inp = []
 		pid = request.form['Patient Name']
 		remarks =  request.form['Remarks']
 		tests = [request.form['Test'+str(i + 1)] for i in range(5)]
-		# print(entry, "entries")
-		print(tests, "tests")
-		print(form.meds.data)
-		for med in form.meds.data:
-			print(med, "meds")
-			newinp = med
+		meds = [(request.form['Med'+str(i + 1)],request.form['q'+str(i + 1)]) for i in range(5)]
+
 		if connection.connect():
 			query1 = "insert into visits values('%s', '%s', '%s', '%s', '%s')" \
 			%(vid, pid, doctorID, datetime.date.today(), remarks)
 			# print(query)
 			queries = [query1]
-			for i in range(len(form.meds.data)):
-				mid = form.meds.data[i]['medicine_name']
-				quantity = int(form.meds.data[i]['quantity'])
-				query = "insert into medrecommended values('%s', '%s', '%s', '%d')" %(vid, mid, med_dict[mid], quantity)
-				queries.append(query)
-		# 		connection.execute(query)
+
+			for med in meds:
+				if med[0] != 'None' and med[1] != 0:
+					mid_medname = med[0].split(';')
+					mid = mid_medname[0]
+					medname = mid_medname[1]
+					quantity = int(med[1])
+					query = "insert into medrecommended values('%s', '%s', '%s', %d)" %(vid, mid, medname, quantity)
+					queries.append(query)
+
 			for test in tests:
 				if test != 'None':
 					query = "insert into testsrecommended values('%s', '%s')" %(vid, test)
@@ -705,8 +695,7 @@ def doc_patient_diagnose():
 			connection.bulkModQueries(queries)
 		# 	connection.execute("update metadata set entries = '%d' where TableName = '%s' ") %(visits, "visits")
 
-	return render_template("doctor_diagnose.html", doctorID = doctorID, name = user.getusername(), \
-		form = form, medlist = medlist, testlist = testlist)
+	return render_template("doctor_diagnose.html", doctorID = doctorID, name = user.getusername(), medlist = medlist, testlist = testlist)
 	
 	
 @app.route("/doctors/patient_diagnose/submit", methods = ['GET', 'POST'])
@@ -944,7 +933,7 @@ def analyse_time_wise():
 	X = set(X)
 	X = list(X)
 	Y = [list([]) for i in range(13)]
-	
+	header = ["Year", "Month", "Number of Patient's Visits"]
 	for i in range(1,14):
 		for year in X:
 			if (i, year) not in subgraphs:
@@ -962,7 +951,7 @@ def analyse_time_wise():
 	title = {"text": 'Expiring Medicines'}
 	xAxis = {"categories": X}
 	yAxis = {"title": {"text": 'Expiring Medicines'}}
-	return render_template('/admin/analyse_rollup.html', chartID=chartID, chart=chart, series=series, title=title, xAxis=xAxis, yAxis=yAxis, table = x_y, eid = user.getName(), name = user.getusername())
+	return render_template('/admin/analyse_rollup.html', header=header, chartID=chartID, chart=chart, series=series, title=title, xAxis=xAxis, yAxis=yAxis, table = x_y, eid = user.getName(), name = user.getusername())
 
 @app.route('/admin/analyse_area_wise')
 def analyse_area_wise():
@@ -1005,7 +994,8 @@ def analyse_area_wise():
 	title = {"text": 'Number of Patients'}
 	xAxis = {"categories": X}
 	yAxis = {"title": {"text": 'Number of Patients'}}
-	return render_template('/admin/analyse_rollup.html', chartID=chartID, chart=chart, series=series, title=title, xAxis=xAxis, yAxis=yAxis, table = x_y, eid = user.getName(), name = user.getusername())
+	header = ["City", "District", "Number of Patients Residing"]
+	return render_template('/admin/analyse_rollup.html', header=header, chartID=chartID, chart=chart, series=series, title=title, xAxis=xAxis, yAxis=yAxis, table = x_y, eid = user.getName(), name = user.getusername())
 
 
 @app.route("/admin/add_employees", methods = ['GET', 'POST'])
@@ -1246,580 +1236,6 @@ def labtech_submit_edit_profile():
 			WHERE employeeid = '" + labtechid + "' ;", -1)
 
 	return edit_profile("Changes saved")
-
-##################################################################	Pharmacist #########################################a#######################################
-
-
-
-
-@app.route("/pharmacist/show_med")
-def pharmacist_show_meds():
-	if session['logged_in'] == False:
-		return redirect(url_for('home2'))
-
-	eid = user.getName()
-
-	import datetime
-	cur_date = datetime.date.today()
-	if connection.connect():
-		med_rec = connection.execute("select MedicineName, SaltName, Composition, \
-			QuantityAvailable, ExpiryDate, Cost from medicines join contains on medicines.MedicineID \
-			= contains.MedicineID join salts on salts.SaltID = contains.SaltID")
-
-	meds = []
-	for i in med_rec:
-		temp = []
-		for j in i:
-			temp.append(j)
-
-		if temp[4] <= cur_date:
-			temp.append("Expired")
-		else:
-			temp.append("Not Expired")
-		meds.append(temp)
-
-	return render_template("/pharmacist/all_meds.html", eid = eid, medicines = meds, name = user.getusername())
-
-
-@app.route("/pharmacist/medicine_info")
-def pharmacist_med_info(message = []):
-	if session['logged_in'] == False:
-		return redirect(url_for('home2'))
-
-	eid = user.getName()
-
-	if connection.connect():
-		medicines = connection.execute("select MedicineID, MedicineName from medicines")
-		salts = connection.execute("select SaltID, SaltName from salts")
-
-	medicines.sort(key = lambda x: x[1])
-
-	medicines = [(0, "None")] + medicines
-
-	salts = [(0, "None")] + salts
-
-	return render_template("/pharmacist/med_info.html", eid = eid, med = medicines, salts = salts, name = user.getusername(), message = message)
-
-
-@app.route("/pharmacist/showMed", methods = ['GET', 'POST'])
-def pharmacist_search_meds():
-	if session['logged_in'] == False:
-		return redirect(url_for('home2'))
-
-	import datetime
-	cur_date = datetime.date.today()
-	
-	eid = user.getName()
-
-	submitVal = request.form['submit']
-
-	if submitVal == "Search":
-		meds = request.form['MedicineName1']
-		meds = meds.split(";")
-		mid = meds[0]
-		mname = meds[1]
-
-		if connection.connect():
-			meds = connection.execute("select MedicineName, SaltName, QuantityAvailable, ExpiryDate, Cost, \
-				Composition, medicines.MedicineID  from medicines join contains on medicines.MedicineID = contains.MedicineID \
-				join salts on salts.SaltID = contains.SaltID where medicines.MedicineID = '%s'" %(mid))
-
-	elif submitVal == "Search Similar":
-		medicineName = request.form['MedicineName']
-
-		if (connection.connect()):
-			meds = connection.execute("select MedicineName, SaltName, QuantityAvailable, ExpiryDate, Cost, \
-				Composition, medicines.MedicineID  from medicines join contains on medicines.MedicineID = contains.MedicineID \
-				join salts on salts.SaltID = contains.SaltID where medicines.MedicineName like ('%%%s%%')" %(medicineName))
-
-	elif submitVal == "Search Salt":
-		salts = request.form['Salt1'].split(";")
-
-		sid = salts[0]
-		sname = salts[1]
-
-		if (connection.connect()):
-			meds = connection.execute("select MedicineName, SaltName, QuantityAvailable, ExpiryDate, Cost, \
-				Composition, medicines.MedicineID  from medicines join contains on medicines.MedicineID = contains.MedicineID \
-				join salts on salts.SaltID = contains.SaltID where salts.SaltID = '%s'" %(sid))
-
-
-
-	elif submitVal == "Search Similar Salts":
-		sname = request.form['SaltName']
-
-		meds = connection.execute("select MedicineName, SaltName, QuantityAvailable, ExpiryDate, Cost, \
-				Composition, medicines.MedicineID  from medicines join contains on medicines.MedicineID = contains.MedicineID \
-				join salts on salts.SaltID = contains.SaltID where salts.SaltName like ('%%%s%%')" %(sname))
-
-	expired_med = []
-	not_expired = []
-
-	for i in meds:
-		if i[3] < cur_date:
-			expired_med.append(i)
-		else:
-			not_expired.append(i)
-
-	# expired_med = [['medname', 'saltname', 'quantity', 'expiry', 'cost', 'Composition', 'medid'], ['medname', 'saltname', 'quantity', 'expiry', 'cost', 'Composition', 'medid2']]		#Get this explicitly
-	return render_template("/pharmacist/show_med.html", eid = eid, expired_med = expired_med, \
-		not_expired = not_expired, name = user.getusername())
-
-@app.route("/pharmacist/deleted_med", methods = ['GET', 'POST'])
-def deleted_med():
-	if session['logged_in'] == False:
-		return redirect(url_for('home2'))
-
-	deleted =  request.form.getlist('deleted')		#delete the medicines, Medicine Id's will be returned
-
-	if connection.connect():
-		queries = []
-		for i in deleted:
-			queries.append("delete from contains where MedicineID = '%s'" %(i))
-			queries.append("delete from medicines where MedicineID = '%s'" %(i))
-
-		connection.bulkModQueries(queries)
-
-	return pharmacist_med_info(deleted)
-
-@app.route("/pharmacist/select_dispatch")
-def select_dispatch(message = None):
-	if session['logged_in'] == False:
-		return redirect(url_for('home2'))
-
-	eid = user.getName()
-
-	if connection.connect():
-		medicines = connection.execute("select MedicineID, MedicineName from medicines")
-		salts = connection.execute("select SaltID, SaltName from salts")
-
-	medicines.sort(key = lambda x: x[1])
-
-	medicines = [(0, "None")] + medicines
-
-	salts = [(0, "None")] + salts
-
-	return render_template("/pharmacist/select_dispatch.html", eid = eid, med = medicines, salts = salts, name = user.getusername(), message = message)
-
-@app.route("/pharmacist/dispatch_med", methods = ['GET', 'POST'])
-def dispatch_med():
-	if session['logged_in'] == False:
-		return redirect(url_for('home2'))
-
-	eid = user.getName()
-
-	submitVal = request.form['submit']
-
-	if submitVal == "Search":
-		meds = request.form['MedicineName1']
-		meds = meds.split(";")
-		mid = meds[0]
-		mname = meds[1]
-
-		if connection.connect():
-			meds = connection.execute("select MedicineName, SaltName, QuantityAvailable, ExpiryDate, Cost, \
-				Composition, medicines.MedicineID  from medicines join contains on medicines.MedicineID = contains.MedicineID \
-				join salts on salts.SaltID = contains.SaltID where medicines.MedicineID = '%s' and \
-				ExpiryDate > curdate()" %(mid))
-
-	elif submitVal == "Search Similar":
-		medicineName = request.form['MedicineName']
-
-		if (connection.connect()):
-			meds = connection.execute("select MedicineName, SaltName, QuantityAvailable, ExpiryDate, Cost, \
-				Composition, medicines.MedicineID  from medicines join contains on medicines.MedicineID = contains.MedicineID \
-				join salts on salts.SaltID = contains.SaltID where medicines.MedicineName like ('%%%s%%') \
-				and ExpiryDate > curdate()" %(medicineName))
-
-	elif submitVal == "Search Salt":
-		salts = request.form['Salt1'].split(";")
-
-		sid = salts[0]
-		sname = salts[1]
-
-		if (connection.connect()):
-			meds = connection.execute("select MedicineName, SaltName, QuantityAvailable, ExpiryDate, Cost, \
-				Composition, medicines.MedicineID  from medicines join contains on medicines.MedicineID = contains.MedicineID \
-				join salts on salts.SaltID = contains.SaltID where salts.SaltID = '%s' and ExpiryDate > curdate()"
-				 %(sid))
-
-
-
-	elif submitVal == "Search Similar Salts":
-		sname = request.form['SaltName']
-
-		meds = connection.execute("select MedicineName, SaltName, QuantityAvailable, ExpiryDate, Cost, \
-				Composition, medicines.MedicineID  from medicines join contains on medicines.MedicineID = contains.MedicineID \
-				join salts on salts.SaltID = contains.SaltID where salts.SaltName like ('%%%s%%') and \
-				 ExpiryDate > curdate()" %(sname))
-
-	meds.sort()
-	return render_template("/pharmacist/dispatch_med.html", eid = eid, meds = meds, name = user.getusername())
-
-@app.route("/pharmacist/dispatched", methods = ['GET', 'POST'])
-def dispatched():
-	if session['logged_in'] == False:
-		return redirect(url_for('home2'))
-
-	patientID = request.form.get('patientID')			
-	indented = request.form.getlist('Quantity')
-	dispach = {}
-	for x in indented:
-		y = x.split(';')
-		if int(y[1]) != 0:
-			dispach[y[0]] = [int(y[1]), int(y[2])]
-	# print(dispach)					#remove the deleted messages from database
-
-	if connection.connect():
-		queries = []
-
-		for i in dispach:
-			new = dispach[i][1] - dispach[i][0]
-			dispach[i][1] = new
-			queries.append("update medicines set QuantityAvailable = %d where MedicineID = '%s'" %(new, i))
-
-		connection.bulkModQueries(queries)
-
-	message = [patientID, dispach]
-	return select_dispatch(message);
-
-@app.route("/pharmacist/add_medicine")
-def add_medicine(message = None):
-	if session['logged_in'] == False:
-		return redirect(url_for('home2'))
-
-	if connection.connect():
-		companies = connection.execute("select CompanyID, Name from pharmaceutical_companies")
-	companies_dict = {}
-	for x in companies:
-		companies_dict[x[0]] = x[1]
-
-	return render_template("/pharmacist/add_medicines.html",  eid = user.getName(), name = user.getusername(), companies = companies_dict, message = message)
-
-@app.route("/pharmacist/added_medicine", methods = ['GET', 'POST'])
-def added_medicine():
-	if session['logged_in'] == False:
-		return redirect(url_for('home2'))
-
-	name = request.form.get('name')
-	salts = request.form.get('Saltname').split(";")
-	salt_quant = list(map(int, request.form.get('Saltquantity').split(";")))
-	quantity = int(request.form.get('quantity'))
-	expiry_date = request.form.get('expiry')
-	company = request.form.get('company').split(";")[0]
-	cost = int(request.form.get('cost'))
-	added_med = [name] + salts +  [str(quantity), str(expiry_date), str(company)]
-
-	if connection.connect():
-		not_found = []
-		for i in salts:
-			res = connection.execute("select * from salts where SaltName = '%s'" %(i))
-			if len(res) == 0:
-				not_found.append(i)
-
-		if len(not_found)!=0:
-			saltID = connection.execute("select Entries from metadata where TableName = 'salts'")
-			saltID = saltID[0][0]
-
-			queries = []
-
-			for i in not_found:
-				saltID += 1
-				sid = "S" + "0"*(4 - len(str(saltID))) + str(saltID)
-				queries.append("insert into salts values ('%s','%s')" %(sid, i))
-				
-
-			queries.append("update metadata set Entries = %d where TableName = 'salts'" %(saltID))
-
-			connection.bulkModQueries(queries)
-
-		mid = connection.execute("select Entries from metadata where TableName = 'medicines'")
-
-		mid = mid[0][0] + 1
-
-		mid_ = "M" + "0"*(9 - len(str(mid))) + str(mid)
-
-		query_1 = "insert into medicines values ('%s', '%s', %d, '%s', %d, '%s')" %(mid_, name, quantity, \
-			expiry_date, cost, company)
-		query_2 = "update metadata set Entries = %d where TableName = 'medicines'" %(mid)
-
-		connection.bulkModQueries([query_1, query_2])
-
-		query_set = []
-
-		res = connection.execute("select * from salts")
-		salt_dict = {}
-
-		for i in res:
-			salt_dict[i[1]] = i[0]
-		print(salt_dict)
-
-		for i in range(len(salts)):
-			query_set.append("insert into contains values ('%s', '%s', %d)" %(mid_, salt_dict[salts[i]], salt_quant[i]))
-
-		connection.bulkModQueries(query_set)
-
-
-	return add_medicine(added_med)
-
-
-@app.route("/pharmacist/all_companies")
-def all_companies(message1 = None, message2 = None):
-	if session['logged_in'] == False:
-		return redirect(url_for('home2'))
-
-	if connection.connect():
-		companies = connection.execute("select * from pharmaceutical_companies")
-
-	return render_template("/pharmacist/all_companies.html", eid = user.getName(), name = user.getusername(), companies = companies, message1 = message1, message2 = message2)
-
-@app.route("/pharmacist/added_company", methods = ['GET', 'POST'])
-def add_company():
-	if session['logged_in'] == False:
-		return redirect(url_for('home2'))
-
-	name = request.form.get("name")
-	phone = request.form.get("phone").split("-")
-	phone = "".join(phone)
-
-	if connection.connect():
-		companyId = connection.execute("select count(1) from pharmaceutical_companies")
-		companyId = companyId[0][0] + 1
-
-		companyId = "C" + "0" * (4 - len(str(companyId))) + str(companyId)
-		added = [companyId, name, phone] 	#add to sql
-
-		connection.execute("insert into pharmaceutical_companies values ('%s', '%s', '%s')" %(companyId, name, phone), -1)
-
-	return all_companies(added, None)
-
-@app.route("/pharmacist/edited_company", methods = ['GET', 'POST'])
-def edit_company():
-	if session['logged_in'] == False:
-		return redirect(url_for('home2'))
-		
-	id_name = request.form.get("name").split(';')
-	companyId = id_name[0]
-	name = id_name[1]
-	phone = request.form.get("phone").split("-")
-	phone = "".join(phone)
-	edited = [companyId, name, phone]
-
-	if connection.connect():
-		connection.execute("update pharmaceutical_companies set Contact_Number = '%s'\
-		 where CompanyID = '%s'" %(phone, companyId), -1)
-
-	return all_companies(None, edited)
-
-@app.route("/pharmacist/edit_profile")
-def pharma_edit_profile(message = None):
-	if session['logged_in'] == False:
-		return redirect(url_for('home2'))
-
-	eid = user.getName()
-	if connection.connect():
-		profile_info = connection.execute("select * from employees where employeeid = '" + str(eid) + "';")
-		profile_info = profile_info[0]
-	return render_template("/pharmacist/pharma_edit.html", eid = eid, profile_info = profile_info, name = user.getusername(), message = message)
-
-@app.route("/pharmacist/pharma_edit_profile/submit", methods = ['GET', 'POST'])
-def pharma_submit_edit_profile():
-	if session['logged_in'] == False:
-		return redirect(url_for('home2'))
-
-	eid = user.getName()
-
-	# employeeId = request.form['Employee ID']
-	# name = request.form['Name']
-	# gender = request.form['Gender']
-	occupation = request.form['Occupation']
-	# jdate = request.form['Joining Date']
-	houseno = request.form['House No']
-	street = request.form['Street']
-	city = request.form['City']
-	state = request.form['State']
-	district = request.form['District']
-	pincode = request.form['Pin Code']
-	contactno = request.form['Contact Number']
-	# salary = request.form['Salary']
-
-	print("UPDATE employees \
-			SET occupation = '" + occupation + "', \
-				houseno = '" + houseno + "', \
-				street = '" + street + "', \
-				city = '" + city + "', \
-				state = '" + state + "', \
-				district = '" + district + "', \
-				pincode = '" + pincode + "', \
-				contactnumber = '" + contactno + "' \
-			WHERE employeeid = '" + eid + "' ;")
-
-	if connection.connect():
-		connection.execute("UPDATE employees \
-			SET occupation = '" + occupation + "', \
-				houseno = '" + houseno + "', \
-				street = '" + street + "', \
-				city = '" + city + "', \
-				state = '" + state + "', \
-				district = '" + district + "', \
-				pincode = '" + pincode + "', \
-				contactnumber = '" + contactno + "' \
-			WHERE employeeid = '" + eid + "' ;", -1)
-
-	return pharma_edit_profile("Changes saved")
-
-####################################################################	Pharmacist Ends ##############################################################################
-
-
-
-
-
-
-#############################################################	ADMIN ENDS ############################################################################
-
-
-@app.route("/labtech")
-def labtech_home():
-	if session['logged_in'] == False:
-		return redirect(url_for('home2'))
-
-	if connection.connect():
-		tests = connection.execute("select TestName, TestDescription, TestCost from \
-			labtests where TechnicianID = '%s'" %(user.getName()))
-	
-	return render_template("labtech_home.html", labtechID = user.getName(), \
-		name = user.getusername(), tests = tests)
-
-@app.route("/labtech/test_report")
-def labtech_test_report():
-	if session['logged_in'] == False:
-		return redirect(url_for('home2'))
-	
-	if connection.connect():
-		tests = connection.execute("select VisitDate, p.PatientName, \
-		patientage.age, test_reports.TestName, TestResult from test_reports join (select Testname, TechnicianID from \
-			labtests where TechnicianID = '%s') as lt on\
-		 test_reports.TestName = lt.TestName join (select VisitID, PatientID, VisitDate from visits) as v \
-		  on v.VisitID = test_reports.VisitID \
-		 join (select PatientID, PatientName from patients) as p on p.PatientID = v.PatientID join patientage on \
-		 p.PatientID = patientage.PatientID order by (VisitDate) desc" %(user.getName()))
-
-	return render_template("labtech_test_report.html", labtechID = user.getName(), name = user.getusername(), tests = tests)
-
-@app.route("/labtech/test_info")
-def labtech_test_info():
-	if session['logged_in'] == False:
-		return redirect(url_for('home2'))
-
-	if connection.connect():
-		tests = connection.execute('select testname from labtests')
-	
-	return render_template("labtech_test_info.html", labtechID = user.getName(), name = user.getusername(), tests = tests)
-
-@app.route("/labtech/show_test", methods = ['GET', 'POST'])
-def labtech_show_test():
-	if session['logged_in'] == False:
-		return redirect(url_for('home2'))
-
-	testname = request.form['TestName']
-
-	if connection.connect():
-		test_info = connection.execute("select * from labtests where testname = '" + testname + "';")
-		test_results = connection.execute("select * from testnormalresults where testname = '" + testname + "'")
-	
-	return render_template("labtech_show_test.html", labtechID = user.getName(), name = user.getusername(), test_info = test_info[0], test_results = test_results)
-
-
-@app.route("/labtech/patient_record")
-def labtech_patient_record():
-	if session['logged_in'] == False:
-		return redirect(url_for('home2'))
-	
-	return render_template("labtech_patient_record.html", labtechID = user.getName(), name = user.getusername())
-
-@app.route("/labtech/show_patient", methods = ['GET', 'POST'])
-def labtech_show_patient():
-	if session['logged_in'] == False:
-		return redirect(url_for('home2'))
-
-	if (connection.connect()):
-		patientName = request.form['PatientID']
-		reports = connection.execute("select doctors.DoctorName, doctors.DepartmentName, \
-		 visits.visitdate, visits.doctorremarks, medrecommended.medicinename,\
-		 medrecommended.quantity  from visits inner join medrecommended on \
-		 visits.visitid = medrecommended.visitid  join doctors on \
-		 visits.doctorID = doctors.doctorID where visits.patientid = '" + patientName + "' \
-		 order by (visits.visitdate) desc")
-
-	return render_template("labtech_show_patient.html", labtechID = user.getName(), name = user.getusername(), reports = reports)
-
-
-@app.route("/labtech/publish_report")
-def labtech_publish_report(message = None):
-	if session['logged_in'] == False:
-		return redirect(url_for('home2'))
-	
-	if connection.connect():
-		labtechID = user.getName()
-		tests = connection.execute("select testname from labtests where technicianid ='" + labtechID + "'")
-
-	return render_template("labtech_publish_report.html", labtechID = user.getName(), name = user.getusername(), tests = tests, message = message)
-
-@app.route("/labtech/submit_report", methods = ['GET', 'POST'])
-def labtech_submit_report():
-	if session['logged_in'] == False:
-		return redirect(url_for('home2'))
-	
-	if connection.connect():
-		visitid = request.form['visitid']
-		test = request.form['test']
-		result = request.form['testresult']
-		connection.execute("insert into test_reports values ('" + visitid + "', '" + test + "', '" + result + "')", -1)
-
-	return labtech_publish_report(message="Report Submitted")
-
-
-@app.route("/labtech/edit_profile")
-def labtech_edit_profile(message = None):
-	if session['logged_in'] == False:
-		return redirect(url_for('home2'))
-	
-	labtechID = user.getName()
-	profile_info = connection.execute("select * from employees where employeeid = '" + labtechID + "';")
-	profile_info = profile_info[0]
-
-	return render_template("labtech_edit_profile.html", labtechID = user.getName(), name = user.getusername(), profile_info = profile_info, message = message)
-
-@app.route("/labtech/edit_profile/submit", methods = ['GET', 'POST'])
-def labtech_submit_edit_profile():
-	if session['logged_in'] == False:
-		return redirect(url_for('home2'))
-
-	labtechid = user.getName()
-
-	occupation = request.form['Occupation']
-	houseno = request.form['House No']
-	street = request.form['Street']
-	city = request.form['City']
-	state = request.form['State']
-	district = request.form['District']
-	pincode = request.form['Pin Code']
-	contactno = request.form['Contact Number']
-	
-	if connection.connect():
-		connection.execute("UPDATE employees \
-			SET occupation = '" + occupation + "', \
-				houseno = '" + houseno + "', \
-				street = '" + street + "', \
-				city = '" + city + "', \
-				state = '" + state + "', \
-				district = '" + district + "', \
-				pincode = '" + pincode + "', \
-				contactnumber = '" + contactno + "' \
-			WHERE employeeid = '" + labtechid + "' ;", -1)
-
-	return edit_profile("Changes saved")
-
 
 ##################################################################	Pharmacist #########################################a#######################################
 
