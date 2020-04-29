@@ -1,0 +1,68 @@
+html, body {
+	height: 100%;
+	background: url(about_back.jpg) no-repeat center center fixed;
+	-webkit-background-size: cover;
+	-moz-background-size: cover;
+	-o-background-size: cover;
+	background-size: cover;
+	
+}
+
+.panel h1{
+	font-family: 'Raleway', sans-serif;
+	font-size: 5rem;
+	font-weight: 500px;
+	margin-left: 3%;
+	text-align-last: left;
+	color: #7ef9ff;
+	margin-bottom: 5px;
+	margin-top: 3%;
+	opacity: 1;
+}
+
+.panel h2{
+	font-family: 'Raleway', sans-serif;
+	font-size: 0.7rem;
+	font-weight: 400px;
+	text-align-last: left;
+	margin-left: 3.5%;
+	letter-spacing: 0.5rem;
+	color: #ffffff;
+	text-transform: uppercase;
+	opacity: 1;
+}
+
+.box{
+	border: 20px solid #bdc3c7;
+	border-radius: 5px;
+	padding: 20px;
+	width: 60%;
+	margin: 30px auto;
+	opacity: 1;
+}
+
+.box h2{
+	font-family: 'Manrope', sans-serif;
+	font-weight: 500px;
+	font-size: 2.5rem;
+	color: #7ef9ff;
+	opacity: 1;
+	border-bottom: solid #bdc3c7;
+	padding-bottom: 10px;
+}
+
+p{
+	font-family: 'Poppins', sans-serif; 
+	font-size: 1.2rem;
+	color: #ffffff;
+	opacity: 1;
+	text-align: justify;
+}
+
+ul{
+	font-family: 'Poppins', sans-serif; 
+	font-size: 1.2rem;
+	color: #ffffff;
+	opacity: 1;
+	text-align: justify;
+}

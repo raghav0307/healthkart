@@ -8,7 +8,7 @@ html
 body
 { font-family: 'Poppins', sans-serif; 
   font-size: .80em;
-  background: url(doctors_bg.jpeg) no-repeat center center fixed;
+  background: url(doctors_bg.jpg) no-repeat center center fixed;
     -webkit-background-size: cover;
     -moz-background-size: cover;
     -o-background-size: cover;
@@ -83,6 +83,62 @@ ol
 ol li
 { margin: 0 0 11px 0;}
 
+
+.input{
+  max-width: 350px;
+  min-width: 350px;
+  margin-right: 20px;
+  padding: 5px 5px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 120%;
+  border-radius: 10px;
+  background-color: none;
+  border: 1px solid grey;
+  color: #000000;
+}
+
+.remarks{
+  max-width: 350px;
+  min-width: 350px;
+  height: 50px;
+  margin-right: 20px;
+  padding: 5px 5px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 120%;
+  border-radius: 10px;
+  background-color: none;
+  border: 1px solid grey;
+  color: #000000;
+}
+
+input[type = submit]{
+  width: 100px;
+  padding: 5px 5px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 120%;
+  color: #ffffff;
+  -webkit-border-radius: 10px;
+  background-image: linear-gradient(to right, #DD5E89 10%, #B60000 90%);
+}
+
+input[type = submit]:hover { 
+  background-image: linear-gradient(to right, #B60000 10%, #DD5E89 90%); 
+}
+
+.button_submit{
+  width: 100px;
+  padding: 5px 5px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 120%;
+  color: #ffffff;
+  -webkit-border-radius: 10px;
+  background-image: linear-gradient(to right, #DD5E89 10%, #B60000 90%);
+}
+
+.button_submit:hover { 
+  background-image: linear-gradient(to right, #B60000 10%, #DD5E89 90%); 
+}
+
 .left
 { float: left;
   width: auto;
@@ -125,19 +181,20 @@ input[type = submit]:hover {
 }
 
 #main, #header, #logo, #menubar, #site_content, #footer
-{ margin-left: auto; 
+{ margin-left: 0; 
   margin-right: auto;}
 
 #main
-{ width: 950px;
-  margin: 20px auto;}
+{ width: 1150px;
+  margin: 20px 100px auto 200px;}
 
 #header
-{ width: 950px;
-  height: 121px;}
+{ width: 1150px;
+  height: 121px;
+  margin-left: 0;}
 
 #logo
-{ width: 910px;
+{ width: 1150px;
   position: relative;
   height: 100px;
   background: transparent;
@@ -165,13 +222,14 @@ input[type = submit]:hover {
   color: #ffffff;}
 
 #menubar
-{ height: 46px;
-  width: 950px;
-  margin: 1px auto 0 auto;
+{ height: 50px;
+  width: 1150px;
+  margin: 1px auto 0 0;
   background: transparent url(tab.png);} 
 
 ul#menu
 { float: left;
+  width: 1150px;
   margin: 0;padding: 0;}
 
 ul#menu li
@@ -182,7 +240,7 @@ ul#menu li
 
 ul#menu li a
 { font-family: 'Manrope', sans-serif;
-  font-size: 90%;
+  font-size: 105%;
   text-transform: uppercase;
   font-style: normal;
   display: block; 
@@ -207,9 +265,9 @@ ul#menu li a:hover
 }
 
 #site_content
-{ width: 925px;
+{ width: 1125px;
   overflow: hidden;
-  margin: 44px auto 0 auto;
+  margin: 44px 0 0 auto;
   padding: 10px 0 0 25px;
   background: #EEE;
   border-top: 0;
@@ -260,7 +318,7 @@ ul#menu li a:hover
 
 #content
 { text-align: left;
-  width: 855px;
+  width: 1000px;
   padding: 15px 0 20px 0;
   margin: 0;}
 
@@ -275,7 +333,7 @@ ul#menu li a:hover
   line-height: 1.5em;}
 
 #footer
-{ width: 950px;
+{ width: 1150px;
   font: normal 90% 'trebuchet ms',  arial, sans-serif;
   height: 65px;
   padding: 20px 0 5px 0;

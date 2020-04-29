@@ -1,12 +1,26 @@
 {% extends "/pharmacist/pharmacist.html" %}
 
+{% block menu %}
+          <li><a href="/pharmacist/show_med">All Medicines</a></li>
+          <li><a href="/pharmacist/medicine_info">Search Medicines</a></li>
+          <li class="selected"><a href="/pharmacist/select_dispatch">Dispatch Medicines</a></li>
+          <li><a href="/pharmacist/add_medicine">Add Medicines</a></li>
+          <li><a href="/pharmacist/all_companies">Medicine Companies</a></li>
+          <li><a href="/pharmacist/edit_profile">Edit Profile</a></li>
+          <li><a href="/signout">Sign Out</a></li>
+{% endblock %}
+
+
+
 {% block content %}
 
-
-{%for x in message%}
-  <p>Deleted {{x}}</p>
-{%endfor%}
-<h2>Enter Medicine Name to get info</h2>
+{% if message != None%}
+  Indented the following medicines to patient {{message[0]}}
+  {%for x, y in message[1].items()%}
+    <p>{{x}} - {{y}}</p>
+  {%endfor%}
+{% endif %}
+<h2>Enter Medicine Name to indent</h2>
         <form action="/pharmacist/dispatch_med" method="POST">
           <select id="id" name="MedicineName1">
               {% for mid, mname in med%}
@@ -16,7 +30,7 @@
           <input type="submit" name = "submit" value="Search"><br><br>
           <input type="text" name="MedicineName" placeholder="MedicineName">
           <input type="submit" name = "submit" value="Search Similar">
-          <h2>Enter Salt Name to get info</h2>
+          <h2>Enter Salt Name to indent</h2>
           <select id="id" name="Salt1">
               {% for sid, sname in salts%}
               <option value="{{sid}};{{sname}}">{{sname}}</option>

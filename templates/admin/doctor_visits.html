@@ -1,0 +1,29 @@
+{% extends "/admin/admin.html" %}
+
+{% block menu %}
+          <li class="selected"><a href="/pharmacist/show_med">All Medicines</a></li>
+          <li><a href="/pharmacist/medicine_info">Search Medicines</a></li>
+          <li><a href="/pharmacist/select_dispatch">Dispatch Medicines</a></li>
+          <li><a href="/pharmacist/add_medicine">Add Medicines</a></li>
+          <li><a href="/pharmacist/all_companies">Medicine Companies</a></li>
+          <li><a href="/pharmacist/edit_profile">Edit Profile</a></li>
+          <li><a href="/signout">Sign Out</a></li>
+{% endblock %}
+
+
+{% block content %}
+<div class="wrap">   
+  <h2>Horizontal Bar Chart</h2>
+  <div class="barGraph">
+    <ul class="graph">
+      {% for val in data %}
+      <span class="graph-barBack">
+        <li class="graph-bar" data-value="{{val[1]}}">
+          <span class="graph-legend">{{val[0]}}</span>
+        </li>
+      </span>  
+      {% endfor %}
+    </ul>
+  </div>
+</div>
+{% endblock %}

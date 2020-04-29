@@ -143,13 +143,13 @@
       <div id="content">
         <h2>Diagnose Patient</h2>
         <!-- <form action="/doctors/patient_diagnose" method="POST">
-          <input type="text" name="Patient Name" placeholder="Patient Name">
+          <input class = "input" type="text" name="Patient Name" placeholder="Patient Name">
           <br>
-          <input type="text" name="Remarks" placeholder="Remarks">
+          <input class = "remarks" type="text" name="Remarks" placeholder="Remarks">
           <br>
-          <input type="text" name="Medicine" placeholder="Medicine Name">
+          <input class = "input" type="text" name="Medicine" placeholder="Medicine Name">
           <br>
-          <input type="text" name="Test" placeholder="Test Name">
+          <input class = "input" type="text" name="Test" placeholder="Test Name">
           <br>
           <input type="submit" value="Add">
         </form>
@@ -158,16 +158,21 @@
         <form id="med-form" action="/doctors/patient_diagnose" method="POST" role="form">
             {{ form.hidden_tag() }}
 
-            <input type="text" name="Patient Name" placeholder="Patient Name">
+            <input class = "input" type="text" name="Patient Name" placeholder="Patient Name">
             <br>
-            <input type="text" name="Remarks" placeholder="Remarks">
+            <input class = "remarks" type="text" name="Remarks" placeholder="Remarks">
             <br>
             <div id="subforms-container">
                 {% for subform in form.meds %}
                     <div id="med-{{ loop.index0 }}-form" class="subform" data-index="{{ loop.index0 }}">
                         {{ subform.medicine_name.label }}
                         {{ subform.medicine_name }}
-                    
+                        <!-- <select id="id" name="MedicineName1">
+                            {% for mid, mname in medlist%}
+                            <option value="{{mid}};{{mname}}">{{mname}}</option>
+                            {% endfor %}
+                        </select> -->
+
                         {{ subform.quantity.label }}
                         {{ subform.quantity}}
 

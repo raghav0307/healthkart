@@ -1,5 +1,15 @@
 {% extends "/pharmacist/pharmacist.html" %}
 
+{% block menu %}
+          <li><a href="/pharmacist/show_med">All Medicines</a></li>
+          <li class="selected"><a href="/pharmacist/medicine_info">Search Medicines</a></li>
+          <li><a href="/pharmacist/select_dispatch">Dispatch Medicines</a></li>
+          <li><a href="/pharmacist/add_medicine">Add Medicines</a></li>
+          <li><a href="/pharmacist/all_companies">Medicine Companies</a></li>
+          <li><a href="/pharmacist/edit_profile">Edit Profile</a></li>
+          <li><a href="/signout">Sign Out</a></li>
+{% endblock %}
+
 {% block content %}
 
 

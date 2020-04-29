@@ -1,0 +1,574 @@
+html
+{ height: 100%;}
+
+*
+{ margin: 0;
+  padding: 0;}
+
+body
+{ font: normal .80em 'trebuchet ms', arial, sans-serif;
+  background: #646557 url(doctors_bg.jpeg) repeat fixed;
+  color: #5D5D5D;}
+
+p
+{ padding: 0 0 15px 0;
+  line-height: 1.5em;}
+
+img
+{ border: 0;}
+
+h1, h2, h3, h4, h5, h6 
+{ font: normal 175% 'century gothic', arial, sans-serif;
+  color: #43423F;
+  margin: 0 0 15px 0;
+  padding: 5px 0 5px 0;}
+
+h2
+{ font: normal 175% 'century gothic', arial, sans-serif;
+  color: #B60000;
+  padding: 15px 0 5px 0;}
+
+h3
+{ font: normal 165% 'century gothic', arial, sans-serif;}
+
+h4, h5, h6
+{ margin: 0;
+  padding: 0 0 5px 0;
+  font: normal 120% arial, sans-serif;
+  color: #B60000;}
+
+h5, h6
+{ font: italic 95% arial, sans-serif;
+  color: #888;}
+
+h6
+{ color: #362C20;}
+
+a, a:hover
+{ background: transparent;
+  outline: none;
+  text-decoration: underline;
+  color: #51A9FB;}
+
+a:hover
+{ text-decoration: none;
+  color: #5D5D5D;}
+
+ul
+{ margin: 2px 0 22px 17px;}
+
+ul li
+{ list-style-type: circle;
+  margin: 0 0 6px 0; 
+  padding: 0 0 4px 5px;}
+
+ol
+{ margin: 8px 0 22px 20px;}
+
+ol li
+{ margin: 0 0 11px 0;}
+
+.left
+{ float: left;
+  width: auto;
+  margin-right: 10px;}
+
+.right
+{ float: right; 
+  width: auto;
+  margin-left: 10px;}
+
+.center
+{ display: block;
+  text-align: center;
+  margin: 20px auto;}
+
+#main, #header, #logo, #menubar, #site_content, #footer
+{ margin-left: auto; 
+  margin-right: auto;}
+
+#main
+{ width: 950px;
+  margin: 20px auto;}
+
+#header
+{ width: 950px;
+  height: 121px;}
+
+#logo
+{ width: 910px;
+  position: relative;
+  height: 100px;
+  background: transparent;
+  padding: 10px 0 10px 0;}
+
+#logo h1, #logo h2
+{ font: normal 300% 'century gothic', arial, sans-serif;
+  border-bottom: 0;
+  text-transform: none;
+  margin: 0 0 0 9px;}
+
+#logo_text h1, #logo_text h1 a, #logo_text h1 a:hover 
+{ padding: 0px 0 0 0;
+  color: #A8AA94;
+  letter-spacing: 0.1em;
+  text-decoration: none;}
+
+#logo_text h1 a .logo_colour
+{ color: #FFF;}
+
+#logo_text h2
+{ font-size: 120%;
+  padding: 4px 0 0 0;
+  color: #A8AA94;}
+
+#menubar
+{ height: 46px;
+  width: 950px;
+  margin: 1px auto 0 auto;
+  background: transparent url(tab.png);} 
+
+ul#menu
+{ float: left;
+  margin: 0;padding: 0;}
+
+ul#menu li
+{ float: left;
+  padding: 0 0 0 6px;
+  list-style: none;
+  margin: 0px 2px 0 0;}
+
+ul#menu li a
+{ font: normal 100% 'trebuchet ms', sans-serif;
+  display: block; 
+  float: left; 
+  height: 27px;
+  padding: 12px 28px 5px 22px;
+  text-align: center;
+  color: #FFF;
+  border-right: 1px solid #636363;
+  text-decoration: none;} 
+
+ul#menu li.tab_selected a
+{ height: 27px;
+  padding: 6px 28px 5px 22px;}
+
+ul#menu li.selected a, ul#menu li.selected a:hover
+{ color: #ECEF01;}
+
+ul#menu li a:hover
+{ color: #ECEF01;}
+
+#site_content
+{ width: 925px;
+  overflow: hidden;
+  margin: 44px auto 0 auto;
+  padding: 10px 0 0 25px;
+  background: #EEE;
+  border-top: 0;
+  border-bottom: 0;
+  color: #5D5D5D;} 
+
+#sidebar_container
+{ float: right;
+  width: 224px;
+  padding: 10px 20px 20px 0;}
+
+.sidebar_top, .sidebar_base
+{ width: 222px;
+  height: 14px;
+  background: transparent url(side_top.png) no-repeat;}
+
+.sidebar_base
+{ background: url(side_base.png) no-repeat;}
+
+.sidebar
+{ float: right;
+  width: 222px;
+  padding: 0;
+  margin: 0 0 16px 0;}
+
+.sidebar_item
+{ background: #FFF;
+  padding: 0 15px;
+  width: 192px;}
+
+.sidebar_item ul
+{ width: 178px; 
+  padding: 0px 0 0 0; 
+  margin: 0px 0 0px 0;}
+
+.sidebar_item li
+{ list-style: none; 
+  padding: 0 0 6px 0;margin: 0; }
+
+.sidebar_item li a, .sidebar_item li a:hover
+{ padding: 0 0 0 35px;
+  display: block;
+  background: transparent url(link.png) no-repeat left center;} 
+
+.sidebar_item li a.selected
+{ color: #444;
+  text-decoration: none;} 
+
+#content
+{ text-align: left;
+  width: 655px;
+  padding: 15px 0 20px 0;
+  margin: 0;}
+
+#content ul
+{ margin: 2px 0 12px 0px;}
+
+#content ul li
+{ list-style-type: none;
+  background: url(bullet.png) no-repeat;
+  margin: 0 0 2px 0; 
+  padding: 0 0 4px 25px;
+  line-height: 1.5em;}
+
+#footer
+{ width: 950px;
+  font: normal 90% 'trebuchet ms',  arial, sans-serif;
+  height: 65px;
+  padding: 20px 0 5px 0;
+  text-align: center; 
+  color: #FFF;
+  background: transparent url(tab.png) repeat;}
+
+#footer p
+{ padding: 0 0 10px 0;}
+
+#footer a, #footer a:hover
+{ color: #FFF;
+  text-decoration: underline;}
+
+#footer a:hover
+{ color: #FFF;
+  text-decoration: none;}
+
+.search
+{ color: #5D5D5D; 
+  border: 1px solid #BBB; 
+  width: 134px; 
+  padding: 4px; 
+  font: 100% arial, sans-serif;}
+
+.form_settings
+{ margin: 15px 0 0 0;}
+
+.form_settings p
+{ padding: 0 0 4px 0;}
+
+.form_settings span
+{ float: left; 
+  width: 200px; 
+  text-align: left;}
+  
+.form_settings input, .form_settings textarea
+{ padding: 5px; 
+  width: 299px; 
+  font: 100% arial; 
+  border: 1px solid #E5E5DB; 
+  background: #FFF; 
+  color: #47433F;}
+  
+.form_settings .submit
+{ font: 100% arial; 
+  border: 1px solid; 
+  width: 99px; 
+  margin: 0 0 0 212px; 
+  height: 33px;
+  padding: 2px 0 3px 0;
+  cursor: pointer; 
+  background: #3B3B3B; 
+  color: #FFF;}
+
+.form_settings textarea, .form_settings select
+{ font: 100% arial; 
+  width: 299px;}
+
+.form_settings select
+{ width: 310px;}
+
+.form_settings .checkbox
+{ margin: 4px 0; 
+  padding: 0; 
+  width: 14px;
+  border: 0;
+  background: none;}
+
+.separator
+{ width: 100%;
+  height: 0;
+  border-top: 1px solid #D9D5CF;
+  border-bottom: 1px solid #FFF;
+  margin: 0 0 20px 0;}
+  
+table
+{ margin: 10px 0 30px 0;}
+
+table tr th, table tr td
+{ background: #3B3B3B;
+  color: #FFF;
+  padding: 7px 4px;
+  text-align: left;}
+  
+table tr td
+{ background: #DDD;
+  color: #47433F;
+  border-top: 1px solid #FFF;}
+
+
+/* Mixings &  Variables */
+@barHeight: 20px;
+@borders: #717D95;
+@primary: #59BAC0;
+
+.transition (@property) {
+  -webkit-transition: @property;
+  -moz-transition: @property;
+  -o-transition: @property;
+  transition: @property 
+}
+
+.transform(@degree) {
+  transform:rotate(@degree);
+  -ms-transform:rotate(@degree);
+  -webkit-transform:rotate(@degree); 
+}
+
+.clearfix,
+.clearfix:before,
+.clearfix:after {
+   display: block;
+   content: " ";   
+   clear: both;
+   zoom: 1;
+}
+
+/* Resets */
+
+* {
+  -webkit-box-sizing: border-box; 
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;  
+}
+
+body {
+  background: #EDF2F6;
+  font-family: Arial;
+  color: #444;
+}
+
+.wrap {
+  margin: 0 auto;
+  padding: 50px;
+  max-width: 1200px;
+}
+
+/* Bar Graph Class */
+
+.barGraph {
+  position: relative;
+  width: 100%;
+  height: auto;
+  margin-bottom: 50px;
+}
+
+.graph {
+  @indent: 4%;
+  position: relative;
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+  width: calc(100% - @indent);
+  left: @indent;
+  
+  &-barBack {
+    border-radius: 2px;
+    background: #DAE4EB;
+    margin-bottom: 10px;
+    display: block;
+  }
+  
+  &-bar {
+    background-color: @primary;    
+    .transition(all 1s ease-out);
+    border-radius: 2px;
+    cursor: pointer;
+    margin-bottom: 10px;
+    position: relative;
+    z-index: 9999;
+    display: block;
+    height: 20px;  
+    width: 0%;
+    
+    &:hover {
+      .transition(all 0.5s ease);
+      background: #428D92;
+    }
+    
+    &:last-child {
+      margin-bottom: 0;
+    }
+    
+    &:after {
+      position: absolute;
+      content: attr(data-value);
+      display: none;
+      
+      font-size: 12px;
+      border-radius: 4px;
+      background: rgba(0,0,0,0.5);
+      color: #fff;
+      
+      line-height: @barHeight;
+      height: @barHeight; 
+      padding: 0 10px;
+      
+      margin-left: 5px;
+      left: 100%;
+      top: 0;
+    }
+    
+    &:hover:after {
+      display: block;
+    }
+  }
+  
+  &-legend {
+    position: absolute;
+    margin-right: 10px;
+    left: -40px ;
+    z-index: 9999;
+  }
+}
+
+
+/* Bubble Chart */
+.chart {
+  border-radius: 3px;
+  border: 2px solid fade(@borders, 45%);  
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  height: 300px;
+  
+  &-bubble {
+    overflow: hidden;
+    background-color: @primary;    
+    .transition(all 1s ease-out);
+    position: absolute;
+    border-radius: 100%;
+    cursor: pointer;
+    display: block;
+    min-height: 10px;  
+    min-width: 10px;
+    z-index: 999;
+    bottom: 0;
+    left: 0;
+    
+    &:hover {
+      .transition(all 0.5s ease);
+      background: #428D92;
+    }
+    
+    &:after {
+      position: absolute;
+      content: attr(data-label);
+      display: none;
+      width: 100%;
+      height: 100%;
+      
+      text-align: center;
+      padding-top: 50%;
+      line-height: 1px;
+      font-size: 15px;
+      color: #fff;
+    }
+    
+    &:hover:after {
+      display: block;
+    }
+  }
+}
+
+/* Lines for Charts */
+
+.lines {
+  @bars: fade(@borders, 40%);
+  position: absolute;    
+  height: 100%;
+  width: 100%;
+  z-index: 0;
+  left: 0;
+  top: 0;
+  
+  &-horz {
+    border-bottom: 1px dashed @bars;
+    position: absolute;
+    width: 100%;
+    height: 0px;
+   
+    &:nth-of-type(1) { top: 20%; }
+    &:nth-of-type(2) { top: 40%; }
+    &:nth-of-type(3) { top: 60%; }
+    &:nth-of-type(4) { top: 80%; }
+  }
+  
+  &-vert {
+    border-right: 1px dashed @bars;    
+    position: absolute;
+    height: 100%;
+    width: 1px;
+    
+    &:nth-of-type(5) { left: 20%; }
+    &:nth-of-type(6) { left: 40%; }
+    &:nth-of-type(7) { left: 60%; }
+    &:nth-of-type(8) { left: 80%; }
+  }
+}
+
+
+/* Line Graph */
+.lineChart {
+  .transition(all 0.5s ease);
+  border-radius: 3px;
+  border: 2px solid fade(@borders, 45%);  
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  height: 300px;
+    
+    svg {
+      position: absolute;
+      z-index: 999;
+    }
+  
+    circle {
+      .transition(all 0.5s ease);
+      position: relative;
+      cursor: pointer;    
+      stroke: @primary;
+      stroke-width: 3;
+      fill: @primary;
+    
+      &:hover {
+        stroke-width: 8;
+      }
+    }
+  
+    line {
+      stroke: @borders;
+      stroke-width: 4;
+    }
+   
+    &-lines {}
+  
+    &-points {}
+ }
+
+.trend line {
+  stroke: rgba(204, 51, 51, 0.8);
+}

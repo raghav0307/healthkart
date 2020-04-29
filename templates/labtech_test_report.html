@@ -6,6 +6,7 @@
   <meta name="description" content="website description" />
   <meta name="keywords" content="website keywords, website keywords" />
   <meta http-equiv="content-type" content="text/html; charset=windows-1252" />
+  <!-- <link rel="stylesheet" type="text/css" href="style/style.css" /> -->
   <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/doctors.css') }}">
   <link href="https://fonts.googleapis.com/css2?family=Bubblegum+Sans&family=Copse&family=Poppins:wght@400;600&family=Manrope:wght@500&display=swap" rel="stylesheet">
 </head>
@@ -16,22 +17,32 @@
       <div id="logo">
         <div id="logo_text">
           <!-- class="logo_colour", allows you to change the colour of the text -->
-          <h1><a href="/pharmacist/show_med">Welcome<span class="logo_colour">{{name}}</span></a></h1>
-          <h2>Pharmacist ID {{eid}}</h2>
+          <h1><a href="/labtech">Welcome<span class="logo_colour">{{name}}</span></a></h1>
+          <h2>LabTechnician ID {{labtechID}}</h2>
         </div>
       </div>
       <div id="menubar">
         <ul id="menu">
           <!-- put class="selected" in the li tag for the selected page - to highlight which page you're on -->
-          {% block menu %}
-          
-          {% endblock %}
+          <li><a href="/labtech">Home</a></li>
+          <li class="selected"><a href="/labtech/test_report">Test Reports</a></li>
+          <li><a href="/labtech/test_info">Test Information</a></li>
+          <li><a href="/labtech/patient_record">Patient Record</a></li>
+          <li><a href="/labtech/publish_report">Publish Report</a></li>
+          <li><a href="/labtech/edit_profile">Edit Profile</a></li>
+          <li><a href="/signout">Sign Out</a></li>
         </ul>
       </div>
     </div>
     <div id="site_content">
       <div id="content">
-        {%block content%}{%endblock%}
+        <h2>All Tests Reports</h2>
+        <table style="width:100%; border-spacing:0;">
+          <tr><th>Visit Date</th><th>Patient Name</th><th>Patient Age</th><th>Test Name</th><th>Test Result</th></tr>
+          {%for test in tests%}
+            <tr><td>{{test[0]}}</td><td>{{test[1]}}</td><td>{{test[2]}}</td><td>{{test[3]}}</td><td>{{test[4]}}</td></tr>
+          {%endfor%}
+        </table>
       </div>
     </div>
     <div id="footer">

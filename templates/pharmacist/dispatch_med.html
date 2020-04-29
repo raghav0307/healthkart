@@ -1,11 +1,21 @@
 {% extends "/pharmacist/pharmacist.html" %}
 
+{% block menu %}
+          <li><a href="/pharmacist/show_med">All Medicines</a></li>
+          <li><a href="/pharmacist/medicine_info">Search Medicines</a></li>
+          <li class="selected"><a href="/pharmacist/select_dispatch">Dispatch Medicines</a></li>
+          <li><a href="/pharmacist/add_medicine">Add Medicines</a></li>
+          <li><a href="/pharmacist/all_companies">Medicine Companies</a></li>
+          <li><a href="/pharmacist/edit_profile">Edit Profile</a></li>
+          <li><a href="/signout">Sign Out</a></li>
+{% endblock %}
+
 {% block content %}
 
   <h2>Medicines Available in Dispensary Information</h2>
   <h3>Select the ones to be indented to patient </h3>
           <form action="/pharmacist/dispatched" method="POST">
-          Enter patient ID<input type="text" name="patientID">
+          Enter Patient ID<input type="text" name="patientID">
           <table style="width:100%; border-spacing:0;">
             <tr><th>Medicine Name</th><th>Salts</th><th>Composition</th><th>Quantity Available</th><th>Expiry Date</th> <th>Cost</th><th>Dispatch</th></tr>
             {%for medicine in meds%}

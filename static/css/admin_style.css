@@ -8,7 +8,7 @@ html
 body
 { font-family: 'Poppins', sans-serif; 
   font-size: .80em;
-  background: url(patients_bg.jpg) no-repeat center center fixed;
+  background: url(admin_bg.jpg) no-repeat center center fixed;
     -webkit-background-size: cover;
     -moz-background-size: cover;
     -o-background-size: cover;
@@ -108,6 +108,7 @@ ol li
   background-color: none;
   border: 1px solid grey;
   color: #000000;
+
 }
 
 .remarks{
@@ -196,17 +197,17 @@ input[type = submit]:hover {
 
 #logo_text h1, #logo_text h1 a, #logo_text h1 a:hover 
 { padding: 0px 0 0 0;
-  color: #000;               /*change*/
+  color: #ffffff;
   letter-spacing: 0.1em;
   text-decoration: none;}
 
 #logo_text h1 a .logo_colour
-{ color: #B60000;}              /*change*/
+{ color: #B60000;}
 
 #logo_text h2
 { font-size: 120%;
   padding: 4px 0 0 0;
-  color: #B60000;}              /*change*/
+  color: #ffffff;}
 
 #menubar
 { height: 50px;
@@ -227,7 +228,7 @@ ul#menu li
 
 ul#menu li a
 { font-family: 'Manrope', sans-serif;
-  font-size: 85%;                                 /*change*/
+  font-size: 105%;
   text-transform: uppercase;
   font-style: normal;
   display: block; 
@@ -418,3 +419,4 @@ table tr td
   border-top: 1px solid #FFF;
   font-family: 'Poppins', sans-serif;
   font-size: 120%;}
+

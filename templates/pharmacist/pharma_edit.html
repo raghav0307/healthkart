@@ -1,0 +1,52 @@
+{% extends "/pharmacist/pharmacist.html" %}
+
+{% block menu %}
+          <li><a href="/pharmacist/show_med">All Medicines</a></li>
+          <li><a href="/pharmacist/medicine_info">Search Medicines</a></li>
+          <li><a href="/pharmacist/select_dispatch">Dispatch Medicines</a></li>
+          <li><a href="/pharmacist/add_medicine">Add Medicines</a></li>
+          <li><a href="/pharmacist/all_companies">Medicine Companies</a></li>
+          <li class="selected"><a href="/pharmacist/edit_profile">Edit Profile</a></li>
+          <li><a href="/signout">Sign Out</a></li>
+{% endblock %}
+
+
+
+{% block content %}
+{% if message != None%}
+{{message}}
+{% endif %}
+
+<h2>Your Profile</h2>
+        <form action="/pharmacist/pharma_edit_profile/submit" method="POST">
+          <table><tr><td>
+          <strong>Employee ID: </strong></td><td><input type="text" name="Employee ID" placeholder={{profile_info[0]}} readonly>
+          </td></tr><tr><td>
+          <strong>Name: </strong></td><td><input type="text" name="Name" placeholder={{profile_info[1]}} readonly>
+          </td></tr><tr><td>
+          <strong>Gender: </strong></td><td><input type="text" name="Gender" placeholder={{profile_info[2]}} readonly>
+          </td></tr><tr><td>
+          <strong>Occupation: </strong></td><td><input type="text" name="Occupation" value={{profile_info[3]}} readonly style = "color:grey">
+          </td></tr><tr><td>
+          <strong>Joining Date: </strong></td><td><input type="text" name="Joining Date" placeholder={{profile_info[4]}} readonly>
+          </td></tr><tr><td>
+          <strong>House No: </strong></td><td><input type="text" name="House No" value = {{profile_info[5]}}>
+          </td></tr><tr><td>
+          <strong>Street: </strong></td><td><input type="text" name="Street" value={{profile_info[6]}}>
+          </td></tr><tr><td>
+          <strong>City: </strong></td><td><input type="text" name="City" value={{profile_info[7]}}>
+          </td></tr><tr><td>
+          <strong>State: </strong></td><td><input type="text" name="State" value={{profile_info[8]}}>
+          </td></tr><tr><td>
+          <strong>District: </strong></td><td><input type="text" name="District" value={{profile_info[9]}}>
+          </td></tr><tr><td>
+          <strong>Pin Code: </strong></td><td><input type="text" name="Pin Code" value={{profile_info[10]}}>
+          </td></tr><tr><td>
+          <strong>Contact Number: </strong></td><td><input type="text" name="Contact Number" value={{profile_info[11]}}>
+          </td></tr><tr><td>
+          <strong>Salary: </strong></td><td><input type="text" name="Salary" placeholder={{profile_info[12]}} readonly>
+          </td></tr>
+          </table>
+          <input type="submit" value="Update">
+        </form>
+{% endblock %}

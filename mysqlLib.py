@@ -60,7 +60,12 @@ class MySQL_Conn():
 		else:
 			self.connection.commit()
 
+	def bulkModQueries(self, queries):
 
+		for i in queries:
+			self.cursor.execute(i)
+
+		self.connection.commit()
 
 
 if __name__ == "__main__":

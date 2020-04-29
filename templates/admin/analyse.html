@@ -1,0 +1,38 @@
+{% extends "/admin/admin.html" %}
+
+{% block menu %}
+          <li class="selected"><a href="/admin/analyse">Analyse</a></li>
+          <li><a href="/admin/add_employees">Add Employees</a></li>
+          <li><a href="/signout">Sign Out</a></li>
+{% endblock %}
+
+
+{% block content %}
+<h2>Select Graph to Analyse</h2>
+<form action="/admin/analyse" method="POST">
+  <h1>Analyse Exact Values</h1>
+  <select id="id" name="graph">
+      <option value="None" selected>None</option>
+      <option value="Medicines Indented">Medicines Indented</option>
+      <option value="Tests Recommended">Tests Recommended</option>
+      <option value="Visits of Patients per Doctor">Visits of Patients per Doctor</option>
+      <option value="Companies">Companies</option>
+  </select>
+  <input type="submit" value="Select Graph">
+  <h1>Analyse Roll Up</h1>
+  <select id="id" name="rollup">
+      <option value="None" selected>None</option>
+      <option value="Area wise patients">Areas wise patients</option>
+      <option value="Time wise medicine expiry">Time wise medicine expiry</option>
+  </select>
+  <input type="submit" value="Select Roll Up Graph">
+  <h1>Analyse Ranks</h1>
+  <select id="id" name="ranks">
+      <option value="None" selected>None</option>
+      <option value="Day">Day wise patient visits</option>
+      <option value="Doctor">Doctor wise patient visits</option>
+      <option value="Doc_Dept">Doctor per Department wise patient visits</option>  
+  </select>
+  <input type="submit" value="Select Rank Tables">
+</form>
+{% endblock %}
