@@ -808,29 +808,34 @@ def admin_home(): #dispensary analysis
 @app.route("/admin/analyse", methods = ['GET', 'POST'])
 def analyse():
 	if request.method == "POST":
-		graph = request.form.get("graph")
-		if graph == "Medicines Indented":
-			return analyse_medicines()
-		elif graph == "Tests Recommended":
-			return analyse_tests()
-		elif graph == "Visits of Patients per Doctor":
-			return analyse_doctors();
-		elif graph == "Companies":
-			return analyse_companies()
+		option = request.form.get("submit")
 
-		rollup = request.form.get("rollup")
-		if rollup == "Area wise patients":
-			return analyse_area_wise();
-		elif rollup == "Time wise medicine expiry":
-			return analyse_time_wise();
+		if option == "Select Graph":
+			graph = request.form.get("graph")
+			if graph == "Medicines Indented":
+				return analyse_medicines()
+			elif graph == "Tests Recommended":
+				return analyse_tests()
+			elif graph == "Visits of Patients per Doctor":
+				return analyse_doctors();
+			elif graph == "Companies":
+				return analyse_companies()
 
-		ranks = request.form.get("ranks")
-		if ranks == "Day":
-			return analyse_day_rank()
-		elif ranks == "Doctor":
-			return analyse_doctor_rank()
-		elif ranks == "Doc_Dept":
-			return analyse_doc_dept_rank()
+		elif option == "Select Roll Up Graph":
+			rollup = request.form.get("rollup")
+			if rollup == "Area wise patients":
+				return analyse_area_wise();
+			elif rollup == "Time wise medicine expiry":
+				return analyse_time_wise();
+
+		else:
+			ranks = request.form.get("ranks")
+			if ranks == "Day":
+				return analyse_day_rank()
+			elif ranks == "Doctor":
+				return analyse_doctor_rank()
+			elif ranks == "Doc_Dept":
+				return analyse_doc_dept_rank()
 
 	return render_template("/admin/analyse.html", eid = user.getName(), name = user.getusername())
 
