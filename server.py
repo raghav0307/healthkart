@@ -706,6 +706,7 @@ def doc_patient_diagnose():
 				if test != 'None':
 					query = "insert into testsrecommended values('%s', '%s')" %(vid, test)
 					connection.execute(query)
+			connection.execute("update metadata set entries = '%d' where TableName = '%s' ") %(visits, "visits")
 
 	return render_template("doctor_diagnose.html", doctorID = doctorID, name = user.getusername(), form = form, medlist = medlist, testlist = testlist)
 	
